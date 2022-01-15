@@ -4,7 +4,9 @@ import (
 	"net"
 
 	"github.com/iamnande/cardmod/internal/grpc/cardapi"
+	"github.com/iamnande/cardmod/internal/grpc/magicapi"
 	"github.com/iamnande/cardmod/pkg/api/cardv1"
+	"github.com/iamnande/cardmod/pkg/api/magicv1"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -30,6 +32,7 @@ func NewServer(cfg *ServerConfig) *Server {
 	// initialize a new server instance
 	return &Server{
 		port:    cfg.Port,
+		logger:  cfg.Logger,
 		version: cfg.Version,
 	}
 
@@ -49,7 +52,12 @@ func (s *Server) Serve() error {
 
 	// add the services to the server
 	cardService := cardapi.New()
+	s.logger.Info("registering the CardAPI service")
 	cardv1.RegisterCardAPIServer(server, &cardService)
+
+	magicService := magicapi.New()
+	s.logger.Info("registering the MagicAPI service")
+	magicv1.RegisterMagicAPIServer(server, &magicService)
 
 	// start the server
 	s.server = server

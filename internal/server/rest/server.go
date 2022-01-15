@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/iamnande/cardmod/pkg/api/cardv1"
+	"github.com/iamnande/cardmod/pkg/api/magicv1"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -45,7 +46,13 @@ func NewServer(cfg *ServerConfig) (*Server, error) {
 	}
 
 	// server: register the gRPC gateway handler(s)
-	cardv1.RegisterCardAPIHandler(cfg.Context, mux, connection)
+	// TODO: wrap this in a loop or something
+	if err := cardv1.RegisterCardAPIHandler(cfg.Context, mux, connection); err != nil {
+		return nil, err
+	}
+	if err := magicv1.RegisterMagicAPIHandler(cfg.Context, mux, connection); err != nil {
+		return nil, err
+	}
 
 	// server: mount the gRPC gateway into the REST server
 	router.Mount("/v1", mux)

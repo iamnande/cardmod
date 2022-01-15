@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package iamnande.cardmod.magic.v1;
+
+option go_package = "github.com/iamnande/cardmod/pkg/api/magicv1;magicv1";
+
+// A magic resource.
+message Magic {
+
+    // ID of the magic.
+    string id = 1;
+
+    // Name of the magic.
+    string name = 2;
+}
