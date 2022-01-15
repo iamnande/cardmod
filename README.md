@@ -17,4 +17,4 @@
 
 ## Contributing
 
-Would you like to help contribute to the project? Fantastic! To find out more about how to contribute, please read our [contributing guide](/docs/contributing.md).
+Would you like to help contribute to the project? Fantastic! To find out more about how to contribute, please read our [contributing guide](/docs/CONTRIBUTING.md).
