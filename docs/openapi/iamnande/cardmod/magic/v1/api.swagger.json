@@ -1,12 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "iamnande/cardmod/card/v1/api.proto",
+    "title": "iamnande/cardmod/magic/v1/api.proto",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "CardAPI"
+      "name": "MagicAPI"
     }
   ],
   "consumes": [
@@ -16,15 +16,15 @@
     "application/json"
   ],
   "paths": {
-    "/v1/cards": {
+    "/v1/magics": {
       "get": {
-        "summary": "ListCards lists all available card resources.",
-        "operationId": "CardAPI_ListCards",
+        "summary": "ListMagics lists all available magic resources.",
+        "operationId": "MagicAPI_ListMagics",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1ListCardsResponse"
+              "$ref": "#/definitions/v1ListMagicsResponse"
             }
           },
           "default": {
@@ -35,17 +35,17 @@
           }
         },
         "tags": [
-          "CardAPI"
+          "MagicAPI"
         ]
       },
       "post": {
-        "summary": "CreateCard creates a new card resource.",
-        "operationId": "CardAPI_CreateCard",
+        "summary": "CreateMagic creates a new magic resource.",
+        "operationId": "MagicAPI_CreateMagic",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1CreateCardResponse"
+              "$ref": "#/definitions/v1CreateMagicResponse"
             }
           },
           "default": {
@@ -61,24 +61,24 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1CreateCardRequest"
+              "$ref": "#/definitions/v1CreateMagicRequest"
             }
           }
         ],
         "tags": [
-          "CardAPI"
+          "MagicAPI"
         ]
       }
     },
-    "/v1/cards/{cardId}": {
+    "/v1/magics/{magicId}": {
       "get": {
-        "summary": "DescribeCard describes a single card.",
-        "operationId": "CardAPI_DescribeCard",
+        "summary": "DescribeMagic describes a single magic.",
+        "operationId": "MagicAPI_DescribeMagic",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1DescribeCardResponse"
+              "$ref": "#/definitions/v1DescribeMagicResponse"
             }
           },
           "default": {
@@ -90,25 +90,25 @@
         },
         "parameters": [
           {
-            "name": "cardId",
-            "description": "card_id is the ID of the card to describe.",
+            "name": "magicId",
+            "description": "magic_id is the ID of the magic to describe.",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "tags": [
-          "CardAPI"
+          "MagicAPI"
         ]
       },
       "delete": {
-        "summary": "DeleteCard deletes a card resource.",
-        "operationId": "CardAPI_DeleteCard",
+        "summary": "DeleteMagic deletes a magic resource.",
+        "operationId": "MagicAPI_DeleteMagic",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1DeleteCardResponse"
+              "$ref": "#/definitions/v1DeleteMagicResponse"
             }
           },
           "default": {
@@ -120,15 +120,15 @@
         },
         "parameters": [
           {
-            "name": "cardId",
-            "description": "card_id is the ID of the card to delete.",
+            "name": "magicId",
+            "description": "magic_id is the ID of the magic to delete.",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "tags": [
-          "CardAPI"
+          "MagicAPI"
         ]
       }
     }
@@ -161,21 +161,7 @@
         }
       }
     },
-    "v1Card": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "title": "ID of the card"
-        },
-        "name": {
-          "type": "string",
-          "title": "Name of the card"
-        }
-      },
-      "title": "A card resource"
-    },
-    "v1CreateCardRequest": {
+    "v1CreateMagicRequest": {
       "type": "object",
       "properties": {
         "name": {
@@ -183,44 +169,58 @@
           "description": "name is the name of the card."
         }
       },
-      "description": "CreateCardRequest is the request model for CreateCard."
+      "description": "CreateMagicRequest is the request model for CreateMagic."
     },
-    "v1CreateCardResponse": {
+    "v1CreateMagicResponse": {
       "type": "object",
       "properties": {
-        "card": {
-          "$ref": "#/definitions/v1Card",
-          "description": "card is the card entity that was created."
+        "magic": {
+          "$ref": "#/definitions/v1Magic",
+          "description": "magic is the magice entity that was created."
         }
       },
-      "description": "CreateCardResponse is the response model for CreateCard."
+      "description": "CreateMagicResponse is the response model for CreateMagic."
     },
-    "v1DeleteCardResponse": {
+    "v1DeleteMagicResponse": {
       "type": "object",
-      "description": "DeleteCardResponse is the response model for DeleteCard."
+      "description": "DeleteMagicResponse is the response model for DeleteMagic."
     },
-    "v1DescribeCardResponse": {
+    "v1DescribeMagicResponse": {
       "type": "object",
       "properties": {
-        "card": {
-          "$ref": "#/definitions/v1Card",
-          "description": "card is the card entity that was described."
+        "magic": {
+          "$ref": "#/definitions/v1Magic",
+          "description": "magic is the magic entity that was described."
         }
       },
-      "description": "DescribeCardResponse is the response model for DescribeCard."
+      "description": "DescribeMagicResponse is the response model for DescribeMagic."
     },
-    "v1ListCardsResponse": {
+    "v1ListMagicsResponse": {
       "type": "object",
       "properties": {
-        "cards": {
+        "magics": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/v1Card"
+            "$ref": "#/definitions/v1Magic"
           },
-          "description": "cards is the list of cards."
+          "description": "magics is the list of magics."
         }
       },
-      "description": "ListCardsResponse is the response model for ListCards."
+      "description": "ListMagicsResponse is the response model for ListMagics."
+    },
+    "v1Magic": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID of the magic."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the magic."
+        }
+      },
+      "description": "A magic resource."
     }
   }
 }

@@ -45,7 +45,9 @@ func NewServer(cfg *ServerConfig) (*Server, error) {
 	}
 
 	// server: register the gRPC gateway handler(s)
-	cardv1.RegisterCardAPIHandler(cfg.Context, mux, connection)
+	if err := cardv1.RegisterCardAPIHandler(cfg.Context, mux, connection); err != nil {
+		return nil, err
+	}
 
 	// server: mount the gRPC gateway into the REST server
 	router.Mount("/v1", mux)
