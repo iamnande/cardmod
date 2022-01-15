@@ -37,7 +37,7 @@ func (api *api) DescribeMagic(ctx context.Context, request *magicv1.DescribeMagi
 	return &magicv1.DescribeMagicResponse{
 		Magic: &magicv1.Magic{
 			Id:   uuid.New().String(),
-			Name: "Fastitocalon",
+			Name: "Water",
 		},
 	}, nil
 
