@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+
+  # cardmod api
+  api:
+    image: cardmod:local
+    container_name: cardmod_api
+    build:
+      context: .
+      dockerfile: cmd/cardmodd/Dockerfile
+    ports:
+      - 8000:8000
+      - 9000:9000

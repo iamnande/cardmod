@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package iamnande.cardmod.card.v1;
+
+option go_package = "github.com/iamnande/cardmod/pkg/api/cardv1;cardv1";
+
+import "validate/validate.proto";
+import "google/api/annotations.proto";
+import "iamnande/cardmod/card/v1/card.proto";
+
+// Card Service
+service CardAPI {
+
+    // CreateCard creates a new card resource.
+    rpc CreateCard(CreateCardRequest) returns (CreateCardResponse) {
+        option (google.api.http) = {
+            post: "/v1/cards"
+            body: "*"
+        };
+    }
+
+    // DescribeCard describes a single card.
+    rpc DescribeCard(DescribeCardRequest) returns (DescribeCardResponse) {
+        option (google.api.http) = {
+            get: "/v1/cards/{card_id}"
+        };
+    }
+
+}
+
+// CreateCardRequest is the request model for CreateCard.
+message CreateCardRequest {
+
+    // name is the name of the card.
+    string name = 1;
+
+}
+
+// CreateCardResponse is the response model for CreateCard.
+message CreateCardResponse {
+
+    // card is the card entity that was created.
+    Card card = 1;
+
+}
+
+// DescribeCardRequest is the request model for DescribeCard.
+message DescribeCardRequest {
+
+    // card_id is the name of the card.
+    string card_id = 1 [(validate.rules).string.uuid = true];
+
+}
+
+// DescribeCardResponse is the response model for DescribeCard.
+message DescribeCardResponse {
+
+    // card is the card entity that was described.
+    Card card = 1;
+
+}

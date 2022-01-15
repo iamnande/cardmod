@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package iamnande.cardmod.card.v1;
+
+option go_package = "github.com/iamnande/cardmod/pkg/api/cardv1;cardv1";
+
+// A card resource
+message Card {
+
+    // ID of the card
+    string id = 1;
+
+    // Name of the card
+    string name = 2;
+}
