@@ -26,7 +26,6 @@ RUN apk update \
 
 # api: copy over binary
 WORKDIR /app
-COPY --from=build /app/cmd/cardmodd/entrypoint.sh .
 COPY --from=build /app/build/cardmodd .
 
 # api: create non-root user
@@ -36,4 +35,4 @@ RUN addgroup -S cardmod --gid 671 \
 
 # api: start the service
 USER cardmod
-ENTRYPOINT [ "./entrypoint.sh" ]
+ENTRYPOINT [ "./cardmodd" ]

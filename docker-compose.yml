@@ -1,13 +1,65 @@
 version: '3.9'
 services:
 
-  # cardmod api
+  # database
+  database:
+    image: postgres:13.5
+    container_name: cardmod_database
+    environment:
+      POSTGRES_DB: cardmod
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d cardmod"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 5432:5432
+
+  # database migration
+  migration:
+    image: migrate/migrate:4
+    container_name: cardmod_database_migration
+    command: -verbose -database 'postgres://database:5432/cardmod?sslmode=disable&user=postgres&password=postgres' -path ./migrations up
+    volumes:
+      - "./migrations:/migrations"
+    depends_on:
+      database:
+        condition: service_healthy
+    links:
+      - "database:database"
+
+  # database seeder
+  seeder:
+    image: golang:1.17-alpine
+    container_name: cardmod_database_seeder
+    command: go run ./cmd/gardner/main.go ./cmd/gardner/calculations.go
+    working_dir: /app
+    environment:
+      CARDMOD_DATABASE_ENDPOINT: postgres://database:5432/cardmod?sslmode=disable&user=postgres&password=postgres
+    volumes:
+      - "./:/app"
+    depends_on:
+      migration:
+        condition: service_completed_successfully
+    links:
+      - "database:database"
+
+  # api
   api:
     image: cardmod:local
     container_name: cardmod_api
     build:
       context: .
       dockerfile: cmd/cardmodd/Dockerfile
+    environment:
+      CARDMOD_DATABASE_ENDPOINT: postgres://database:5432/cardmod?sslmode=disable&user=postgres&password=postgres
+    depends_on:
+      seeder:
+        condition: service_completed_successfully
+    links:
+      - "database:database"
     ports:
       - 8000:8000
       - 9000:9000

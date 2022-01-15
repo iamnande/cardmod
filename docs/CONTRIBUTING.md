@@ -51,28 +51,28 @@ Dependencies:
     - description: `protoc-gen-go` is a plugin that will handle converting the `.proto` file to `.go` file conversion inside the `protoc` toolchain.
     - installation: 
         ```sh
-        $ go install google.golang.org/protobuf/cmd/protoc-gen-go
+        $ go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
         ```
     - reference: https://developers.google.com/protocol-buffers/docs/reference/go-generated
 - `protoc-gen-go-grpc`:
     - description: `protoc-gen-go-grpc` is a plugin that will handle converting the services defined in the `.proto` files to a gRPC service interface we can implement against.
     - installation: 
         ```sh
-        $ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
+        $ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
         ```
     - reference: https://developers.google.com/protocol-buffers/docs/reference/go-generated
 - `protoc-gen-grpc-gateway`:
     - description: `protoc-gen-grpc-gateway` is a plugin that will allow us to expose a traditional REST API defined in our `.proto` files from our gRPC service definitions.
     - installation: 
         ```sh
-        $ go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+        $ go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
         ```
     - reference: https://github.com/grpc-ecosystem/grpc-gateway#installation
 - `protoc-gen-openapiv2`:
     - description: `protoc-gen-openapiv2` is a plugin that will generate OpenAPI (v2) specification files based on our gRPC service definitions.
     - installation: 
         ```sh
-        $ go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
+        $ go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
         ```
     - reference: https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_openapi_output/
 - `golangci-lint`:
@@ -83,10 +83,6 @@ Dependencies:
         ```
     - reference: https://grpc.io/docs/protoc-installation/
 
-
-
-
-
 ### 💻 Helpful Commands
 
 There is a `Makefile` included in the root of the repository with a number of targets, or commands, to help you
@@ -95,7 +91,7 @@ do anything from getting a local docker environment spun up to running a thoroug
 There is also a helper built into the `Makefile` to tell you exactly what commands are available, see it by running `make help`.
 
 ```sh
-$ make help
+$ make
  make help                 -> help: display make targets
  make up                   -> runtime: start local environment
  make status               -> runtime: check local environment status
@@ -104,12 +100,13 @@ $ make help
  make build-clean          -> build: clean build workspace
  make build-binary         -> build: build binary file
  make build-proto          -> build: generate proto files and swagger docs
+ make build-mocks          -> build: generate mock implementations for testing
  make test-clean           -> test: clean test workspace
  make test-lint            -> test: check for lint failures
  make test-unit            -> test: execute unit test suite
 ```
 
-As you can see the commands are put into categories such as `runtime`, for local runtime start/stop operations, `build` for compiling new proto files or a distribution binary, and `test` for linting and test suites.
+As you can see the commands are put into categories such as `runtime` (without a target prefix), for local runtime start/stop operations, `build` for compiling new proto files or a distribution binary, and `test` for linting and test suites.
 
 ### ✨ Resolving Protobuf Imports
 
@@ -137,20 +134,24 @@ To spin up a complete environment, you can run `make up`. After that you can che
 Example:
 ```sh
 $ make up
-2022-01-15 14:28:03 -0800 [magic] starting local environment
-[+] Building 8.7s (19/19) FINISHED
-
+2022-01-23 21:28:38 -0800 [cardmod] stopping local environment
+2022-01-23 21:28:38 -0800 [cardmod] starting local environment
 <... docker vomit ...>
 
-[+] Running 2/2
- ⠿ Network cardmod_default  Created                                                                                            
- ⠿ Container cardmod_api    Started
+[+] Running 3/3
+ ⠿ Network cardmod_default     Created
+ ⠿ Container cardmod_database  Started
+ ⠿ Container cardmod_api       Started
 $ make status
-2022-01-15 14:28:17 -0800 [magic] checking environment status
-NAME                COMMAND             SERVICE             STATUS              PORTS
-cardmod_api         "./entrypoint.sh"   api                 running             0.0.0.0:8000->8000/tcp, 0.0.0.0:9000->9000/tcp
-cardmod_api  | {"level":"info","ts":1642285693.1653013,"caller":"cardmodd/main.go:55","msg":"starting gRPC server"}
-cardmod_api  | {"level":"info","ts":1642285693.1653714,"caller":"cardmodd/main.go:63","msg":"starting REST server"}
+2022-01-15 23:26:12 -0800 [cardmod] checking environment status
+NAME                COMMAND                  SERVICE             STATUS              PORTS
+cardmod_api         "./entrypoint.sh"        api                 running             0.0.0.0:8000->8000/tcp, 0.0.0.0:9000->9000/tcp
+cardmod_database    "docker-entrypoint.s…"   database            running (healthy)   0.0.0.0:5432->5432/tcp
+cardmod_api  | 1/u initial_schema (17.818791ms)
+cardmod_api  | 2/u calculations (23.181084ms)
+cardmod_api  | {"level":"info","service":{"name":"gardner","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-24T05:29:00Z","message":"seeding data into database"}
+cardmod_api  | {"level":"info","service":{"name":"cardmod","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-24T05:29:00Z","message":"starting REST server"}
+cardmod_api  | {"level":"info","service":{"name":"cardmod","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-24T05:29:00Z","message":"starting gRPC server"}
 ```
 
 As you can see by the output above, both a gRPC and a REST server have been started on ports `:9000` and `:8000` respectively.
@@ -165,33 +166,39 @@ This is the current structure of the packages with a few comments on the intente
 ```awk
 $ tree -aC -I '.git' -I '.vscode' --dirsfirst -d | less -FRX
 .
+├── .github
+│   └── workflows
 ├── cmd
-│   └── cardmodd           # daemon program for API server(s)
+│   ├── cardmodd        # daemon program for API server(s)
+│   └── gardner         # database seed program (magics, cards, etc.)
 ├── docs
-│   └── openapi            # generated OpenAPI (v2) spec(s)
+│   └── openapi         # generated OpenAPI (v2) spec(s)
 ├── internal
-│   ├── config             # configuration for ALLTHINGS (with defaults)
-│   ├── grpc
-│   │   └── cardapi        # API server implementation (API handlers)
+│   ├── config
+│   ├── daos
+│   ├── database
+│   ├── domains
+│   │   ├── calculation
+│   │   ├── card
+│   │   └── magic
+│   ├── grpc            # gRPC handlers
 │   ├── proto
 │   │   └── iamnande
-│   │       └── cardmod
-│   │           └── card
-│   │               └── v1 # <org>/<service>/<resource>/<version>/*.proto
+│   │       └── cardmod # <resource>/<version>/*.proto
+│   ├── repositories
 │   └── server
-│       ├── grpc           # gRPC server package
-│       └── rest           # REST server package
-│
+│       ├── grpc        # gRPC server package
+│       └── rest        # REST server package
+├── migrations
 └── pkg
-    └── api
-        └── cardv1         # generated gRPC/REST interfaces
+    └── api             # generated gRPC/REST interfaces
 ```
 
 _note: if you do make a change, or addition, to the directory structure we ask that you update this section of the guide._
 
 ## 🖌️ Making a Change
 
-TBD:
+TODO:
 
 - forking
 - branch naming

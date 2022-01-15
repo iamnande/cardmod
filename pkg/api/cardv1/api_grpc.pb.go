@@ -22,10 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CardAPIClient interface {
-	// CreateCard creates a new card resource.
-	CreateCard(ctx context.Context, in *CreateCardRequest, opts ...grpc.CallOption) (*CreateCardResponse, error)
-	// DescribeCard describes a single card.
-	DescribeCard(ctx context.Context, in *DescribeCardRequest, opts ...grpc.CallOption) (*DescribeCardResponse, error)
+	// ListCards lists all available card resources.
+	ListCards(ctx context.Context, in *ListCardsRequest, opts ...grpc.CallOption) (*ListCardsResponse, error)
+	// GetCard gets a single card.
+	GetCard(ctx context.Context, in *GetCardRequest, opts ...grpc.CallOption) (*Card, error)
 }
 
 type cardAPIClient struct {
@@ -36,18 +36,18 @@ func NewCardAPIClient(cc grpc.ClientConnInterface) CardAPIClient {
 	return &cardAPIClient{cc}
 }
 
-func (c *cardAPIClient) CreateCard(ctx context.Context, in *CreateCardRequest, opts ...grpc.CallOption) (*CreateCardResponse, error) {
-	out := new(CreateCardResponse)
-	err := c.cc.Invoke(ctx, "/iamnande.cardmod.card.v1.CardAPI/CreateCard", in, out, opts...)
+func (c *cardAPIClient) ListCards(ctx context.Context, in *ListCardsRequest, opts ...grpc.CallOption) (*ListCardsResponse, error) {
+	out := new(ListCardsResponse)
+	err := c.cc.Invoke(ctx, "/iamnande.cardmod.card.v1.CardAPI/ListCards", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *cardAPIClient) DescribeCard(ctx context.Context, in *DescribeCardRequest, opts ...grpc.CallOption) (*DescribeCardResponse, error) {
-	out := new(DescribeCardResponse)
-	err := c.cc.Invoke(ctx, "/iamnande.cardmod.card.v1.CardAPI/DescribeCard", in, out, opts...)
+func (c *cardAPIClient) GetCard(ctx context.Context, in *GetCardRequest, opts ...grpc.CallOption) (*Card, error) {
+	out := new(Card)
+	err := c.cc.Invoke(ctx, "/iamnande.cardmod.card.v1.CardAPI/GetCard", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -58,10 +58,10 @@ func (c *cardAPIClient) DescribeCard(ctx context.Context, in *DescribeCardReques
 // All implementations must embed UnimplementedCardAPIServer
 // for forward compatibility
 type CardAPIServer interface {
-	// CreateCard creates a new card resource.
-	CreateCard(context.Context, *CreateCardRequest) (*CreateCardResponse, error)
-	// DescribeCard describes a single card.
-	DescribeCard(context.Context, *DescribeCardRequest) (*DescribeCardResponse, error)
+	// ListCards lists all available card resources.
+	ListCards(context.Context, *ListCardsRequest) (*ListCardsResponse, error)
+	// GetCard gets a single card.
+	GetCard(context.Context, *GetCardRequest) (*Card, error)
 	mustEmbedUnimplementedCardAPIServer()
 }
 
@@ -69,11 +69,11 @@ type CardAPIServer interface {
 type UnimplementedCardAPIServer struct {
 }
 
-func (UnimplementedCardAPIServer) CreateCard(context.Context, *CreateCardRequest) (*CreateCardResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateCard not implemented")
+func (UnimplementedCardAPIServer) ListCards(context.Context, *ListCardsRequest) (*ListCardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListCards not implemented")
 }
-func (UnimplementedCardAPIServer) DescribeCard(context.Context, *DescribeCardRequest) (*DescribeCardResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DescribeCard not implemented")
+func (UnimplementedCardAPIServer) GetCard(context.Context, *GetCardRequest) (*Card, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCard not implemented")
 }
 func (UnimplementedCardAPIServer) mustEmbedUnimplementedCardAPIServer() {}
 
@@ -88,38 +88,38 @@ func RegisterCardAPIServer(s grpc.ServiceRegistrar, srv CardAPIServer) {
 	s.RegisterService(&CardAPI_ServiceDesc, srv)
 }
 
-func _CardAPI_CreateCard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateCardRequest)
+func _CardAPI_ListCards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCardsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CardAPIServer).CreateCard(ctx, in)
+		return srv.(CardAPIServer).ListCards(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/iamnande.cardmod.card.v1.CardAPI/CreateCard",
+		FullMethod: "/iamnande.cardmod.card.v1.CardAPI/ListCards",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CardAPIServer).CreateCard(ctx, req.(*CreateCardRequest))
+		return srv.(CardAPIServer).ListCards(ctx, req.(*ListCardsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CardAPI_DescribeCard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DescribeCardRequest)
+func _CardAPI_GetCard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCardRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CardAPIServer).DescribeCard(ctx, in)
+		return srv.(CardAPIServer).GetCard(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/iamnande.cardmod.card.v1.CardAPI/DescribeCard",
+		FullMethod: "/iamnande.cardmod.card.v1.CardAPI/GetCard",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CardAPIServer).DescribeCard(ctx, req.(*DescribeCardRequest))
+		return srv.(CardAPIServer).GetCard(ctx, req.(*GetCardRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -132,12 +132,12 @@ var CardAPI_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CardAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateCard",
-			Handler:    _CardAPI_CreateCard_Handler,
+			MethodName: "ListCards",
+			Handler:    _CardAPI_ListCards_Handler,
 		},
 		{
-			MethodName: "DescribeCard",
-			Handler:    _CardAPI_DescribeCard_Handler,
+			MethodName: "GetCard",
+			Handler:    _CardAPI_GetCard_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

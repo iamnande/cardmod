@@ -2,25 +2,24 @@ syntax = "proto3";
 
 package iamnande.cardmod.card.v1;
 
-option go_package = "github.com/iamnande/cardmod/pkg/api/cardv1;cardv1";
-
-import "validate/validate.proto";
 import "google/api/annotations.proto";
+import "validate/validate.proto";
 import "iamnande/cardmod/card/v1/card.proto";
 
-// Card Service
+option go_package = "github.com/iamnande/cardmod/pkg/api/cardv1;cardv1";
+
+// Card API Service.
 service CardAPI {
 
-    // CreateCard creates a new card resource.
-    rpc CreateCard(CreateCardRequest) returns (CreateCardResponse) {
+    // ListCards lists all available card resources.
+    rpc ListCards(ListCardsRequest) returns (ListCardsResponse) {
         option (google.api.http) = {
-            post: "/v1/cards"
-            body: "*"
+            get: "/v1/cards"
         };
     }
 
-    // DescribeCard describes a single card.
-    rpc DescribeCard(DescribeCardRequest) returns (DescribeCardResponse) {
+    // GetCard gets a single card.
+    rpc GetCard(GetCardRequest) returns (Card) {
         option (google.api.http) = {
             get: "/v1/cards/{card_id}"
         };
@@ -28,34 +27,36 @@ service CardAPI {
 
 }
 
-// CreateCardRequest is the request model for CreateCard.
-message CreateCardRequest {
+// ListCardsRequest is the request model for ListCards.
+// TODO: pagination, sorting
+message ListCardsRequest {
 
-    // name is the name of the card.
-    string name = 1;
+    // Filter is an optional search query to limit results with.
+    message Filter {
+
+        // query is the actual search query.
+        string query = 1;
+
+    }
+
+    // Filter is the optional search query to limit results with. 
+    // (ex: "Tonberry" will return "Tonberry" and "Tonberry King")
+    Filter filter = 1;
 
 }
 
-// CreateCardResponse is the response model for CreateCard.
-message CreateCardResponse {
+// ListCardsResponse is the response model for ListCards.
+message ListCardsResponse {
 
-    // card is the card entity that was created.
-    Card card = 1;
+    // cards is the list of cards.
+    repeated Card cards = 1;
 
 }
 
-// DescribeCardRequest is the request model for DescribeCard.
-message DescribeCardRequest {
+// GetCardRequest is the request model for GetCard.
+message GetCardRequest {
 
-    // card_id is the name of the card.
+    // card_id is the ID of the card to get.
     string card_id = 1 [(validate.rules).string.uuid = true];
-
-}
-
-// DescribeCardResponse is the response model for DescribeCard.
-message DescribeCardResponse {
-
-    // card is the card entity that was described.
-    Card card = 1;
 
 }

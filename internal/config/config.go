@@ -7,17 +7,17 @@ import (
 )
 
 const (
-	// DEFAULT_GRPC_PORT is the default port listener for the gRPC server.
-	DEFAULT_GRPC_PORT = ":9000"
+	// DefaultGRPCPort is the default port listener for the gRPC server.
+	DefaultGRPCPort = ":9000"
 
-	// DEFAULT_REST_PORT is the default port listener for the REST server.
-	DEFAULT_REST_PORT = ":8000"
+	// DefaultRESTPort is the default port listener for the REST server.
+	DefaultRESTPort = ":8000"
 
-	// DEFAULT_ENVIRONMENT is the default environment name.
-	DEFAULT_ENVIRONMENT = "local"
+	// DefaultEnvironment is the default environment name.
+	DefaultEnvironment = "local"
 
-	// DEFAULT_DATABASE_ENDPOINT is the default database connection endpoint string.
-	DEFAULT_DATABASE_ENDPOINT = "postgres://postgres:5432/magic?sslmode=disable&user=postgres&password=postgres"
+	// DefaultDatabaseEndpoint is the default database connection endpoint string.
+	DefaultDatabaseEndpoint = "postgres://localhost:5432/cardmod?sslmode=disable&user=postgres&password=postgres"
 )
 
 var (
@@ -62,10 +62,10 @@ func mustLoad() *Config {
 
 	// load: initialize new instance of config
 	cfg := &Config{
-		GRPCPort:         DEFAULT_GRPC_PORT,
-		RESTPort:         DEFAULT_REST_PORT,
-		Environment:      DEFAULT_ENVIRONMENT,
-		DatabaseEndpoint: DEFAULT_DATABASE_ENDPOINT,
+		GRPCPort:         DefaultGRPCPort,
+		RESTPort:         DefaultRESTPort,
+		Environment:      DefaultEnvironment,
+		DatabaseEndpoint: DefaultDatabaseEndpoint,
 	}
 
 	// load: extract attributes from environment variables

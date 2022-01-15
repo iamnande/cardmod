@@ -6,7 +6,7 @@ help: ## help: display make targets
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m make %-20s -> %s\n\033[0m", $$1, $$2}'
 
 # make: app info
-APP_NAME     := magic
+APP_NAME     := cardmod
 APP_WORKDIR  := $(shell pwd)
 APP_PACKAGES := $(shell go list -f '{{.Dir}}' ./...)
 APP_LOG_FMT  := `/bin/date "+%Y-%m-%d %H:%M:%S %z [$(APP_NAME)]"`
@@ -15,7 +15,7 @@ APP_LOG_FMT  := `/bin/date "+%Y-%m-%d %H:%M:%S %z [$(APP_NAME)]"`
 # Runtime Targets
 # --------------------------------------------------
 .PHONY: up
-up: ## runtime: start local environment
+up: down ## runtime: start local environment
 	@echo $(APP_LOG_FMT) "starting local environment"
 	@docker compose up --build --remove-orphans --detach
 
@@ -51,23 +51,35 @@ build-binary: build-clean ## build: build binary file
 		go build \
 		-o $(BUILD_DIR)/cardmodd -ldflags '-extldflags "-static"' \
 		cmd/cardmodd/main.go
+	@CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+		go build \
+		-o $(BUILD_DIR)/gardner -ldflags '-extldflags "-static"' \
+		cmd/gardner/*.go
 
 .PHONY: build-proto
-build-proto: ## build: generate proto files and swagger docs
-	@echo $(APP_LOG_FMT) "generating proto files and swagger docs"
+build-proto: ## build: generate proto files
+	@echo $(APP_LOG_FMT) "generating proto files"
 	@buf generate $(APP_WORKDIR)/internal/proto
+
+.PHONY: build-mocks
+build-mocks: ## build: generate mock implementations for testing
+	@echo $(APP_LOG_FMT) "generating mock implementations for testing"
+	@go generate $(APP_PACKAGES)
+
+.PHONY: build-schemas
+build-schemas: ## build: generate ent files from schemas
+	@echo $(APP_LOG_FMT) "generating ent files from schemas"
+	@ent generate $(APP_WORKDIR)/internal/database/schema
 
 # --------------------------------------------------
 # Test Targets
 # --------------------------------------------------
 COVERAGE_DIR := $(APP_WORKDIR)/coverage
-LINT_DIR     := $(COVERAGE_DIR)/lint
-UNIT_DIR     := $(COVERAGE_DIR)/unit
 
 # unit coverage
+UNIT_DIR     := $(COVERAGE_DIR)/unit
 UNIT_WEBPAGE  := $(UNIT_DIR)/index.html
-UNIT_REPORT   := $(UNIT_DIR)/report.out
-UNIT_COVERAGE := $(UNIT_DIR)/coverage.out
+UNIT_COVERAGE := $(UNIT_DIR)/coverage.txt
 
 .PHONY: test-clean
 test-clean: ## test: clean test workspace
@@ -77,17 +89,16 @@ test-clean: ## test: clean test workspace
 .PHONY: test-lint
 test-lint: ## test: check for lint failures
 	@echo $(APP_LOG_FMT) "checking for lint failures"
-	@golangci-lint run -v
+	@golangci-lint run --fix -v
 
 .PHONY: test-unit
 test-unit: ## test: execute unit test suite
 	@echo $(APP_LOG_FMT) "executing unit test suite"
 	@mkdir -p $(UNIT_DIR)
 	@go test -v \
+		-race \
 		-covermode=atomic \
 		-coverprofile=$(UNIT_COVERAGE) \
-		$(APP_PACKAGES) \
-		2>&1 > $(UNIT_REPORT) || cat $(UNIT_REPORT)
-	@cat $(UNIT_REPORT)
+		$(APP_PACKAGES)
 	@go tool cover -func=$(UNIT_COVERAGE)
 	@go tool cover -html=$(UNIT_COVERAGE) -o $(UNIT_WEBPAGE)

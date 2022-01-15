@@ -3,25 +3,43 @@ package grpc
 import (
 	"net"
 
-	"github.com/iamnande/cardmod/internal/grpc/cardapi"
-	"github.com/iamnande/cardmod/pkg/api/cardv1"
-	"go.uber.org/zap"
+	"github.com/go-logr/logr"
 	"google.golang.org/grpc"
+
+	"github.com/iamnande/cardmod/internal/daos"
+	"github.com/iamnande/cardmod/internal/grpc/calculationapi"
+	"github.com/iamnande/cardmod/internal/grpc/cardapi"
+	"github.com/iamnande/cardmod/internal/grpc/healthapi"
+	"github.com/iamnande/cardmod/internal/grpc/magicapi"
+	"github.com/iamnande/cardmod/pkg/api/calculationv1"
+	"github.com/iamnande/cardmod/pkg/api/cardv1"
+	"github.com/iamnande/cardmod/pkg/api/healthv1"
+	"github.com/iamnande/cardmod/pkg/api/magicv1"
 )
 
 // Server is the internal (gRPC) Server router.
 type Server struct {
 	version string
 	port    string
-	logger  *zap.Logger
+	logger  logr.Logger
 	server  *grpc.Server
+
+	// repositories
+	cardRepository        daos.CardDAO
+	magicRepository       daos.MagicDAO
+	calculationRepository daos.CalculationDAO
 }
 
 // ServerConfig is the server configuration.
 type ServerConfig struct {
 	Port    string
-	Logger  *zap.Logger
+	Logger  logr.Logger
 	Version string
+
+	// Repositories
+	CardRepository        daos.CardDAO
+	MagicRepository       daos.MagicDAO
+	CalculationRepository daos.CalculationDAO
 }
 
 // NewServer creates a new, pre-configured, gRPC server.
@@ -30,7 +48,13 @@ func NewServer(cfg *ServerConfig) *Server {
 	// initialize a new server instance
 	return &Server{
 		port:    cfg.Port,
+		logger:  cfg.Logger,
 		version: cfg.Version,
+
+		// repositories
+		cardRepository:        cfg.CardRepository,
+		magicRepository:       cfg.MagicRepository,
+		calculationRepository: cfg.CalculationRepository,
 	}
 
 }
@@ -39,7 +63,9 @@ func NewServer(cfg *ServerConfig) *Server {
 func (s *Server) Serve() error {
 
 	// initialize gRPC server
-	server := grpc.NewServer()
+	server := grpc.NewServer(grpc.ChainUnaryInterceptor(
+		s.LoggingInterceptor(),
+	))
 
 	// initialize listener
 	lis, err := net.Listen("tcp", s.port)
@@ -48,8 +74,17 @@ func (s *Server) Serve() error {
 	}
 
 	// add the services to the server
-	cardService := cardapi.New()
-	cardv1.RegisterCardAPIServer(server, &cardService)
+	healthAPI := healthapi.New()
+	healthv1.RegisterHealthAPIServer(server, &healthAPI)
+
+	cardAPI := cardapi.New(s.cardRepository)
+	cardv1.RegisterCardAPIServer(server, &cardAPI)
+
+	magicAPI := magicapi.New(s.magicRepository)
+	magicv1.RegisterMagicAPIServer(server, &magicAPI)
+
+	calculationAPI := calculationapi.New(s.calculationRepository, s.cardRepository)
+	calculationv1.RegisterCalculationAPIServer(server, &calculationAPI)
 
 	// start the server
 	s.server = server
