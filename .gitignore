@@ -1,0 +1,5 @@
+# binary compile location
+build/
+
+# test coverage output tree
+coverage/
