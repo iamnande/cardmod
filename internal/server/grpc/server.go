@@ -32,6 +32,7 @@ func NewServer(cfg *ServerConfig) *Server {
 	// initialize a new server instance
 	return &Server{
 		port:    cfg.Port,
+		logger:  cfg.Logger,
 		version: cfg.Version,
 	}
 

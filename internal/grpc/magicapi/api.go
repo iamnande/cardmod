@@ -13,6 +13,7 @@ type api struct {
 }
 
 // New initializes a new magic api instance.
+// TODO: implement the other rpc endpoints.
 func New() api {
 	return api{}
 }
