@@ -6,12 +6,13 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/iamnande/cardmod/pkg/api/cardv1"
-	"github.com/iamnande/cardmod/pkg/api/livezv1"
-	"github.com/iamnande/cardmod/pkg/api/magicv1"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/iamnande/cardmod/pkg/api/cardv1"
+	"github.com/iamnande/cardmod/pkg/api/livezv1"
+	"github.com/iamnande/cardmod/pkg/api/magicv1"
 )
 
 // Server is the internal REST API Server.

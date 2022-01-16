@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"github.com/google/uuid"
+
 	"github.com/iamnande/cardmod/internal/database"
 	"github.com/iamnande/cardmod/internal/domains/card"
 )

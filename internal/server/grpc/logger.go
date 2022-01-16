@@ -10,9 +10,13 @@ import (
 // TODO: clean up the log format
 // TODO: can we clean up the callers too (aka calling handler)?
 // TODO: clean up the fields
-// TODO: log errors and structures
+// TODO: log errors and structures.
 func (s *Server) LoggingInterceptor() grpc.UnaryServerInterceptor {
-	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+	return func(
+		ctx context.Context,
+		req interface{},
+		info *grpc.UnaryServerInfo,
+		handler grpc.UnaryHandler) (resp interface{}, err error) {
 
 		// log: extract request data
 		fields := make([]zap.Field, 0)

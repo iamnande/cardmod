@@ -17,7 +17,7 @@ func New() api {
 }
 
 // DescribeLivez does a simple heartbeat check on the service.
-func (api *api) DescribeLivez(ctx context.Context, request *livezv1.DescribeLivezRequest) (*livezv1.DescribeLivezResponse, error) {
+func (api *api) DescribeLivez(_ context.Context, _ *livezv1.DescribeLivezRequest) (*livezv1.DescribeLivezResponse, error) {
 	return &livezv1.DescribeLivezResponse{
 		Status: livezv1.Status_STATUS_RUNNING,
 	}, nil

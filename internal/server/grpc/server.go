@@ -3,6 +3,9 @@ package grpc
 import (
 	"net"
 
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
+
 	"github.com/iamnande/cardmod/internal/daos"
 	"github.com/iamnande/cardmod/internal/grpc/cardapi"
 	"github.com/iamnande/cardmod/internal/grpc/livezapi"
@@ -10,8 +13,6 @@ import (
 	"github.com/iamnande/cardmod/pkg/api/cardv1"
 	"github.com/iamnande/cardmod/pkg/api/livezv1"
 	"github.com/iamnande/cardmod/pkg/api/magicv1"
-	"go.uber.org/zap"
-	"google.golang.org/grpc"
 )
 
 // Server is the internal (gRPC) Server router.

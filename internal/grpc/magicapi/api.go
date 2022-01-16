@@ -4,11 +4,12 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"github.com/iamnande/cardmod/internal/daos"
 	"github.com/iamnande/cardmod/internal/domains/magic"
 	"github.com/iamnande/cardmod/pkg/api/magicv1"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 // api is the service implementation of the generate MagicAPI gRPC service.
@@ -25,7 +26,7 @@ func New(magicRepository daos.MagicDAO) api {
 }
 
 // ListMagics lists all available magic entities.
-func (api *api) ListMagics(ctx context.Context, request *magicv1.ListMagicsRequest) (*magicv1.ListMagicsResponse, error) {
+func (api *api) ListMagics(ctx context.Context, _ *magicv1.ListMagicsRequest) (*magicv1.ListMagicsResponse, error) {
 
 	// list: list the available magics
 	magics, err := api.magicRepository.ListMagics(ctx)
@@ -41,7 +42,8 @@ func (api *api) ListMagics(ctx context.Context, request *magicv1.ListMagicsReque
 }
 
 // DescribeMagic describes an existing magic entity.
-func (api *api) DescribeMagic(ctx context.Context, request *magicv1.DescribeMagicRequest) (*magicv1.DescribeMagicResponse, error) {
+func (api *api) DescribeMagic(ctx context.Context,
+	request *magicv1.DescribeMagicRequest) (*magicv1.DescribeMagicResponse, error) {
 
 	// describe: parse input uuid
 	id, err := uuid.Parse(request.GetMagicId())

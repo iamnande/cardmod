@@ -4,11 +4,12 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"github.com/iamnande/cardmod/internal/daos"
 	"github.com/iamnande/cardmod/internal/domains/card"
 	"github.com/iamnande/cardmod/pkg/api/cardv1"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 // api is the service implementation of the generate CardAPI gRPC service.
@@ -25,7 +26,7 @@ func New(cardRepository daos.CardDAO) api {
 }
 
 // ListCards lists all available card entities.
-func (api *api) ListCards(ctx context.Context, request *cardv1.ListCardsRequest) (*cardv1.ListCardsResponse, error) {
+func (api *api) ListCards(ctx context.Context, _ *cardv1.ListCardsRequest) (*cardv1.ListCardsResponse, error) {
 
 	// list: list the available cards
 	cards, err := api.cardRepository.ListCards(ctx)

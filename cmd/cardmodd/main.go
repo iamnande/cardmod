@@ -11,13 +11,14 @@ import (
 	"time"
 
 	entsql "entgo.io/ent/dialect/sql"
+	_ "github.com/jackc/pgx/v4/stdlib"
+	"go.uber.org/zap"
+
 	"github.com/iamnande/cardmod/internal/config"
 	"github.com/iamnande/cardmod/internal/database"
 	"github.com/iamnande/cardmod/internal/repositories"
 	"github.com/iamnande/cardmod/internal/server/grpc"
 	"github.com/iamnande/cardmod/internal/server/rest"
-	_ "github.com/jackc/pgx/v4/stdlib"
-	"go.uber.org/zap"
 )
 
 func main() {
@@ -74,7 +75,7 @@ func main() {
 	// api: start gRPC listener
 	go func() {
 		logger.Info("starting gRPC server")
-		if err := grpcServer.Serve(); err != nil {
+		if err = grpcServer.Serve(); err != nil {
 			logger.Sugar().Fatalw("failed to start gRPC server", "error", err)
 		}
 	}()
@@ -82,7 +83,7 @@ func main() {
 	// api: start REST listener
 	go func() {
 		logger.Info("starting REST server")
-		if err := restServer.Serve(); err != nil {
+		if err = restServer.Serve(); err != nil {
 			if !errors.Is(err, http.ErrServerClosed) {
 				logger.Sugar().Fatalw("failed to start REST server", "error", err)
 			}
@@ -93,7 +94,7 @@ func main() {
 	doneChan := make(chan os.Signal, 1)
 	signal.Notify(doneChan, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP)
 	<-doneChan
-	logger.Info("shutdown signal recieved")
+	logger.Info("shutdown signal received")
 	cancel()
 
 	// api: setup graceful gRPC server stop

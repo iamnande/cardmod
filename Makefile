@@ -77,7 +77,7 @@ test-clean: ## test: clean test workspace
 .PHONY: test-lint
 test-lint: ## test: check for lint failures
 	@echo $(APP_LOG_FMT) "checking for lint failures"
-	@golangci-lint run -v
+	@golangci-lint run --fix -v
 
 .PHONY: test-unit
 test-unit: ## test: execute unit test suite
