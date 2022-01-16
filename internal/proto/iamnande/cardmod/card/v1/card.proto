@@ -4,6 +4,8 @@ package iamnande.cardmod.card.v1;
 
 option go_package = "github.com/iamnande/cardmod/pkg/api/cardv1;cardv1";
 
+import "validate/validate.proto";
+
 // A card resource
 message Card {
 

@@ -18,25 +18,10 @@ service CardAPI {
         };
     }
 
-    // CreateCard creates a new card resource.
-    rpc CreateCard(CreateCardRequest) returns (CreateCardResponse) {
-        option (google.api.http) = {
-            post: "/v1/cards"
-            body: "*"
-        };
-    }
-
     // DescribeCard describes a single card.
     rpc DescribeCard(DescribeCardRequest) returns (DescribeCardResponse) {
         option (google.api.http) = {
             get: "/v1/cards/{card_id}"
-        };
-    }
-
-    // DeleteCard deletes a card resource.
-    rpc DeleteCard(DeleteCardRequest) returns (DeleteCardResponse) {
-        option (google.api.http) = {
-            delete: "/v1/cards/{card_id}"
         };
     }
 
@@ -51,22 +36,6 @@ message ListCardsResponse {
 
     // cards is the list of cards.
     repeated Card cards = 1;
-
-}
-
-// CreateCardRequest is the request model for CreateCard.
-message CreateCardRequest {
-
-    // name is the name of the card.
-    string name = 1;
-
-}
-
-// CreateCardResponse is the response model for CreateCard.
-message CreateCardResponse {
-
-    // card is the card entity that was created.
-    Card card = 1;
 
 }
 
@@ -85,14 +54,3 @@ message DescribeCardResponse {
     Card card = 1;
 
 }
-
-// DeleteCardRequest is the request model for DeleteCard.
-message DeleteCardRequest {
-
-    // card_id is the ID of the card to delete.
-    string card_id = 1 [(validate.rules).string.uuid = true];
-
-}
-
-// DeleteCardResponse is the response model for DeleteCard.
-message DeleteCardResponse {} // intentionally left empty

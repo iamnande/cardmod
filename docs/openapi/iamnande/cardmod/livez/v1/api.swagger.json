@@ -1,0 +1,92 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "iamnande/cardmod/livez/v1/api.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "LivezAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/livez": {
+      "get": {
+        "summary": "Check returns the status of the service",
+        "operationId": "LivezAPI_DescribeLivez",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DescribeLivezResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "LivezAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "googlerpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "livezv1Status": {
+      "type": "string",
+      "enum": [
+        "STATUS_INVALID",
+        "STATUS_NOT_RUNNING",
+        "STATUS_RUNNING"
+      ],
+      "default": "STATUS_INVALID",
+      "description": "Status is the enum of allowable statuses.\n\n - STATUS_INVALID: we fully broken\n - STATUS_NOT_RUNNING: we broken\n - STATUS_RUNNING: we are not visibly broken"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "v1DescribeLivezResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/livezv1Status",
+          "description": "status is the current status of the service."
+        }
+      },
+      "description": "DescribeLivezResponse is the response model of the heartbeat endpoint."
+    }
+  }
+}
