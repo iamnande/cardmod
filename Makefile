@@ -15,7 +15,7 @@ APP_LOG_FMT  := `/bin/date "+%Y-%m-%d %H:%M:%S %z [$(APP_NAME)]"`
 # Runtime Targets
 # --------------------------------------------------
 .PHONY: up
-up: ## runtime: start local environment
+up: build-binary ## runtime: start local environment
 	@echo $(APP_LOG_FMT) "starting local environment"
 	@docker compose up --build --remove-orphans --detach
 
@@ -51,6 +51,10 @@ build-binary: build-clean ## build: build binary file
 		go build \
 		-o $(BUILD_DIR)/cardmodd -ldflags '-extldflags "-static"' \
 		cmd/cardmodd/main.go
+	@CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+		go build \
+		-o $(BUILD_DIR)/gardner -ldflags '-extldflags "-static"' \
+		cmd/gardner/*.go
 
 .PHONY: build-proto
 build-proto: ## build: generate proto files and swagger docs
