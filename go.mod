@@ -8,7 +8,6 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v0.6.3
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/google/uuid v1.3.0
-	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.2
 	github.com/jackc/pgx/v4 v4.14.1
 	go.uber.org/zap v1.19.0

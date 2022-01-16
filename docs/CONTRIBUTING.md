@@ -167,9 +167,10 @@ $ tree -aC -I '.git' -I '.vscode' --dirsfirst -d | less -FRX
 ├── .github
 │   └── workflows
 ├── cmd
-│   └── cardmodd           # daemon program for API server(s)
+│   ├── cardmodd        # daemon program for API server(s)
+│   └── gardner         # database seed program (magics, cards, etc.)
 ├── docs
-│   └── openapi            # generated OpenAPI (v2) spec(s)
+│   └── openapi         # generated OpenAPI (v2) spec(s)
 ├── internal
 │   ├── config
 │   ├── daos
@@ -177,23 +178,17 @@ $ tree -aC -I '.git' -I '.vscode' --dirsfirst -d | less -FRX
 │   ├── domains
 │   │   ├── card
 │   │   └── magic
-│   ├── grpc               # gRPC handlers
+│   ├── grpc            # gRPC handlers
 │   ├── proto
 │   │   └── iamnande
-│   │       └── cardmod
-│   │           ├── card
-│   │           │   └── v1 # <org>/<service>/<resource>/<version>/*.proto
-│   │           ├── livez
-│   │           │   └── v1
-│   │           └── magic
-│   │               └── v1
+│   │       └── cardmod # <resource>/<version>/*.proto
 │   ├── repositories
 │   └── server
-│       ├── grpc            # gRPC server package
-│       └── rest            # REST server package
+│       ├── grpc        # gRPC server package
+│       └── rest        # REST server package
 ├── migrations
 └── pkg
-    └── api                 # generated gRPC/REST interfaces
+    └── api             # generated gRPC/REST interfaces
         ├── cardv1
         ├── livezv1
         └── magicv1

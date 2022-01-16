@@ -33,6 +33,7 @@ WORKDIR /app
 COPY --from=build /usr/local/bin/migrate /usr/local/bin
 COPY --from=build /app/migrations ./migrations/
 COPY --from=build /app/cmd/cardmodd/entrypoint.sh .
+COPY --from=build /app/build/gardner .
 COPY --from=build /app/build/cardmodd .
 
 # api: create non-root user

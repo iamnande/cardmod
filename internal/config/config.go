@@ -17,7 +17,7 @@ const (
 	DefaultEnvironment = "local"
 
 	// DefaultDatabaseEndpoint is the default database connection endpoint string.
-	DefaultDatabaseEndpoint = "postgres://postgres:5432/magic?sslmode=disable&user=postgres&password=postgres"
+	DefaultDatabaseEndpoint = "postgres://postgres:5432/cardmod?sslmode=disable&user=postgres&password=postgres"
 )
 
 var (
