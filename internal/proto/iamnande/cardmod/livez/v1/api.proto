@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package iamnande.cardmod.livez.v1;
+
+option go_package = "github.com/iamnande/cardmod/pkg/api/livezv1;livezv1";
+
+import "google/api/annotations.proto";
+
+// LivezAPI provides and heartbeat endpoint to check the service is up and running.
+service LivezAPI {
+
+  // Check returns the status of the service
+  rpc DescribeLivez(DescribeLivezRequest) returns (DescribeLivezResponse){
+    option (google.api.http) = {
+      get: "/v1/livez"
+    };
+  };
+
+}
+
+// Status is the enum of allowable statuses.
+enum Status {
+
+  // we fully broken
+  STATUS_INVALID = 0;
+  
+  // we broken
+  STATUS_NOT_RUNNING = 1;
+
+  // we are not visibly broken
+  STATUS_RUNNING = 2;
+
+}
+
+// DescribeLivezRequest is the request model of the heartbeat endpoint.
+message DescribeLivezRequest {}
+
+// DescribeLivezResponse is the response model of the heartbeat endpoint.
+message DescribeLivezResponse {
+  // status is the current status of the service.
+  Status status = 1;
+}

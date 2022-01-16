@@ -3,9 +3,12 @@ package grpc
 import (
 	"net"
 
+	"github.com/iamnande/cardmod/internal/daos"
 	"github.com/iamnande/cardmod/internal/grpc/cardapi"
+	"github.com/iamnande/cardmod/internal/grpc/livezapi"
 	"github.com/iamnande/cardmod/internal/grpc/magicapi"
 	"github.com/iamnande/cardmod/pkg/api/cardv1"
+	"github.com/iamnande/cardmod/pkg/api/livezv1"
 	"github.com/iamnande/cardmod/pkg/api/magicv1"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -17,6 +20,10 @@ type Server struct {
 	port    string
 	logger  *zap.Logger
 	server  *grpc.Server
+
+	// repositories
+	cardRepository  daos.CardDAO
+	magicRepository daos.MagicDAO
 }
 
 // ServerConfig is the server configuration.
@@ -24,6 +31,10 @@ type ServerConfig struct {
 	Port    string
 	Logger  *zap.Logger
 	Version string
+
+	// Repositories
+	CardRepository  daos.CardDAO
+	MagicRepository daos.MagicDAO
 }
 
 // NewServer creates a new, pre-configured, gRPC server.
@@ -34,6 +45,10 @@ func NewServer(cfg *ServerConfig) *Server {
 		port:    cfg.Port,
 		logger:  cfg.Logger,
 		version: cfg.Version,
+
+		// repositories
+		cardRepository:  cfg.CardRepository,
+		magicRepository: cfg.MagicRepository,
 	}
 
 }
@@ -42,7 +57,9 @@ func NewServer(cfg *ServerConfig) *Server {
 func (s *Server) Serve() error {
 
 	// initialize gRPC server
-	server := grpc.NewServer()
+	server := grpc.NewServer(grpc.ChainUnaryInterceptor(
+		s.LoggingInterceptor(),
+	))
 
 	// initialize listener
 	lis, err := net.Listen("tcp", s.port)
@@ -51,12 +68,13 @@ func (s *Server) Serve() error {
 	}
 
 	// add the services to the server
-	cardService := cardapi.New()
-	s.logger.Info("registering the CardAPI service")
+	livezService := livezapi.New()
+	livezv1.RegisterLivezAPIServer(server, &livezService)
+
+	cardService := cardapi.New(s.cardRepository)
 	cardv1.RegisterCardAPIServer(server, &cardService)
 
-	magicService := magicapi.New()
-	s.logger.Info("registering the MagicAPI service")
+	magicService := magicapi.New(s.magicRepository)
 	magicv1.RegisterMagicAPIServer(server, &magicService)
 
 	// start the server

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"net/http"
 	"os"
@@ -9,9 +10,13 @@ import (
 	"syscall"
 	"time"
 
+	entsql "entgo.io/ent/dialect/sql"
 	"github.com/iamnande/cardmod/internal/config"
+	"github.com/iamnande/cardmod/internal/database"
+	"github.com/iamnande/cardmod/internal/repositories"
 	"github.com/iamnande/cardmod/internal/server/grpc"
 	"github.com/iamnande/cardmod/internal/server/rest"
+	_ "github.com/jackc/pgx/v4/stdlib"
 	"go.uber.org/zap"
 )
 
@@ -32,11 +37,27 @@ func main() {
 		panic(err)
 	}
 
+	// api: initialize database client
+	dbConn, err := sql.Open("pgx", cfg.DatabaseEndpoint)
+	if err != nil {
+		logger.Sugar().Fatalf("failed to connect to the database: %v", err)
+	}
+	driver := entsql.OpenDB("postgres", dbConn)
+	dbClient := database.NewClient(database.Driver(driver))
+
+	// api: initialize repositories
+	cardRepository := repositories.NewCardRepository(dbClient)
+	magicRepository := repositories.NewMagicRepository(dbClient)
+
 	// api: initialize the gRPC server
 	grpcServer := grpc.NewServer(&grpc.ServerConfig{
 		Port:    cfg.GRPCPort,
 		Logger:  logger,
 		Version: "v1.0.0",
+
+		// Repositories
+		CardRepository:  cardRepository,
+		MagicRepository: magicRepository,
 	})
 
 	// api: initialize REST server

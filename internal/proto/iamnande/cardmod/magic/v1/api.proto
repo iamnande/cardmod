@@ -18,25 +18,10 @@ service MagicAPI {
         };
     }
 
-    // CreateMagic creates a new magic resource.
-    rpc CreateMagic(CreateMagicRequest) returns (CreateMagicResponse) {
-        option (google.api.http) = {
-            post: "/v1/magics"
-            body: "*"
-        };
-    }
-
     // DescribeMagic describes a single magic.
     rpc DescribeMagic(DescribeMagicRequest) returns (DescribeMagicResponse) {
         option (google.api.http) = {
             get: "/v1/magics/{magic_id}"
-        };
-    }
-
-    // DeleteMagic deletes a magic resource.
-    rpc DeleteMagic(DeleteMagicRequest) returns (DeleteMagicResponse) {
-        option (google.api.http) = {
-            delete: "/v1/magics/{magic_id}"
         };
     }
 
@@ -51,22 +36,6 @@ message ListMagicsResponse {
 
     // magics is the list of magics.
     repeated Magic magics = 1;
-
-}
-
-// CreateMagicRequest is the request model for CreateMagic.
-message CreateMagicRequest {
-
-    // name is the name of the card.
-    string name = 1;
-
-}
-
-// CreateMagicResponse is the response model for CreateMagic.
-message CreateMagicResponse {
-
-    // magic is the magice entity that was created.
-    Magic magic = 1;
 
 }
 
@@ -85,14 +54,3 @@ message DescribeMagicResponse {
     Magic magic = 1;
 
 }
-
-// DeleteMagicRequest is the request model for DeleteMagic.
-message DeleteMagicRequest {
-
-    // magic_id is the ID of the magic to delete.
-    string magic_id = 1 [(validate.rules).string.uuid = true];
-
-}
-
-// DeleteMagicResponse is the response model for DeleteMagic.
-message DeleteMagicResponse {} // intentionally left empty

@@ -6,7 +6,7 @@ help: ## help: display make targets
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m make %-20s -> %s\n\033[0m", $$1, $$2}'
 
 # make: app info
-APP_NAME     := magic
+APP_NAME     := cardmod
 APP_WORKDIR  := $(shell pwd)
 APP_PACKAGES := $(shell go list -f '{{.Dir}}' ./...)
 APP_LOG_FMT  := `/bin/date "+%Y-%m-%d %H:%M:%S %z [$(APP_NAME)]"`

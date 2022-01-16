@@ -44,7 +44,7 @@ type Config struct {
 	// DatabaseEndpoint is the database endpoint used for connection. This is
 	// currently configured to be a DSN (relational database speak for
 	// connection details).
-	DatabaseEndpoint string `env:"DATABASE_ENDPOINT"`
+	DatabaseEndpoint string `env:"DATABASE_ENDPOINT,required"`
 }
 
 // MustLoad will load the configuration from the runtime environment and
