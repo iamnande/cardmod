@@ -26,10 +26,18 @@ func New(cardRepository daos.CardDAO) api {
 }
 
 // ListCards lists all available card entities.
-func (api *api) ListCards(ctx context.Context, _ *cardv1.ListCardsRequest) (*cardv1.ListCardsResponse, error) {
+func (api *api) ListCards(ctx context.Context, request *cardv1.ListCardsRequest) (*cardv1.ListCardsResponse, error) {
+
+	// list: if a search query is passed, use it
+	query := ""
+	if request.Filter != nil {
+		if request.Filter.Query != "" {
+			query = request.Filter.Query
+		}
+	}
 
 	// list: list the available cards
-	cards, err := api.cardRepository.ListCards(ctx)
+	cards, err := api.cardRepository.ListCards(ctx, query)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to list cards: %s", err)
 	}

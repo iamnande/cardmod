@@ -28,8 +28,22 @@ service MagicAPI {
 }
 
 // ListMagicsRequest is the request model for ListMagics.
-// TODO: pagination, filtering, sorting
-message ListMagicsRequest {}
+// TODO: pagination, sorting
+message ListMagicsRequest {
+
+    // Filter is an optional search query to limit results with.
+    message Filter {
+
+        // query is the actual search query.
+        string query = 1;
+
+    }
+
+    // Filter is the optional search query to limit results with. 
+    // (ex: "Fir" will return "Fire", "Fira", and "Firaga")
+    Filter filter = 1;
+
+}
 
 // ListMagicsResponse is the response model for ListMagics.
 message ListMagicsResponse {

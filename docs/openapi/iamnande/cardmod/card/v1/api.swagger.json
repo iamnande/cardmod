@@ -34,35 +34,13 @@
             }
           }
         },
-        "tags": [
-          "CardAPI"
-        ]
-      },
-      "post": {
-        "summary": "CreateCard creates a new card resource.",
-        "operationId": "CardAPI_CreateCard",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1CreateCardResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1CreateCardRequest"
-            }
+            "name": "filter.query",
+            "description": "query is the actual search query.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -100,40 +78,20 @@
         "tags": [
           "CardAPI"
         ]
-      },
-      "delete": {
-        "summary": "DeleteCard deletes a card resource.",
-        "operationId": "CardAPI_DeleteCard",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1DeleteCardResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "cardId",
-            "description": "card_id is the ID of the card to delete.",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "CardAPI"
-        ]
       }
     }
   },
   "definitions": {
+    "ListCardsRequestFilter": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "query is the actual search query."
+        }
+      },
+      "description": "Filter is an optional search query to limit results with."
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -174,30 +132,6 @@
         }
       },
       "title": "A card resource"
-    },
-    "v1CreateCardRequest": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "name is the name of the card."
-        }
-      },
-      "description": "CreateCardRequest is the request model for CreateCard."
-    },
-    "v1CreateCardResponse": {
-      "type": "object",
-      "properties": {
-        "card": {
-          "$ref": "#/definitions/v1Card",
-          "description": "card is the card entity that was created."
-        }
-      },
-      "description": "CreateCardResponse is the response model for CreateCard."
-    },
-    "v1DeleteCardResponse": {
-      "type": "object",
-      "description": "DeleteCardResponse is the response model for DeleteCard."
     },
     "v1DescribeCardResponse": {
       "type": "object",

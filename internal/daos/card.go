@@ -12,7 +12,7 @@ import (
 type CardDAO interface {
 
 	// ListCards lists all card entities.
-	ListCards(ctx context.Context) ([]card.Card, error)
+	ListCards(ctx context.Context, search string) ([]card.Card, error)
 
 	// CreateCard creates a card entity.
 	CreateCard(ctx context.Context, name string) (card.Card, error)

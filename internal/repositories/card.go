@@ -7,6 +7,7 @@ import (
 
 	"github.com/iamnande/cardmod/internal/daos"
 	"github.com/iamnande/cardmod/internal/database"
+	dbCard "github.com/iamnande/cardmod/internal/database/card"
 	"github.com/iamnande/cardmod/internal/domains/card"
 )
 
@@ -26,10 +27,20 @@ func NewCardRepository(client *database.Client) *cardRepository {
 }
 
 // ListCards lists all available card entities.
-func (repo *cardRepository) ListCards(ctx context.Context) ([]card.Card, error) {
+func (repo *cardRepository) ListCards(ctx context.Context, search string) ([]card.Card, error) {
+
+	// list: base query
+	query := repo.client.Card.Query()
+
+	// list: if there's a search limiter, include it
+	if search != "" {
+		query = query.Where(dbCard.Or(
+			dbCard.NameContainsFold(search),
+		))
+	}
 
 	// list: list the cards
-	cards, err := repo.client.Card.Query().All(ctx)
+	cards, err := query.All(ctx)
 	if err != nil {
 		return nil, err
 	}

@@ -33,6 +33,7 @@ func main() {
 	dbClient := database.NewClient(database.Driver(driver))
 
 	// gardner: initialize repositories
+	ctx := context.TODO()
 	cardRepository := repositories.NewCardRepository(dbClient)
 	magicRepository := repositories.NewMagicRepository(dbClient)
 
@@ -40,22 +41,44 @@ func main() {
 	// TODO: handle diff/patching
 	magics := LoadMagics()
 	logger.Info("seeding magics into database")
-	for _, magic := range magics {
-		_, err = magicRepository.CreateMagic(context.TODO(), magic)
+	for _, new := range magics {
+
+		// check if it exists first
+		results, listErr := magicRepository.ListMagics(ctx, new)
 		if err != nil {
-			logger.Sugar().Fatalf("failed to create %s magic: %v", magic, err)
+			logger.Sugar().Fatalf("failed to search for %s magic: %v", new, listErr)
 		}
+
+		// if it doesn't exist, create it
+		if len(results) == 0 {
+			_, err = magicRepository.CreateMagic(ctx, new)
+			if err != nil {
+				logger.Sugar().Fatalf("failed to create %s magic: %v", new, err)
+			}
+		}
+
 	}
 
 	// gardner: fetch list of cards to create
 	// TODO: handle diff/patching
 	cards := LoadCards()
 	logger.Info("seeding cards into database")
-	for _, card := range cards {
-		_, err = cardRepository.CreateCard(context.TODO(), card)
+	for _, new := range cards {
+
+		// check if it exists first
+		results, listErr := cardRepository.ListCards(ctx, new)
 		if err != nil {
-			logger.Sugar().Fatalf("failed to create %s card: %v", card, err)
+			logger.Sugar().Fatalf("failed to search for %s card: %v", new, listErr)
 		}
+
+		// if it doesn't exist, create it
+		if len(results) == 0 {
+			_, err = cardRepository.CreateCard(ctx, new)
+			if err != nil {
+				logger.Sugar().Fatalf("failed to create %s card: %v", new, err)
+			}
+		}
+
 	}
 
 }

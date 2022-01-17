@@ -28,8 +28,22 @@ service CardAPI {
 }
 
 // ListCardsRequest is the request model for ListCards.
-// TODO: pagination, filtering, sorting
-message ListCardsRequest {}
+// TODO: pagination, sorting
+message ListCardsRequest {
+
+    // Filter is an optional search query to limit results with.
+    message Filter {
+
+        // query is the actual search query.
+        string query = 1;
+
+    }
+
+    // Filter is the optional search query to limit results with. 
+    // (ex: "Tonberry" will return "Tonberry" and "Tonberry King")
+    Filter filter = 1;
+
+}
 
 // ListCardsResponse is the response model for ListCards.
 message ListCardsResponse {

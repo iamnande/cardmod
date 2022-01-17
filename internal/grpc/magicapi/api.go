@@ -26,10 +26,18 @@ func New(magicRepository daos.MagicDAO) api {
 }
 
 // ListMagics lists all available magic entities.
-func (api *api) ListMagics(ctx context.Context, _ *magicv1.ListMagicsRequest) (*magicv1.ListMagicsResponse, error) {
+func (api *api) ListMagics(ctx context.Context, request *magicv1.ListMagicsRequest) (*magicv1.ListMagicsResponse, error) {
+
+	// list: if a search query is passed, use it
+	query := ""
+	if request.Filter != nil {
+		if request.Filter.Query != "" {
+			query = request.Filter.Query
+		}
+	}
 
 	// list: list the available magics
-	magics, err := api.magicRepository.ListMagics(ctx)
+	magics, err := api.magicRepository.ListMagics(ctx, query)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to list magics: %s", err)
 	}

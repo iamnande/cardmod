@@ -60,6 +60,35 @@ func (m *ListMagicsRequest) validate(all bool) error {
 
 	var errors []error
 
+	if all {
+		switch v := interface{}(m.GetFilter()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ListMagicsRequestValidationError{
+					field:  "Filter",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ListMagicsRequestValidationError{
+					field:  "Filter",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetFilter()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ListMagicsRequestValidationError{
+				field:  "Filter",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	if len(errors) > 0 {
 		return ListMagicsRequestMultiError(errors)
 	}
@@ -275,241 +304,6 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = ListMagicsResponseValidationError{}
-
-// Validate checks the field values on CreateMagicRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *CreateMagicRequest) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on CreateMagicRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// CreateMagicRequestMultiError, or nil if none found.
-func (m *CreateMagicRequest) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *CreateMagicRequest) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	// no validation rules for Name
-
-	if len(errors) > 0 {
-		return CreateMagicRequestMultiError(errors)
-	}
-
-	return nil
-}
-
-// CreateMagicRequestMultiError is an error wrapping multiple validation errors
-// returned by CreateMagicRequest.ValidateAll() if the designated constraints
-// aren't met.
-type CreateMagicRequestMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m CreateMagicRequestMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m CreateMagicRequestMultiError) AllErrors() []error { return m }
-
-// CreateMagicRequestValidationError is the validation error returned by
-// CreateMagicRequest.Validate if the designated constraints aren't met.
-type CreateMagicRequestValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e CreateMagicRequestValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e CreateMagicRequestValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e CreateMagicRequestValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e CreateMagicRequestValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e CreateMagicRequestValidationError) ErrorName() string {
-	return "CreateMagicRequestValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e CreateMagicRequestValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sCreateMagicRequest.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = CreateMagicRequestValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = CreateMagicRequestValidationError{}
-
-// Validate checks the field values on CreateMagicResponse with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *CreateMagicResponse) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on CreateMagicResponse with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// CreateMagicResponseMultiError, or nil if none found.
-func (m *CreateMagicResponse) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *CreateMagicResponse) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	if all {
-		switch v := interface{}(m.GetMagic()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, CreateMagicResponseValidationError{
-					field:  "Magic",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, CreateMagicResponseValidationError{
-					field:  "Magic",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetMagic()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return CreateMagicResponseValidationError{
-				field:  "Magic",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
-	if len(errors) > 0 {
-		return CreateMagicResponseMultiError(errors)
-	}
-
-	return nil
-}
-
-// CreateMagicResponseMultiError is an error wrapping multiple validation
-// errors returned by CreateMagicResponse.ValidateAll() if the designated
-// constraints aren't met.
-type CreateMagicResponseMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m CreateMagicResponseMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m CreateMagicResponseMultiError) AllErrors() []error { return m }
-
-// CreateMagicResponseValidationError is the validation error returned by
-// CreateMagicResponse.Validate if the designated constraints aren't met.
-type CreateMagicResponseValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e CreateMagicResponseValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e CreateMagicResponseValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e CreateMagicResponseValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e CreateMagicResponseValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e CreateMagicResponseValidationError) ErrorName() string {
-	return "CreateMagicResponseValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e CreateMagicResponseValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sCreateMagicResponse.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = CreateMagicResponseValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = CreateMagicResponseValidationError{}
 
 // Validate checks the field values on DescribeMagicRequest with the rules
 // defined in the proto definition for this message. If any rules are
@@ -764,164 +558,44 @@ var _ interface {
 	ErrorName() string
 } = DescribeMagicResponseValidationError{}
 
-// Validate checks the field values on DeleteMagicRequest with the rules
+// Validate checks the field values on ListMagicsRequest_Filter with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *DeleteMagicRequest) Validate() error {
+func (m *ListMagicsRequest_Filter) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on DeleteMagicRequest with the rules
-// defined in the proto definition for this message. If any rules are
+// ValidateAll checks the field values on ListMagicsRequest_Filter with the
+// rules defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// DeleteMagicRequestMultiError, or nil if none found.
-func (m *DeleteMagicRequest) ValidateAll() error {
+// ListMagicsRequest_FilterMultiError, or nil if none found.
+func (m *ListMagicsRequest_Filter) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *DeleteMagicRequest) validate(all bool) error {
+func (m *ListMagicsRequest_Filter) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
-	if err := m._validateUuid(m.GetMagicId()); err != nil {
-		err = DeleteMagicRequestValidationError{
-			field:  "MagicId",
-			reason: "value must be a valid UUID",
-			cause:  err,
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
+	// no validation rules for Query
 
 	if len(errors) > 0 {
-		return DeleteMagicRequestMultiError(errors)
+		return ListMagicsRequest_FilterMultiError(errors)
 	}
 
 	return nil
 }
 
-func (m *DeleteMagicRequest) _validateUuid(uuid string) error {
-	if matched := _api_uuidPattern.MatchString(uuid); !matched {
-		return errors.New("invalid uuid format")
-	}
-
-	return nil
-}
-
-// DeleteMagicRequestMultiError is an error wrapping multiple validation errors
-// returned by DeleteMagicRequest.ValidateAll() if the designated constraints
-// aren't met.
-type DeleteMagicRequestMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m DeleteMagicRequestMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m DeleteMagicRequestMultiError) AllErrors() []error { return m }
-
-// DeleteMagicRequestValidationError is the validation error returned by
-// DeleteMagicRequest.Validate if the designated constraints aren't met.
-type DeleteMagicRequestValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e DeleteMagicRequestValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e DeleteMagicRequestValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e DeleteMagicRequestValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e DeleteMagicRequestValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e DeleteMagicRequestValidationError) ErrorName() string {
-	return "DeleteMagicRequestValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e DeleteMagicRequestValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sDeleteMagicRequest.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = DeleteMagicRequestValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = DeleteMagicRequestValidationError{}
-
-// Validate checks the field values on DeleteMagicResponse with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *DeleteMagicResponse) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on DeleteMagicResponse with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// DeleteMagicResponseMultiError, or nil if none found.
-func (m *DeleteMagicResponse) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *DeleteMagicResponse) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	if len(errors) > 0 {
-		return DeleteMagicResponseMultiError(errors)
-	}
-
-	return nil
-}
-
-// DeleteMagicResponseMultiError is an error wrapping multiple validation
-// errors returned by DeleteMagicResponse.ValidateAll() if the designated
+// ListMagicsRequest_FilterMultiError is an error wrapping multiple validation
+// errors returned by ListMagicsRequest_Filter.ValidateAll() if the designated
 // constraints aren't met.
-type DeleteMagicResponseMultiError []error
+type ListMagicsRequest_FilterMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m DeleteMagicResponseMultiError) Error() string {
+func (m ListMagicsRequest_FilterMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -930,11 +604,11 @@ func (m DeleteMagicResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m DeleteMagicResponseMultiError) AllErrors() []error { return m }
+func (m ListMagicsRequest_FilterMultiError) AllErrors() []error { return m }
 
-// DeleteMagicResponseValidationError is the validation error returned by
-// DeleteMagicResponse.Validate if the designated constraints aren't met.
-type DeleteMagicResponseValidationError struct {
+// ListMagicsRequest_FilterValidationError is the validation error returned by
+// ListMagicsRequest_Filter.Validate if the designated constraints aren't met.
+type ListMagicsRequest_FilterValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -942,24 +616,24 @@ type DeleteMagicResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e DeleteMagicResponseValidationError) Field() string { return e.field }
+func (e ListMagicsRequest_FilterValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e DeleteMagicResponseValidationError) Reason() string { return e.reason }
+func (e ListMagicsRequest_FilterValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e DeleteMagicResponseValidationError) Cause() error { return e.cause }
+func (e ListMagicsRequest_FilterValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e DeleteMagicResponseValidationError) Key() bool { return e.key }
+func (e ListMagicsRequest_FilterValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e DeleteMagicResponseValidationError) ErrorName() string {
-	return "DeleteMagicResponseValidationError"
+func (e ListMagicsRequest_FilterValidationError) ErrorName() string {
+	return "ListMagicsRequest_FilterValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e DeleteMagicResponseValidationError) Error() string {
+func (e ListMagicsRequest_FilterValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -971,14 +645,14 @@ func (e DeleteMagicResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sDeleteMagicResponse.%s: %s%s",
+		"invalid %sListMagicsRequest_Filter.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = DeleteMagicResponseValidationError{}
+var _ error = ListMagicsRequest_FilterValidationError{}
 
 var _ interface {
 	Field() string
@@ -986,4 +660,4 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = DeleteMagicResponseValidationError{}
+} = ListMagicsRequest_FilterValidationError{}

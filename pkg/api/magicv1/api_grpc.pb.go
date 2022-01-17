@@ -24,12 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type MagicAPIClient interface {
 	// ListMagics lists all available magic resources.
 	ListMagics(ctx context.Context, in *ListMagicsRequest, opts ...grpc.CallOption) (*ListMagicsResponse, error)
-	// CreateMagic creates a new magic resource.
-	CreateMagic(ctx context.Context, in *CreateMagicRequest, opts ...grpc.CallOption) (*CreateMagicResponse, error)
 	// DescribeMagic describes a single magic.
 	DescribeMagic(ctx context.Context, in *DescribeMagicRequest, opts ...grpc.CallOption) (*DescribeMagicResponse, error)
-	// DeleteMagic deletes a magic resource.
-	DeleteMagic(ctx context.Context, in *DeleteMagicRequest, opts ...grpc.CallOption) (*DeleteMagicResponse, error)
 }
 
 type magicAPIClient struct {
@@ -49,27 +45,9 @@ func (c *magicAPIClient) ListMagics(ctx context.Context, in *ListMagicsRequest, 
 	return out, nil
 }
 
-func (c *magicAPIClient) CreateMagic(ctx context.Context, in *CreateMagicRequest, opts ...grpc.CallOption) (*CreateMagicResponse, error) {
-	out := new(CreateMagicResponse)
-	err := c.cc.Invoke(ctx, "/iamnande.cardmod.magic.v1.MagicAPI/CreateMagic", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *magicAPIClient) DescribeMagic(ctx context.Context, in *DescribeMagicRequest, opts ...grpc.CallOption) (*DescribeMagicResponse, error) {
 	out := new(DescribeMagicResponse)
 	err := c.cc.Invoke(ctx, "/iamnande.cardmod.magic.v1.MagicAPI/DescribeMagic", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *magicAPIClient) DeleteMagic(ctx context.Context, in *DeleteMagicRequest, opts ...grpc.CallOption) (*DeleteMagicResponse, error) {
-	out := new(DeleteMagicResponse)
-	err := c.cc.Invoke(ctx, "/iamnande.cardmod.magic.v1.MagicAPI/DeleteMagic", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -82,12 +60,8 @@ func (c *magicAPIClient) DeleteMagic(ctx context.Context, in *DeleteMagicRequest
 type MagicAPIServer interface {
 	// ListMagics lists all available magic resources.
 	ListMagics(context.Context, *ListMagicsRequest) (*ListMagicsResponse, error)
-	// CreateMagic creates a new magic resource.
-	CreateMagic(context.Context, *CreateMagicRequest) (*CreateMagicResponse, error)
 	// DescribeMagic describes a single magic.
 	DescribeMagic(context.Context, *DescribeMagicRequest) (*DescribeMagicResponse, error)
-	// DeleteMagic deletes a magic resource.
-	DeleteMagic(context.Context, *DeleteMagicRequest) (*DeleteMagicResponse, error)
 	mustEmbedUnimplementedMagicAPIServer()
 }
 
@@ -98,14 +72,8 @@ type UnimplementedMagicAPIServer struct {
 func (UnimplementedMagicAPIServer) ListMagics(context.Context, *ListMagicsRequest) (*ListMagicsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListMagics not implemented")
 }
-func (UnimplementedMagicAPIServer) CreateMagic(context.Context, *CreateMagicRequest) (*CreateMagicResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateMagic not implemented")
-}
 func (UnimplementedMagicAPIServer) DescribeMagic(context.Context, *DescribeMagicRequest) (*DescribeMagicResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DescribeMagic not implemented")
-}
-func (UnimplementedMagicAPIServer) DeleteMagic(context.Context, *DeleteMagicRequest) (*DeleteMagicResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteMagic not implemented")
 }
 func (UnimplementedMagicAPIServer) mustEmbedUnimplementedMagicAPIServer() {}
 
@@ -138,24 +106,6 @@ func _MagicAPI_ListMagics_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MagicAPI_CreateMagic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateMagicRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MagicAPIServer).CreateMagic(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/iamnande.cardmod.magic.v1.MagicAPI/CreateMagic",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MagicAPIServer).CreateMagic(ctx, req.(*CreateMagicRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _MagicAPI_DescribeMagic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DescribeMagicRequest)
 	if err := dec(in); err != nil {
@@ -174,24 +124,6 @@ func _MagicAPI_DescribeMagic_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MagicAPI_DeleteMagic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteMagicRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MagicAPIServer).DeleteMagic(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/iamnande.cardmod.magic.v1.MagicAPI/DeleteMagic",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MagicAPIServer).DeleteMagic(ctx, req.(*DeleteMagicRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // MagicAPI_ServiceDesc is the grpc.ServiceDesc for MagicAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -204,16 +136,8 @@ var MagicAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _MagicAPI_ListMagics_Handler,
 		},
 		{
-			MethodName: "CreateMagic",
-			Handler:    _MagicAPI_CreateMagic_Handler,
-		},
-		{
 			MethodName: "DescribeMagic",
 			Handler:    _MagicAPI_DescribeMagic_Handler,
-		},
-		{
-			MethodName: "DeleteMagic",
-			Handler:    _MagicAPI_DeleteMagic_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

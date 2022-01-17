@@ -34,35 +34,13 @@
             }
           }
         },
-        "tags": [
-          "MagicAPI"
-        ]
-      },
-      "post": {
-        "summary": "CreateMagic creates a new magic resource.",
-        "operationId": "MagicAPI_CreateMagic",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1CreateMagicResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1CreateMagicRequest"
-            }
+            "name": "filter.query",
+            "description": "query is the actual search query.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -100,40 +78,20 @@
         "tags": [
           "MagicAPI"
         ]
-      },
-      "delete": {
-        "summary": "DeleteMagic deletes a magic resource.",
-        "operationId": "MagicAPI_DeleteMagic",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1DeleteMagicResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "magicId",
-            "description": "magic_id is the ID of the magic to delete.",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "MagicAPI"
-        ]
       }
     }
   },
   "definitions": {
+    "ListMagicsRequestFilter": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "query is the actual search query."
+        }
+      },
+      "description": "Filter is an optional search query to limit results with."
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -160,30 +118,6 @@
           }
         }
       }
-    },
-    "v1CreateMagicRequest": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "name is the name of the card."
-        }
-      },
-      "description": "CreateMagicRequest is the request model for CreateMagic."
-    },
-    "v1CreateMagicResponse": {
-      "type": "object",
-      "properties": {
-        "magic": {
-          "$ref": "#/definitions/v1Magic",
-          "description": "magic is the magice entity that was created."
-        }
-      },
-      "description": "CreateMagicResponse is the response model for CreateMagic."
-    },
-    "v1DeleteMagicResponse": {
-      "type": "object",
-      "description": "DeleteMagicResponse is the response model for DeleteMagic."
     },
     "v1DescribeMagicResponse": {
       "type": "object",

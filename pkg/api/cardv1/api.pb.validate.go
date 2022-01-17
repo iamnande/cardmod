@@ -60,6 +60,35 @@ func (m *ListCardsRequest) validate(all bool) error {
 
 	var errors []error
 
+	if all {
+		switch v := interface{}(m.GetFilter()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ListCardsRequestValidationError{
+					field:  "Filter",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ListCardsRequestValidationError{
+					field:  "Filter",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetFilter()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ListCardsRequestValidationError{
+				field:  "Filter",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	if len(errors) > 0 {
 		return ListCardsRequestMultiError(errors)
 	}
@@ -273,241 +302,6 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = ListCardsResponseValidationError{}
-
-// Validate checks the field values on CreateCardRequest with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// first error encountered is returned, or nil if there are no violations.
-func (m *CreateCardRequest) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on CreateCardRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// CreateCardRequestMultiError, or nil if none found.
-func (m *CreateCardRequest) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *CreateCardRequest) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	// no validation rules for Name
-
-	if len(errors) > 0 {
-		return CreateCardRequestMultiError(errors)
-	}
-
-	return nil
-}
-
-// CreateCardRequestMultiError is an error wrapping multiple validation errors
-// returned by CreateCardRequest.ValidateAll() if the designated constraints
-// aren't met.
-type CreateCardRequestMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m CreateCardRequestMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m CreateCardRequestMultiError) AllErrors() []error { return m }
-
-// CreateCardRequestValidationError is the validation error returned by
-// CreateCardRequest.Validate if the designated constraints aren't met.
-type CreateCardRequestValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e CreateCardRequestValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e CreateCardRequestValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e CreateCardRequestValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e CreateCardRequestValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e CreateCardRequestValidationError) ErrorName() string {
-	return "CreateCardRequestValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e CreateCardRequestValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sCreateCardRequest.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = CreateCardRequestValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = CreateCardRequestValidationError{}
-
-// Validate checks the field values on CreateCardResponse with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *CreateCardResponse) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on CreateCardResponse with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// CreateCardResponseMultiError, or nil if none found.
-func (m *CreateCardResponse) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *CreateCardResponse) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	if all {
-		switch v := interface{}(m.GetCard()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, CreateCardResponseValidationError{
-					field:  "Card",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, CreateCardResponseValidationError{
-					field:  "Card",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetCard()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return CreateCardResponseValidationError{
-				field:  "Card",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
-	if len(errors) > 0 {
-		return CreateCardResponseMultiError(errors)
-	}
-
-	return nil
-}
-
-// CreateCardResponseMultiError is an error wrapping multiple validation errors
-// returned by CreateCardResponse.ValidateAll() if the designated constraints
-// aren't met.
-type CreateCardResponseMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m CreateCardResponseMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m CreateCardResponseMultiError) AllErrors() []error { return m }
-
-// CreateCardResponseValidationError is the validation error returned by
-// CreateCardResponse.Validate if the designated constraints aren't met.
-type CreateCardResponseValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e CreateCardResponseValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e CreateCardResponseValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e CreateCardResponseValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e CreateCardResponseValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e CreateCardResponseValidationError) ErrorName() string {
-	return "CreateCardResponseValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e CreateCardResponseValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sCreateCardResponse.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = CreateCardResponseValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = CreateCardResponseValidationError{}
 
 // Validate checks the field values on DescribeCardRequest with the rules
 // defined in the proto definition for this message. If any rules are
@@ -762,164 +556,44 @@ var _ interface {
 	ErrorName() string
 } = DescribeCardResponseValidationError{}
 
-// Validate checks the field values on DeleteCardRequest with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// first error encountered is returned, or nil if there are no violations.
-func (m *DeleteCardRequest) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on DeleteCardRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// DeleteCardRequestMultiError, or nil if none found.
-func (m *DeleteCardRequest) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *DeleteCardRequest) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	if err := m._validateUuid(m.GetCardId()); err != nil {
-		err = DeleteCardRequestValidationError{
-			field:  "CardId",
-			reason: "value must be a valid UUID",
-			cause:  err,
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
-	if len(errors) > 0 {
-		return DeleteCardRequestMultiError(errors)
-	}
-
-	return nil
-}
-
-func (m *DeleteCardRequest) _validateUuid(uuid string) error {
-	if matched := _api_uuidPattern.MatchString(uuid); !matched {
-		return errors.New("invalid uuid format")
-	}
-
-	return nil
-}
-
-// DeleteCardRequestMultiError is an error wrapping multiple validation errors
-// returned by DeleteCardRequest.ValidateAll() if the designated constraints
-// aren't met.
-type DeleteCardRequestMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m DeleteCardRequestMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m DeleteCardRequestMultiError) AllErrors() []error { return m }
-
-// DeleteCardRequestValidationError is the validation error returned by
-// DeleteCardRequest.Validate if the designated constraints aren't met.
-type DeleteCardRequestValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e DeleteCardRequestValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e DeleteCardRequestValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e DeleteCardRequestValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e DeleteCardRequestValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e DeleteCardRequestValidationError) ErrorName() string {
-	return "DeleteCardRequestValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e DeleteCardRequestValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sDeleteCardRequest.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = DeleteCardRequestValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = DeleteCardRequestValidationError{}
-
-// Validate checks the field values on DeleteCardResponse with the rules
+// Validate checks the field values on ListCardsRequest_Filter with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *DeleteCardResponse) Validate() error {
+func (m *ListCardsRequest_Filter) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on DeleteCardResponse with the rules
-// defined in the proto definition for this message. If any rules are
+// ValidateAll checks the field values on ListCardsRequest_Filter with the
+// rules defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// DeleteCardResponseMultiError, or nil if none found.
-func (m *DeleteCardResponse) ValidateAll() error {
+// ListCardsRequest_FilterMultiError, or nil if none found.
+func (m *ListCardsRequest_Filter) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *DeleteCardResponse) validate(all bool) error {
+func (m *ListCardsRequest_Filter) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
+	// no validation rules for Query
+
 	if len(errors) > 0 {
-		return DeleteCardResponseMultiError(errors)
+		return ListCardsRequest_FilterMultiError(errors)
 	}
 
 	return nil
 }
 
-// DeleteCardResponseMultiError is an error wrapping multiple validation errors
-// returned by DeleteCardResponse.ValidateAll() if the designated constraints
-// aren't met.
-type DeleteCardResponseMultiError []error
+// ListCardsRequest_FilterMultiError is an error wrapping multiple validation
+// errors returned by ListCardsRequest_Filter.ValidateAll() if the designated
+// constraints aren't met.
+type ListCardsRequest_FilterMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m DeleteCardResponseMultiError) Error() string {
+func (m ListCardsRequest_FilterMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -928,11 +602,11 @@ func (m DeleteCardResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m DeleteCardResponseMultiError) AllErrors() []error { return m }
+func (m ListCardsRequest_FilterMultiError) AllErrors() []error { return m }
 
-// DeleteCardResponseValidationError is the validation error returned by
-// DeleteCardResponse.Validate if the designated constraints aren't met.
-type DeleteCardResponseValidationError struct {
+// ListCardsRequest_FilterValidationError is the validation error returned by
+// ListCardsRequest_Filter.Validate if the designated constraints aren't met.
+type ListCardsRequest_FilterValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -940,24 +614,24 @@ type DeleteCardResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e DeleteCardResponseValidationError) Field() string { return e.field }
+func (e ListCardsRequest_FilterValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e DeleteCardResponseValidationError) Reason() string { return e.reason }
+func (e ListCardsRequest_FilterValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e DeleteCardResponseValidationError) Cause() error { return e.cause }
+func (e ListCardsRequest_FilterValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e DeleteCardResponseValidationError) Key() bool { return e.key }
+func (e ListCardsRequest_FilterValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e DeleteCardResponseValidationError) ErrorName() string {
-	return "DeleteCardResponseValidationError"
+func (e ListCardsRequest_FilterValidationError) ErrorName() string {
+	return "ListCardsRequest_FilterValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e DeleteCardResponseValidationError) Error() string {
+func (e ListCardsRequest_FilterValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -969,14 +643,14 @@ func (e DeleteCardResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sDeleteCardResponse.%s: %s%s",
+		"invalid %sListCardsRequest_Filter.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = DeleteCardResponseValidationError{}
+var _ error = ListCardsRequest_FilterValidationError{}
 
 var _ interface {
 	Field() string
@@ -984,4 +658,4 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = DeleteCardResponseValidationError{}
+} = ListCardsRequest_FilterValidationError{}
