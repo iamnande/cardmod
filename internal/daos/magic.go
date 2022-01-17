@@ -12,7 +12,7 @@ import (
 type MagicDAO interface {
 
 	// ListMagics lists all magic entities.
-	ListMagics(ctx context.Context) ([]magic.Magic, error)
+	ListMagics(ctx context.Context, search string) ([]magic.Magic, error)
 
 	// CreateMagic creates a magic entity.
 	CreateMagic(ctx context.Context, name string) (magic.Magic, error)

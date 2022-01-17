@@ -7,6 +7,7 @@ import (
 
 	"github.com/iamnande/cardmod/internal/daos"
 	"github.com/iamnande/cardmod/internal/database"
+	dbMagic "github.com/iamnande/cardmod/internal/database/magic"
 	"github.com/iamnande/cardmod/internal/domains/magic"
 )
 
@@ -26,10 +27,20 @@ func NewMagicRepository(client *database.Client) *magicRepository {
 }
 
 // ListMagics lists all available magic entities.
-func (repo *magicRepository) ListMagics(ctx context.Context) ([]magic.Magic, error) {
+func (repo *magicRepository) ListMagics(ctx context.Context, search string) ([]magic.Magic, error) {
+
+	// list: base query
+	query := repo.client.Magic.Query()
+
+	// list: if there's a search limiter, include it
+	if search != "" {
+		query = query.Where(dbMagic.Or(
+			dbMagic.NameContainsFold(search),
+		))
+	}
 
 	// list: list the magics
-	magics, err := repo.client.Magic.Query().All(ctx)
+	magics, err := query.All(ctx)
 	if err != nil {
 		return nil, err
 	}
