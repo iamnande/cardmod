@@ -24,8 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type CardAPIClient interface {
 	// ListCards lists all available card resources.
 	ListCards(ctx context.Context, in *ListCardsRequest, opts ...grpc.CallOption) (*ListCardsResponse, error)
-	// GetCard describes a single card.
-	GetCard(ctx context.Context, in *GetCardRequest, opts ...grpc.CallOption) (*GetCardResponse, error)
+	// GetCard gets a single card.
+	GetCard(ctx context.Context, in *GetCardRequest, opts ...grpc.CallOption) (*Card, error)
 }
 
 type cardAPIClient struct {
@@ -45,8 +45,8 @@ func (c *cardAPIClient) ListCards(ctx context.Context, in *ListCardsRequest, opt
 	return out, nil
 }
 
-func (c *cardAPIClient) GetCard(ctx context.Context, in *GetCardRequest, opts ...grpc.CallOption) (*GetCardResponse, error) {
-	out := new(GetCardResponse)
+func (c *cardAPIClient) GetCard(ctx context.Context, in *GetCardRequest, opts ...grpc.CallOption) (*Card, error) {
+	out := new(Card)
 	err := c.cc.Invoke(ctx, "/iamnande.cardmod.card.v1.CardAPI/GetCard", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -60,8 +60,8 @@ func (c *cardAPIClient) GetCard(ctx context.Context, in *GetCardRequest, opts ..
 type CardAPIServer interface {
 	// ListCards lists all available card resources.
 	ListCards(context.Context, *ListCardsRequest) (*ListCardsResponse, error)
-	// GetCard describes a single card.
-	GetCard(context.Context, *GetCardRequest) (*GetCardResponse, error)
+	// GetCard gets a single card.
+	GetCard(context.Context, *GetCardRequest) (*Card, error)
 	mustEmbedUnimplementedCardAPIServer()
 }
 
@@ -72,7 +72,7 @@ type UnimplementedCardAPIServer struct {
 func (UnimplementedCardAPIServer) ListCards(context.Context, *ListCardsRequest) (*ListCardsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCards not implemented")
 }
-func (UnimplementedCardAPIServer) GetCard(context.Context, *GetCardRequest) (*GetCardResponse, error) {
+func (UnimplementedCardAPIServer) GetCard(context.Context, *GetCardRequest) (*Card, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCard not implemented")
 }
 func (UnimplementedCardAPIServer) mustEmbedUnimplementedCardAPIServer() {}

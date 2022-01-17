@@ -50,8 +50,7 @@ func (api *api) ListMagics(ctx context.Context, request *magicv1.ListMagicsReque
 }
 
 // GetMagic gets an existing magic entity.
-func (api *api) GetMagic(ctx context.Context,
-	request *magicv1.GetMagicRequest) (*magicv1.GetMagicResponse, error) {
+func (api *api) GetMagic(ctx context.Context, request *magicv1.GetMagicRequest) (*magicv1.Magic, error) {
 
 	// get: parse input uuid
 	id, err := uuid.Parse(request.GetMagicId())
@@ -66,9 +65,7 @@ func (api *api) GetMagic(ctx context.Context,
 	}
 
 	// get: return magic to caller
-	return &magicv1.GetMagicResponse{
-		Magic: marshalMagic(magic),
-	}, nil
+	return marshalMagic(magic), nil
 
 }
 

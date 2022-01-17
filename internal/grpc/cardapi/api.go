@@ -50,7 +50,7 @@ func (api *api) ListCards(ctx context.Context, request *cardv1.ListCardsRequest)
 }
 
 // GetCard gets an existing card entity.
-func (api *api) GetCard(ctx context.Context, request *cardv1.GetCardRequest) (*cardv1.GetCardResponse, error) {
+func (api *api) GetCard(ctx context.Context, request *cardv1.GetCardRequest) (*cardv1.Card, error) {
 
 	// get: parse input uuid
 	id, err := uuid.Parse(request.GetCardId())
@@ -65,9 +65,7 @@ func (api *api) GetCard(ctx context.Context, request *cardv1.GetCardRequest) (*c
 	}
 
 	// get: return card to caller
-	return &cardv1.GetCardResponse{
-		Card: marshalCard(card),
-	}, nil
+	return marshalCard(card), nil
 
 }
 

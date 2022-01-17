@@ -24,8 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type MagicAPIClient interface {
 	// ListMagics lists all available magic resources.
 	ListMagics(ctx context.Context, in *ListMagicsRequest, opts ...grpc.CallOption) (*ListMagicsResponse, error)
-	// GetMagic describes a single magic.
-	GetMagic(ctx context.Context, in *GetMagicRequest, opts ...grpc.CallOption) (*GetMagicResponse, error)
+	// GetMagic gets a single magic.
+	GetMagic(ctx context.Context, in *GetMagicRequest, opts ...grpc.CallOption) (*Magic, error)
 }
 
 type magicAPIClient struct {
@@ -45,8 +45,8 @@ func (c *magicAPIClient) ListMagics(ctx context.Context, in *ListMagicsRequest, 
 	return out, nil
 }
 
-func (c *magicAPIClient) GetMagic(ctx context.Context, in *GetMagicRequest, opts ...grpc.CallOption) (*GetMagicResponse, error) {
-	out := new(GetMagicResponse)
+func (c *magicAPIClient) GetMagic(ctx context.Context, in *GetMagicRequest, opts ...grpc.CallOption) (*Magic, error) {
+	out := new(Magic)
 	err := c.cc.Invoke(ctx, "/iamnande.cardmod.magic.v1.MagicAPI/GetMagic", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -60,8 +60,8 @@ func (c *magicAPIClient) GetMagic(ctx context.Context, in *GetMagicRequest, opts
 type MagicAPIServer interface {
 	// ListMagics lists all available magic resources.
 	ListMagics(context.Context, *ListMagicsRequest) (*ListMagicsResponse, error)
-	// GetMagic describes a single magic.
-	GetMagic(context.Context, *GetMagicRequest) (*GetMagicResponse, error)
+	// GetMagic gets a single magic.
+	GetMagic(context.Context, *GetMagicRequest) (*Magic, error)
 	mustEmbedUnimplementedMagicAPIServer()
 }
 
@@ -72,7 +72,7 @@ type UnimplementedMagicAPIServer struct {
 func (UnimplementedMagicAPIServer) ListMagics(context.Context, *ListMagicsRequest) (*ListMagicsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListMagics not implemented")
 }
-func (UnimplementedMagicAPIServer) GetMagic(context.Context, *GetMagicRequest) (*GetMagicResponse, error) {
+func (UnimplementedMagicAPIServer) GetMagic(context.Context, *GetMagicRequest) (*Magic, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMagic not implemented")
 }
 func (UnimplementedMagicAPIServer) mustEmbedUnimplementedMagicAPIServer() {}
