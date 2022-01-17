@@ -50,13 +50,13 @@
     },
     "/v1/cards/{cardId}": {
       "get": {
-        "summary": "DescribeCard describes a single card.",
-        "operationId": "CardAPI_DescribeCard",
+        "summary": "GetCard gets a single card.",
+        "operationId": "CardAPI_GetCard",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1DescribeCardResponse"
+              "$ref": "#/definitions/v1Card"
             }
           },
           "default": {
@@ -69,7 +69,7 @@
         "parameters": [
           {
             "name": "cardId",
-            "description": "card_id is the ID of the card to describe.",
+            "description": "card_id is the ID of the card to get.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -132,16 +132,6 @@
         }
       },
       "title": "A card resource"
-    },
-    "v1DescribeCardResponse": {
-      "type": "object",
-      "properties": {
-        "card": {
-          "$ref": "#/definitions/v1Card",
-          "description": "card is the card entity that was described."
-        }
-      },
-      "description": "DescribeCardResponse is the response model for DescribeCard."
     },
     "v1ListCardsResponse": {
       "type": "object",

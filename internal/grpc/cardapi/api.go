@@ -49,25 +49,23 @@ func (api *api) ListCards(ctx context.Context, request *cardv1.ListCardsRequest)
 
 }
 
-// DescribeCard describes an existing card entity.
-func (api *api) DescribeCard(ctx context.Context, request *cardv1.DescribeCardRequest) (*cardv1.DescribeCardResponse, error) {
+// GetCard gets an existing card entity.
+func (api *api) GetCard(ctx context.Context, request *cardv1.GetCardRequest) (*cardv1.Card, error) {
 
-	// describe: parse input uuid
+	// get: parse input uuid
 	id, err := uuid.Parse(request.GetCardId())
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "invalid card id")
 	}
 
-	// describe: describe card
-	card, err := api.cardRepository.DescribeCard(ctx, id)
+	// get: get card
+	card, err := api.cardRepository.GetCard(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	// describe: return card to caller
-	return &cardv1.DescribeCardResponse{
-		Card: marshalCard(card),
-	}, nil
+	// get: return card to caller
+	return marshalCard(card), nil
 
 }
 

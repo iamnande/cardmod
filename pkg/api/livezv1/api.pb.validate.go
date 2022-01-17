@@ -35,22 +35,22 @@ var (
 	_ = sort.Sort
 )
 
-// Validate checks the field values on DescribeLivezRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *DescribeLivezRequest) Validate() error {
+// Validate checks the field values on GetLivezRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *GetLivezRequest) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on DescribeLivezRequest with the rules
+// ValidateAll checks the field values on GetLivezRequest with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// DescribeLivezRequestMultiError, or nil if none found.
-func (m *DescribeLivezRequest) ValidateAll() error {
+// GetLivezRequestMultiError, or nil if none found.
+func (m *GetLivezRequest) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *DescribeLivezRequest) validate(all bool) error {
+func (m *GetLivezRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -58,19 +58,19 @@ func (m *DescribeLivezRequest) validate(all bool) error {
 	var errors []error
 
 	if len(errors) > 0 {
-		return DescribeLivezRequestMultiError(errors)
+		return GetLivezRequestMultiError(errors)
 	}
 
 	return nil
 }
 
-// DescribeLivezRequestMultiError is an error wrapping multiple validation
-// errors returned by DescribeLivezRequest.ValidateAll() if the designated
-// constraints aren't met.
-type DescribeLivezRequestMultiError []error
+// GetLivezRequestMultiError is an error wrapping multiple validation errors
+// returned by GetLivezRequest.ValidateAll() if the designated constraints
+// aren't met.
+type GetLivezRequestMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m DescribeLivezRequestMultiError) Error() string {
+func (m GetLivezRequestMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -79,11 +79,11 @@ func (m DescribeLivezRequestMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m DescribeLivezRequestMultiError) AllErrors() []error { return m }
+func (m GetLivezRequestMultiError) AllErrors() []error { return m }
 
-// DescribeLivezRequestValidationError is the validation error returned by
-// DescribeLivezRequest.Validate if the designated constraints aren't met.
-type DescribeLivezRequestValidationError struct {
+// GetLivezRequestValidationError is the validation error returned by
+// GetLivezRequest.Validate if the designated constraints aren't met.
+type GetLivezRequestValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -91,24 +91,22 @@ type DescribeLivezRequestValidationError struct {
 }
 
 // Field function returns field value.
-func (e DescribeLivezRequestValidationError) Field() string { return e.field }
+func (e GetLivezRequestValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e DescribeLivezRequestValidationError) Reason() string { return e.reason }
+func (e GetLivezRequestValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e DescribeLivezRequestValidationError) Cause() error { return e.cause }
+func (e GetLivezRequestValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e DescribeLivezRequestValidationError) Key() bool { return e.key }
+func (e GetLivezRequestValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e DescribeLivezRequestValidationError) ErrorName() string {
-	return "DescribeLivezRequestValidationError"
-}
+func (e GetLivezRequestValidationError) ErrorName() string { return "GetLivezRequestValidationError" }
 
 // Error satisfies the builtin error interface
-func (e DescribeLivezRequestValidationError) Error() string {
+func (e GetLivezRequestValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -120,14 +118,14 @@ func (e DescribeLivezRequestValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sDescribeLivezRequest.%s: %s%s",
+		"invalid %sGetLivezRequest.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = DescribeLivezRequestValidationError{}
+var _ error = GetLivezRequestValidationError{}
 
 var _ interface {
 	Field() string
@@ -135,24 +133,24 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = DescribeLivezRequestValidationError{}
+} = GetLivezRequestValidationError{}
 
-// Validate checks the field values on DescribeLivezResponse with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *DescribeLivezResponse) Validate() error {
+// Validate checks the field values on GetLivezResponse with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *GetLivezResponse) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on DescribeLivezResponse with the rules
+// ValidateAll checks the field values on GetLivezResponse with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// DescribeLivezResponseMultiError, or nil if none found.
-func (m *DescribeLivezResponse) ValidateAll() error {
+// GetLivezResponseMultiError, or nil if none found.
+func (m *GetLivezResponse) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *DescribeLivezResponse) validate(all bool) error {
+func (m *GetLivezResponse) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -162,19 +160,19 @@ func (m *DescribeLivezResponse) validate(all bool) error {
 	// no validation rules for Status
 
 	if len(errors) > 0 {
-		return DescribeLivezResponseMultiError(errors)
+		return GetLivezResponseMultiError(errors)
 	}
 
 	return nil
 }
 
-// DescribeLivezResponseMultiError is an error wrapping multiple validation
-// errors returned by DescribeLivezResponse.ValidateAll() if the designated
-// constraints aren't met.
-type DescribeLivezResponseMultiError []error
+// GetLivezResponseMultiError is an error wrapping multiple validation errors
+// returned by GetLivezResponse.ValidateAll() if the designated constraints
+// aren't met.
+type GetLivezResponseMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m DescribeLivezResponseMultiError) Error() string {
+func (m GetLivezResponseMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -183,11 +181,11 @@ func (m DescribeLivezResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m DescribeLivezResponseMultiError) AllErrors() []error { return m }
+func (m GetLivezResponseMultiError) AllErrors() []error { return m }
 
-// DescribeLivezResponseValidationError is the validation error returned by
-// DescribeLivezResponse.Validate if the designated constraints aren't met.
-type DescribeLivezResponseValidationError struct {
+// GetLivezResponseValidationError is the validation error returned by
+// GetLivezResponse.Validate if the designated constraints aren't met.
+type GetLivezResponseValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -195,24 +193,22 @@ type DescribeLivezResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e DescribeLivezResponseValidationError) Field() string { return e.field }
+func (e GetLivezResponseValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e DescribeLivezResponseValidationError) Reason() string { return e.reason }
+func (e GetLivezResponseValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e DescribeLivezResponseValidationError) Cause() error { return e.cause }
+func (e GetLivezResponseValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e DescribeLivezResponseValidationError) Key() bool { return e.key }
+func (e GetLivezResponseValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e DescribeLivezResponseValidationError) ErrorName() string {
-	return "DescribeLivezResponseValidationError"
-}
+func (e GetLivezResponseValidationError) ErrorName() string { return "GetLivezResponseValidationError" }
 
 // Error satisfies the builtin error interface
-func (e DescribeLivezResponseValidationError) Error() string {
+func (e GetLivezResponseValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -224,14 +220,14 @@ func (e DescribeLivezResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sDescribeLivezResponse.%s: %s%s",
+		"invalid %sGetLivezResponse.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = DescribeLivezResponseValidationError{}
+var _ error = GetLivezResponseValidationError{}
 
 var _ interface {
 	Field() string
@@ -239,4 +235,4 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = DescribeLivezResponseValidationError{}
+} = GetLivezResponseValidationError{}

@@ -10,7 +10,7 @@ import "google/api/annotations.proto";
 service LivezAPI {
 
   // Check returns the status of the service
-  rpc DescribeLivez(DescribeLivezRequest) returns (DescribeLivezResponse){
+  rpc GetLivez(GetLivezRequest) returns (GetLivezResponse){
     option (google.api.http) = {
       get: "/v1/livez"
     };
@@ -32,11 +32,11 @@ enum Status {
 
 }
 
-// DescribeLivezRequest is the request model of the heartbeat endpoint.
-message DescribeLivezRequest {}
+// GetLivezRequest is the request model of the heartbeat endpoint.
+message GetLivezRequest {}
 
-// DescribeLivezResponse is the response model of the heartbeat endpoint.
-message DescribeLivezResponse {
+// GetLivezResponse is the response model of the heartbeat endpoint.
+message GetLivezResponse {
   // status is the current status of the service.
   Status status = 1;
 }

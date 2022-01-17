@@ -50,13 +50,13 @@
     },
     "/v1/magics/{magicId}": {
       "get": {
-        "summary": "DescribeMagic describes a single magic.",
-        "operationId": "MagicAPI_DescribeMagic",
+        "summary": "GetMagic gets a single magic.",
+        "operationId": "MagicAPI_GetMagic",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1DescribeMagicResponse"
+              "$ref": "#/definitions/v1Magic"
             }
           },
           "default": {
@@ -69,7 +69,7 @@
         "parameters": [
           {
             "name": "magicId",
-            "description": "magic_id is the ID of the magic to describe.",
+            "description": "magic_id is the ID of the magic to get.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -118,16 +118,6 @@
           }
         }
       }
-    },
-    "v1DescribeMagicResponse": {
-      "type": "object",
-      "properties": {
-        "magic": {
-          "$ref": "#/definitions/v1Magic",
-          "description": "magic is the magic entity that was described."
-        }
-      },
-      "description": "DescribeMagicResponse is the response model for DescribeMagic."
     },
     "v1ListMagicsResponse": {
       "type": "object",

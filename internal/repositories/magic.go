@@ -66,16 +66,16 @@ func (repo *magicRepository) CreateMagic(ctx context.Context, name string) (magi
 
 }
 
-// DescribeMagic describes a magic entity.
-func (repo *magicRepository) DescribeMagic(ctx context.Context, id uuid.UUID) (magic.Magic, error) {
+// GetMagic gets a magic entity.
+func (repo *magicRepository) GetMagic(ctx context.Context, id uuid.UUID) (magic.Magic, error) {
 
-	// describe: describes the magic
+	// get: gets the magic
 	magic, err := repo.client.Magic.Get(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	// describe: return the magic to be described
+	// get: return the magic to be retrieved
 	return &magicContainer{magic}, nil
 
 }

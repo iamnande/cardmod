@@ -31,20 +31,20 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_LivezAPI_DescribeLivez_0(ctx context.Context, marshaler runtime.Marshaler, client LivezAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DescribeLivezRequest
+func request_LivezAPI_GetLivez_0(ctx context.Context, marshaler runtime.Marshaler, client LivezAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetLivezRequest
 	var metadata runtime.ServerMetadata
 
-	msg, err := client.DescribeLivez(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetLivez(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_LivezAPI_DescribeLivez_0(ctx context.Context, marshaler runtime.Marshaler, server LivezAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DescribeLivezRequest
+func local_request_LivezAPI_GetLivez_0(ctx context.Context, marshaler runtime.Marshaler, server LivezAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetLivezRequest
 	var metadata runtime.ServerMetadata
 
-	msg, err := server.DescribeLivez(ctx, &protoReq)
+	msg, err := server.GetLivez(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -55,18 +55,18 @@ func local_request_LivezAPI_DescribeLivez_0(ctx context.Context, marshaler runti
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterLivezAPIHandlerFromEndpoint instead.
 func RegisterLivezAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server LivezAPIServer) error {
 
-	mux.Handle("GET", pattern_LivezAPI_DescribeLivez_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_LivezAPI_GetLivez_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/iamnande.cardmod.livez.v1.LivezAPI/DescribeLivez", runtime.WithHTTPPathPattern("/v1/livez"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/iamnande.cardmod.livez.v1.LivezAPI/GetLivez", runtime.WithHTTPPathPattern("/v1/livez"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_LivezAPI_DescribeLivez_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_LivezAPI_GetLivez_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -74,7 +74,7 @@ func RegisterLivezAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 			return
 		}
 
-		forward_LivezAPI_DescribeLivez_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_LivezAPI_GetLivez_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -119,23 +119,23 @@ func RegisterLivezAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *g
 // "LivezAPIClient" to call the correct interceptors.
 func RegisterLivezAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client LivezAPIClient) error {
 
-	mux.Handle("GET", pattern_LivezAPI_DescribeLivez_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_LivezAPI_GetLivez_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/iamnande.cardmod.livez.v1.LivezAPI/DescribeLivez", runtime.WithHTTPPathPattern("/v1/livez"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/iamnande.cardmod.livez.v1.LivezAPI/GetLivez", runtime.WithHTTPPathPattern("/v1/livez"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_LivezAPI_DescribeLivez_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_LivezAPI_GetLivez_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_LivezAPI_DescribeLivez_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_LivezAPI_GetLivez_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -143,9 +143,9 @@ func RegisterLivezAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 }
 
 var (
-	pattern_LivezAPI_DescribeLivez_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "livez"}, ""))
+	pattern_LivezAPI_GetLivez_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "livez"}, ""))
 )
 
 var (
-	forward_LivezAPI_DescribeLivez_0 = runtime.ForwardResponseMessage
+	forward_LivezAPI_GetLivez_0 = runtime.ForwardResponseMessage
 )
