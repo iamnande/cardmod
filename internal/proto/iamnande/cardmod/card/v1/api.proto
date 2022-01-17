@@ -19,7 +19,7 @@ service CardAPI {
     }
 
     // GetCard gets a single card.
-    rpc GetCard(GetCardRequest) returns (GetCardResponse) {
+    rpc GetCard(GetCardRequest) returns (Card) {
         option (google.api.http) = {
             get: "/v1/cards/{card_id}"
         };
@@ -58,13 +58,5 @@ message GetCardRequest {
 
     // card_id is the ID of the card to get.
     string card_id = 1 [(validate.rules).string.uuid = true];
-
-}
-
-// GetCardResponse is the response model for GetCard.
-message GetCardResponse {
-
-    // card is the card entity that was retrieved.
-    Card card = 1;
 
 }
