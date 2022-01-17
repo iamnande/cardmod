@@ -19,12 +19,12 @@
     "/v1/livez": {
       "get": {
         "summary": "Check returns the status of the service",
-        "operationId": "LivezAPI_DescribeLivez",
+        "operationId": "LivezAPI_GetLivez",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1DescribeLivezResponse"
+              "$ref": "#/definitions/v1GetLivezResponse"
             }
           },
           "default": {
@@ -78,7 +78,7 @@
       },
       "additionalProperties": {}
     },
-    "v1DescribeLivezResponse": {
+    "v1GetLivezResponse": {
       "type": "object",
       "properties": {
         "status": {
@@ -86,7 +86,7 @@
           "description": "status is the current status of the service."
         }
       },
-      "description": "DescribeLivezResponse is the response model of the heartbeat endpoint."
+      "description": "GetLivezResponse is the response model of the heartbeat endpoint."
     }
   }
 }

@@ -18,8 +18,8 @@ service CardAPI {
         };
     }
 
-    // DescribeCard describes a single card.
-    rpc DescribeCard(DescribeCardRequest) returns (DescribeCardResponse) {
+    // GetCard gets a single card.
+    rpc GetCard(GetCardRequest) returns (GetCardResponse) {
         option (google.api.http) = {
             get: "/v1/cards/{card_id}"
         };
@@ -53,18 +53,18 @@ message ListCardsResponse {
 
 }
 
-// DescribeCardRequest is the request model for DescribeCard.
-message DescribeCardRequest {
+// GetCardRequest is the request model for GetCard.
+message GetCardRequest {
 
-    // card_id is the ID of the card to describe.
+    // card_id is the ID of the card to get.
     string card_id = 1 [(validate.rules).string.uuid = true];
 
 }
 
-// DescribeCardResponse is the response model for DescribeCard.
-message DescribeCardResponse {
+// GetCardResponse is the response model for GetCard.
+message GetCardResponse {
 
-    // card is the card entity that was described.
+    // card is the card entity that was retrieved.
     Card card = 1;
 
 }

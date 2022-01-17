@@ -24,8 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type MagicAPIClient interface {
 	// ListMagics lists all available magic resources.
 	ListMagics(ctx context.Context, in *ListMagicsRequest, opts ...grpc.CallOption) (*ListMagicsResponse, error)
-	// DescribeMagic describes a single magic.
-	DescribeMagic(ctx context.Context, in *DescribeMagicRequest, opts ...grpc.CallOption) (*DescribeMagicResponse, error)
+	// GetMagic describes a single magic.
+	GetMagic(ctx context.Context, in *GetMagicRequest, opts ...grpc.CallOption) (*GetMagicResponse, error)
 }
 
 type magicAPIClient struct {
@@ -45,9 +45,9 @@ func (c *magicAPIClient) ListMagics(ctx context.Context, in *ListMagicsRequest, 
 	return out, nil
 }
 
-func (c *magicAPIClient) DescribeMagic(ctx context.Context, in *DescribeMagicRequest, opts ...grpc.CallOption) (*DescribeMagicResponse, error) {
-	out := new(DescribeMagicResponse)
-	err := c.cc.Invoke(ctx, "/iamnande.cardmod.magic.v1.MagicAPI/DescribeMagic", in, out, opts...)
+func (c *magicAPIClient) GetMagic(ctx context.Context, in *GetMagicRequest, opts ...grpc.CallOption) (*GetMagicResponse, error) {
+	out := new(GetMagicResponse)
+	err := c.cc.Invoke(ctx, "/iamnande.cardmod.magic.v1.MagicAPI/GetMagic", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -60,8 +60,8 @@ func (c *magicAPIClient) DescribeMagic(ctx context.Context, in *DescribeMagicReq
 type MagicAPIServer interface {
 	// ListMagics lists all available magic resources.
 	ListMagics(context.Context, *ListMagicsRequest) (*ListMagicsResponse, error)
-	// DescribeMagic describes a single magic.
-	DescribeMagic(context.Context, *DescribeMagicRequest) (*DescribeMagicResponse, error)
+	// GetMagic describes a single magic.
+	GetMagic(context.Context, *GetMagicRequest) (*GetMagicResponse, error)
 	mustEmbedUnimplementedMagicAPIServer()
 }
 
@@ -72,8 +72,8 @@ type UnimplementedMagicAPIServer struct {
 func (UnimplementedMagicAPIServer) ListMagics(context.Context, *ListMagicsRequest) (*ListMagicsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListMagics not implemented")
 }
-func (UnimplementedMagicAPIServer) DescribeMagic(context.Context, *DescribeMagicRequest) (*DescribeMagicResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DescribeMagic not implemented")
+func (UnimplementedMagicAPIServer) GetMagic(context.Context, *GetMagicRequest) (*GetMagicResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMagic not implemented")
 }
 func (UnimplementedMagicAPIServer) mustEmbedUnimplementedMagicAPIServer() {}
 
@@ -106,20 +106,20 @@ func _MagicAPI_ListMagics_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MagicAPI_DescribeMagic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DescribeMagicRequest)
+func _MagicAPI_GetMagic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMagicRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MagicAPIServer).DescribeMagic(ctx, in)
+		return srv.(MagicAPIServer).GetMagic(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/iamnande.cardmod.magic.v1.MagicAPI/DescribeMagic",
+		FullMethod: "/iamnande.cardmod.magic.v1.MagicAPI/GetMagic",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MagicAPIServer).DescribeMagic(ctx, req.(*DescribeMagicRequest))
+		return srv.(MagicAPIServer).GetMagic(ctx, req.(*GetMagicRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -136,8 +136,8 @@ var MagicAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _MagicAPI_ListMagics_Handler,
 		},
 		{
-			MethodName: "DescribeMagic",
-			Handler:    _MagicAPI_DescribeMagic_Handler,
+			MethodName: "GetMagic",
+			Handler:    _MagicAPI_GetMagic_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

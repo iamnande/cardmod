@@ -66,16 +66,16 @@ func (repo *cardRepository) CreateCard(ctx context.Context, name string) (card.C
 
 }
 
-// DescribeCard describes a card entity.
-func (repo *cardRepository) DescribeCard(ctx context.Context, id uuid.UUID) (card.Card, error) {
+// GetCard gets a card entity.
+func (repo *cardRepository) GetCard(ctx context.Context, id uuid.UUID) (card.Card, error) {
 
-	// describe: describes the card
+	// get: gets the card
 	card, err := repo.client.Card.Get(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	// describe: return the card to be described
+	// get: return the card to be retrieved
 	return &cardContainer{card}, nil
 
 }

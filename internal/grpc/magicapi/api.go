@@ -49,24 +49,24 @@ func (api *api) ListMagics(ctx context.Context, request *magicv1.ListMagicsReque
 
 }
 
-// DescribeMagic describes an existing magic entity.
-func (api *api) DescribeMagic(ctx context.Context,
-	request *magicv1.DescribeMagicRequest) (*magicv1.DescribeMagicResponse, error) {
+// GetMagic gets an existing magic entity.
+func (api *api) GetMagic(ctx context.Context,
+	request *magicv1.GetMagicRequest) (*magicv1.GetMagicResponse, error) {
 
-	// describe: parse input uuid
+	// get: parse input uuid
 	id, err := uuid.Parse(request.GetMagicId())
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "invalid magic id")
 	}
 
-	// describe: describe magic
-	magic, err := api.magicRepository.DescribeMagic(ctx, id)
+	// get: get magic
+	magic, err := api.magicRepository.GetMagic(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	// describe: return magic to caller
-	return &magicv1.DescribeMagicResponse{
+	// get: return magic to caller
+	return &magicv1.GetMagicResponse{
 		Magic: marshalMagic(magic),
 	}, nil
 

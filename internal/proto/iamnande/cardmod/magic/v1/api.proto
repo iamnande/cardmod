@@ -18,8 +18,8 @@ service MagicAPI {
         };
     }
 
-    // DescribeMagic describes a single magic.
-    rpc DescribeMagic(DescribeMagicRequest) returns (DescribeMagicResponse) {
+    // GetMagic gets a single magic.
+    rpc GetMagic(GetMagicRequest) returns (GetMagicResponse) {
         option (google.api.http) = {
             get: "/v1/magics/{magic_id}"
         };
@@ -53,18 +53,18 @@ message ListMagicsResponse {
 
 }
 
-// DescribeMagicRequest is the request model for DescribeMagic.
-message DescribeMagicRequest {
+// GetMagicRequest is the request model for GetMagic.
+message GetMagicRequest {
 
-    // magic_id is the ID of the magic to describe.
+    // magic_id is the ID of the magic to get.
     string magic_id = 1 [(validate.rules).string.uuid = true];
 
 }
 
-// DescribeMagicResponse is the response model for DescribeMagic.
-message DescribeMagicResponse {
+// GetMagicResponse is the response model for GetMagic.
+message GetMagicResponse {
 
-    // magic is the magic entity that was described.
+    // magic is the magic entity that was retrieved.
     Magic magic = 1;
 
 }

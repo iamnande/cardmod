@@ -67,8 +67,8 @@ func local_request_CardAPI_ListCards_0(ctx context.Context, marshaler runtime.Ma
 
 }
 
-func request_CardAPI_DescribeCard_0(ctx context.Context, marshaler runtime.Marshaler, client CardAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DescribeCardRequest
+func request_CardAPI_GetCard_0(ctx context.Context, marshaler runtime.Marshaler, client CardAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetCardRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -88,13 +88,13 @@ func request_CardAPI_DescribeCard_0(ctx context.Context, marshaler runtime.Marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "card_id", err)
 	}
 
-	msg, err := client.DescribeCard(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetCard(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_CardAPI_DescribeCard_0(ctx context.Context, marshaler runtime.Marshaler, server CardAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DescribeCardRequest
+func local_request_CardAPI_GetCard_0(ctx context.Context, marshaler runtime.Marshaler, server CardAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetCardRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -114,7 +114,7 @@ func local_request_CardAPI_DescribeCard_0(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "card_id", err)
 	}
 
-	msg, err := server.DescribeCard(ctx, &protoReq)
+	msg, err := server.GetCard(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -148,18 +148,18 @@ func RegisterCardAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 
 	})
 
-	mux.Handle("GET", pattern_CardAPI_DescribeCard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_CardAPI_GetCard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/iamnande.cardmod.card.v1.CardAPI/DescribeCard", runtime.WithHTTPPathPattern("/v1/cards/{card_id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/iamnande.cardmod.card.v1.CardAPI/GetCard", runtime.WithHTTPPathPattern("/v1/cards/{card_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CardAPI_DescribeCard_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CardAPI_GetCard_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -167,7 +167,7 @@ func RegisterCardAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 			return
 		}
 
-		forward_CardAPI_DescribeCard_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_CardAPI_GetCard_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -232,23 +232,23 @@ func RegisterCardAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 
 	})
 
-	mux.Handle("GET", pattern_CardAPI_DescribeCard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_CardAPI_GetCard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/iamnande.cardmod.card.v1.CardAPI/DescribeCard", runtime.WithHTTPPathPattern("/v1/cards/{card_id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/iamnande.cardmod.card.v1.CardAPI/GetCard", runtime.WithHTTPPathPattern("/v1/cards/{card_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CardAPI_DescribeCard_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CardAPI_GetCard_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_CardAPI_DescribeCard_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_CardAPI_GetCard_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -258,11 +258,11 @@ func RegisterCardAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 var (
 	pattern_CardAPI_ListCards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "cards"}, ""))
 
-	pattern_CardAPI_DescribeCard_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "cards", "card_id"}, ""))
+	pattern_CardAPI_GetCard_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "cards", "card_id"}, ""))
 )
 
 var (
 	forward_CardAPI_ListCards_0 = runtime.ForwardResponseMessage
 
-	forward_CardAPI_DescribeCard_0 = runtime.ForwardResponseMessage
+	forward_CardAPI_GetCard_0 = runtime.ForwardResponseMessage
 )

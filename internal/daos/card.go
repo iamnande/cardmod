@@ -17,8 +17,8 @@ type CardDAO interface {
 	// CreateCard creates a card entity.
 	CreateCard(ctx context.Context, name string) (card.Card, error)
 
-	// DescribeCard describes a card entity.
-	DescribeCard(ctx context.Context, id uuid.UUID) (card.Card, error)
+	// GetCard gets a card entity.
+	GetCard(ctx context.Context, id uuid.UUID) (card.Card, error)
 
 	// DeleteCard deletes a card entity.
 	DeleteCard(ctx context.Context, id uuid.UUID) error

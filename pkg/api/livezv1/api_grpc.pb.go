@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LivezAPIClient interface {
 	// Check returns the status of the service
-	DescribeLivez(ctx context.Context, in *DescribeLivezRequest, opts ...grpc.CallOption) (*DescribeLivezResponse, error)
+	GetLivez(ctx context.Context, in *GetLivezRequest, opts ...grpc.CallOption) (*GetLivezResponse, error)
 }
 
 type livezAPIClient struct {
@@ -34,9 +34,9 @@ func NewLivezAPIClient(cc grpc.ClientConnInterface) LivezAPIClient {
 	return &livezAPIClient{cc}
 }
 
-func (c *livezAPIClient) DescribeLivez(ctx context.Context, in *DescribeLivezRequest, opts ...grpc.CallOption) (*DescribeLivezResponse, error) {
-	out := new(DescribeLivezResponse)
-	err := c.cc.Invoke(ctx, "/iamnande.cardmod.livez.v1.LivezAPI/DescribeLivez", in, out, opts...)
+func (c *livezAPIClient) GetLivez(ctx context.Context, in *GetLivezRequest, opts ...grpc.CallOption) (*GetLivezResponse, error) {
+	out := new(GetLivezResponse)
+	err := c.cc.Invoke(ctx, "/iamnande.cardmod.livez.v1.LivezAPI/GetLivez", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (c *livezAPIClient) DescribeLivez(ctx context.Context, in *DescribeLivezReq
 // for forward compatibility
 type LivezAPIServer interface {
 	// Check returns the status of the service
-	DescribeLivez(context.Context, *DescribeLivezRequest) (*DescribeLivezResponse, error)
+	GetLivez(context.Context, *GetLivezRequest) (*GetLivezResponse, error)
 	mustEmbedUnimplementedLivezAPIServer()
 }
 
@@ -56,8 +56,8 @@ type LivezAPIServer interface {
 type UnimplementedLivezAPIServer struct {
 }
 
-func (UnimplementedLivezAPIServer) DescribeLivez(context.Context, *DescribeLivezRequest) (*DescribeLivezResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DescribeLivez not implemented")
+func (UnimplementedLivezAPIServer) GetLivez(context.Context, *GetLivezRequest) (*GetLivezResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLivez not implemented")
 }
 func (UnimplementedLivezAPIServer) mustEmbedUnimplementedLivezAPIServer() {}
 
@@ -72,20 +72,20 @@ func RegisterLivezAPIServer(s grpc.ServiceRegistrar, srv LivezAPIServer) {
 	s.RegisterService(&LivezAPI_ServiceDesc, srv)
 }
 
-func _LivezAPI_DescribeLivez_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DescribeLivezRequest)
+func _LivezAPI_GetLivez_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLivezRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LivezAPIServer).DescribeLivez(ctx, in)
+		return srv.(LivezAPIServer).GetLivez(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/iamnande.cardmod.livez.v1.LivezAPI/DescribeLivez",
+		FullMethod: "/iamnande.cardmod.livez.v1.LivezAPI/GetLivez",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LivezAPIServer).DescribeLivez(ctx, req.(*DescribeLivezRequest))
+		return srv.(LivezAPIServer).GetLivez(ctx, req.(*GetLivezRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -98,8 +98,8 @@ var LivezAPI_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*LivezAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "DescribeLivez",
-			Handler:    _LivezAPI_DescribeLivez_Handler,
+			MethodName: "GetLivez",
+			Handler:    _LivezAPI_GetLivez_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
