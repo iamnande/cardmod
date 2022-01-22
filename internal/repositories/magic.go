@@ -12,6 +12,7 @@ import (
 )
 
 // magicRepository is a repository layer for accessing magic entities in the data layer.
+//go:generate mockgen -source ../daos/magic.go -destination=mocks/magic.go -package mocks github.com/iamnande/cardmod/internal/daos MagicDAO
 type magicRepository struct {
 	client *database.Client
 }

@@ -100,12 +100,13 @@ $ make
  make build-clean          -> build: clean build workspace
  make build-binary         -> build: build binary file
  make build-proto          -> build: generate proto files and swagger docs
+ make build-mocks          -> build: generate mock implementations for testing
  make test-clean           -> test: clean test workspace
  make test-lint            -> test: check for lint failures
  make test-unit            -> test: execute unit test suite
 ```
 
-As you can see the commands are put into categories such as `runtime`, for local runtime start/stop operations, `build` for compiling new proto files or a distribution binary, and `test` for linting and test suites.
+As you can see the commands are put into categories such as `runtime` (without a target prefix), for local runtime start/stop operations, `build` for compiling new proto files or a distribution binary, and `test` for linting and test suites.
 
 ### ✨ Resolving Protobuf Imports
 

@@ -61,6 +61,11 @@ build-proto: ## build: generate proto files and swagger docs
 	@echo $(APP_LOG_FMT) "generating proto files and swagger docs"
 	@buf generate $(APP_WORKDIR)/internal/proto
 
+.PHONY: build-mocks
+build-mocks: ## build: generate mock implementations for testing
+	@echo $(APP_LOG_FMT) "generating mock implementations for testing"
+	@go generate $(APP_WORKDIR)/internal/repositories
+
 # --------------------------------------------------
 # Test Targets
 # --------------------------------------------------
