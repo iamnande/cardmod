@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package iamnande.cardmod.card.v1;
 
-option go_package = "github.com/iamnande/cardmod/pkg/api/cardv1;cardv1";
-
 import "validate/validate.proto";
 import "google/api/annotations.proto";
 import "iamnande/cardmod/card/v1/card.proto";
 
-// Card Service
+option go_package = "github.com/iamnande/cardmod/pkg/api/cardv1;cardv1";
+
+// Card API Service.
 service CardAPI {
 
     // ListCards lists all available card resources.

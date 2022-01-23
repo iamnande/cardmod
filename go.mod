@@ -6,7 +6,6 @@ require (
 	entgo.io/ent v0.10.0
 	github.com/caarlos0/env/v6 v6.9.1
 	github.com/envoyproxy/protoc-gen-validate v0.6.3
-	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-logr/logr v1.2.2
 	github.com/go-logr/zerologr v1.2.1
 	github.com/golang/mock v1.6.0

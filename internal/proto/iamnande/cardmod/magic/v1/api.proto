@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package iamnande.cardmod.magic.v1;
 
-option go_package = "github.com/iamnande/cardmod/pkg/api/magicv1;magicv1";
-
 import "validate/validate.proto";
 import "google/api/annotations.proto";
 import "iamnande/cardmod/magic/v1/magic.proto";
 
-// Magic Service
+option go_package = "github.com/iamnande/cardmod/pkg/api/magicv1;magicv1";
+
+// Magic API Service.
 service MagicAPI {
 
     // ListMagics lists all available magic resources.
