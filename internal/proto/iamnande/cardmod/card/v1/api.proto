@@ -3,7 +3,6 @@ syntax = "proto3";
 package iamnande.cardmod.card.v1;
 
 import "validate/validate.proto";
-import "google/api/annotations.proto";
 import "iamnande/cardmod/card/v1/card.proto";
 
 option go_package = "github.com/iamnande/cardmod/pkg/api/cardv1;cardv1";
@@ -12,18 +11,10 @@ option go_package = "github.com/iamnande/cardmod/pkg/api/cardv1;cardv1";
 service CardAPI {
 
     // ListCards lists all available card resources.
-    rpc ListCards(ListCardsRequest) returns (ListCardsResponse) {
-        option (google.api.http) = {
-            get: "/v1/cards"
-        };
-    }
+    rpc ListCards(ListCardsRequest) returns (ListCardsResponse);
 
     // GetCard gets a single card.
-    rpc GetCard(GetCardRequest) returns (Card) {
-        option (google.api.http) = {
-            get: "/v1/cards/{card_id}"
-        };
-    }
+    rpc GetCard(GetCardRequest) returns (Card);
 
 }
 

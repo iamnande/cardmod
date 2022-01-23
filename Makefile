@@ -57,8 +57,8 @@ build-binary: build-clean ## build: build binary file
 		cmd/gardner/*.go
 
 .PHONY: build-proto
-build-proto: ## build: generate proto files and swagger docs
-	@echo $(APP_LOG_FMT) "generating proto files and swagger docs"
+build-proto: ## build: generate proto files
+	@echo $(APP_LOG_FMT) "generating proto files"
 	@buf generate $(APP_WORKDIR)/internal/proto
 
 .PHONY: build-mocks

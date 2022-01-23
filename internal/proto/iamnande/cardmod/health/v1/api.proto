@@ -2,19 +2,13 @@ syntax = "proto3";
 
 package iamnande.cardmod.health.v1;
 
-import "google/api/annotations.proto";
-
 option go_package = "github.com/iamnande/cardmod/pkg/api/healthv1;healthv1";
 
 // HealthAPI provides and heartbeat endpoint to check the service is up and running.
 service HealthAPI {
 
   // Check returns the status of the service
-  rpc Check(HealthCheckRequest) returns (HealthCheckResponse){
-    option (google.api.http) = {
-      get: "/v1/health"
-    };
-  };
+  rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
 
 }
 
