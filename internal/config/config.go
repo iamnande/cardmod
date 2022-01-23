@@ -10,14 +10,11 @@ const (
 	// DefaultGRPCPort is the default port listener for the gRPC server.
 	DefaultGRPCPort = ":9000"
 
-	// DefaultRESTPort is the default port listener for the REST server.
-	DefaultRESTPort = ":8000"
-
 	// DefaultEnvironment is the default environment name.
 	DefaultEnvironment = "local"
 
 	// DefaultDatabaseEndpoint is the default database connection endpoint string.
-	DefaultDatabaseEndpoint = "postgres://postgres:5432/cardmod?sslmode=disable&user=postgres&password=postgres"
+	DefaultDatabaseEndpoint = "postgres://localhost:5432/cardmod?sslmode=disable&user=postgres&password=postgres"
 )
 
 var (
@@ -35,16 +32,13 @@ type Config struct {
 	// GRPCPort is the port the gRPC server will listen on.
 	GRPCPort string `env:"GRPC_PORT"`
 
-	// RESTPort is the port the REST server will listen on.
-	RESTPort string `env:"REST_PORT"`
-
 	// Environment is the name of the environment where the service is running.
 	Environment string `env:"ENVIRONMENT"`
 
 	// DatabaseEndpoint is the database endpoint used for connection. This is
 	// currently configured to be a DSN (relational database speak for
 	// connection details).
-	DatabaseEndpoint string `env:"DATABASE_ENDPOINT,required"`
+	DatabaseEndpoint string `env:"DATABASE_ENDPOINT"`
 }
 
 // MustLoad will load the configuration from the runtime environment and
@@ -63,7 +57,6 @@ func mustLoad() *Config {
 	// load: initialize new instance of config
 	cfg := &Config{
 		GRPCPort:         DefaultGRPCPort,
-		RESTPort:         DefaultRESTPort,
 		Environment:      DefaultEnvironment,
 		DatabaseEndpoint: DefaultDatabaseEndpoint,
 	}

@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"database/sql"
-	"errors"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -18,7 +16,6 @@ import (
 	"github.com/iamnande/cardmod/internal/logger"
 	"github.com/iamnande/cardmod/internal/repositories"
 	"github.com/iamnande/cardmod/internal/server/grpc"
-	"github.com/iamnande/cardmod/internal/server/rest"
 )
 
 var (
@@ -31,10 +28,6 @@ var (
 )
 
 func main() {
-
-	// api: initialize root context
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 
 	// api: initialize application config
 	cfg := config.MustLoad()
@@ -58,25 +51,13 @@ func main() {
 	// api: initialize the gRPC server
 	grpcServer := grpc.NewServer(&grpc.ServerConfig{
 		Logger:  log,
-		Version: "v1.0.0",
 		Port:    cfg.GRPCPort,
+		Version: ServiceVersion,
 
 		// Repositories
 		CardRepository:  cardRepository,
 		MagicRepository: magicRepository,
 	})
-
-	// api: initialize REST server
-	restServer, err := rest.NewServer(&rest.ServerConfig{
-		Context:      ctx,
-		Logger:       log,
-		GRPCEndpoint: cfg.GRPCPort,
-		RESTEndpoint: cfg.RESTPort,
-	})
-	if err != nil {
-		log.Error(err, "failed to initialize REST server instance")
-		os.Exit(1)
-	}
 
 	// api: start gRPC listener
 	go func() {
@@ -87,52 +68,25 @@ func main() {
 		}
 	}()
 
-	// api: start REST listener
-	go func() {
-		log.Info("starting REST server")
-		if err = restServer.Serve(); err != nil {
-			if !errors.Is(err, http.ErrServerClosed) {
-				log.Error(err, "failed to start REST server")
-				os.Exit(1)
-			}
-		}
-	}()
-
 	// api: support SIG* signals to handle gracefully stopping gRPC and REST servers
 	doneChan := make(chan os.Signal, 1)
 	signal.Notify(doneChan, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP)
 	<-doneChan
 	log.Info("shutdown signal received")
-	cancel()
 
 	// api: setup graceful gRPC server stop
-	grpcStop := stopServer(func(ctx context.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	go func() {
 		log.Info("stopping gRPC server")
 		grpcServer.Stop()
-	})
+		cancel()
+	}()
 
-	// api: setup graceful REST server stop
-	restStop := stopServer(func(ctx context.Context) {
-		log.Info("stopping REST server")
-		if err = restServer.Stop(ctx); err != nil {
-			log.Error(err, "failed to stop REST server")
-		}
-	})
-
-	// api: gracefully stop all the things
-	<-grpcStop.Done()
-	<-restStop.Done()
+	// api: wait to gracefully stop all the things
+	<-ctx.Done()
 
 	// api: we've completely closed everything, goodbye
 	log.Info("goodbye, neo.")
 
-}
-
-func stopServer(stopHandler func(context.Context)) context.Context {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	go func() {
-		stopHandler(ctx)
-		cancel()
-	}()
-	return ctx
 }
