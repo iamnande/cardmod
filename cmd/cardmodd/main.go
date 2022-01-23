@@ -12,13 +12,22 @@ import (
 
 	entsql "entgo.io/ent/dialect/sql"
 	_ "github.com/jackc/pgx/v4/stdlib"
-	"go.uber.org/zap"
 
 	"github.com/iamnande/cardmod/internal/config"
 	"github.com/iamnande/cardmod/internal/database"
+	"github.com/iamnande/cardmod/internal/logger"
 	"github.com/iamnande/cardmod/internal/repositories"
 	"github.com/iamnande/cardmod/internal/server/grpc"
 	"github.com/iamnande/cardmod/internal/server/rest"
+)
+
+var (
+	// ServiceName is the name of the service.
+	ServiceName = "cardmod"
+
+	// ServiceVersion is the version of the service being deployed.
+	// note: this should be overwritten by the linker, using ldflags, during the compilation process.
+	ServiceVersion = "v1.0.0-dev"
 )
 
 func main() {
@@ -31,17 +40,13 @@ func main() {
 	cfg := config.MustLoad()
 
 	// api: initialize logger
-	// TODO: test out zapcore and see what value it brings
-	// TODO: wrap zap to hide the sugaring, we don't like sugar exposed
-	logger, err := zap.NewProduction()
-	if err != nil {
-		panic(err)
-	}
+	log := logger.NewLogger(ServiceName, ServiceVersion)
 
 	// api: initialize database client
 	dbConn, err := sql.Open("pgx", cfg.DatabaseEndpoint)
 	if err != nil {
-		logger.Sugar().Fatalf("failed to connect to the database: %v", err)
+		log.Error(err, "failed to connect to the database")
+		os.Exit(1)
 	}
 	driver := entsql.OpenDB("postgres", dbConn)
 	dbClient := database.NewClient(database.Driver(driver))
@@ -52,9 +57,9 @@ func main() {
 
 	// api: initialize the gRPC server
 	grpcServer := grpc.NewServer(&grpc.ServerConfig{
-		Port:    cfg.GRPCPort,
-		Logger:  logger,
+		Logger:  log,
 		Version: "v1.0.0",
+		Port:    cfg.GRPCPort,
 
 		// Repositories
 		CardRepository:  cardRepository,
@@ -64,28 +69,31 @@ func main() {
 	// api: initialize REST server
 	restServer, err := rest.NewServer(&rest.ServerConfig{
 		Context:      ctx,
-		Logger:       logger,
+		Logger:       log,
 		GRPCEndpoint: cfg.GRPCPort,
 		RESTEndpoint: cfg.RESTPort,
 	})
 	if err != nil {
-		logger.Sugar().Fatalw("failed to initialize REST server instance", "error", err)
+		log.Error(err, "failed to initialize REST server instance")
+		os.Exit(1)
 	}
 
 	// api: start gRPC listener
 	go func() {
-		logger.Info("starting gRPC server")
+		log.Info("starting gRPC server")
 		if err = grpcServer.Serve(); err != nil {
-			logger.Sugar().Fatalw("failed to start gRPC server", "error", err)
+			log.Error(err, "failed to start gRPC server")
+			os.Exit(1)
 		}
 	}()
 
 	// api: start REST listener
 	go func() {
-		logger.Info("starting REST server")
+		log.Info("starting REST server")
 		if err = restServer.Serve(); err != nil {
 			if !errors.Is(err, http.ErrServerClosed) {
-				logger.Sugar().Fatalw("failed to start REST server", "error", err)
+				log.Error(err, "failed to start REST server")
+				os.Exit(1)
 			}
 		}
 	}()
@@ -94,20 +102,20 @@ func main() {
 	doneChan := make(chan os.Signal, 1)
 	signal.Notify(doneChan, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP)
 	<-doneChan
-	logger.Info("shutdown signal received")
+	log.Info("shutdown signal received")
 	cancel()
 
 	// api: setup graceful gRPC server stop
 	grpcStop := stopServer(func(ctx context.Context) {
-		logger.Info("stopping gRPC server")
+		log.Info("stopping gRPC server")
 		grpcServer.Stop()
 	})
 
 	// api: setup graceful REST server stop
 	restStop := stopServer(func(ctx context.Context) {
-		logger.Info("stopping REST server")
+		log.Info("stopping REST server")
 		if err = restServer.Stop(ctx); err != nil {
-			logger.Sugar().Fatalw("failed to stop REST server", "error", err)
+			log.Error(err, "failed to stop REST server")
 		}
 	})
 
@@ -116,7 +124,7 @@ func main() {
 	<-restStop.Done()
 
 	// api: we've completely closed everything, goodbye
-	logger.Info("goodbye, neo.")
+	log.Info("goodbye, neo.")
 
 }
 

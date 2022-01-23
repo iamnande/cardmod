@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-logr/logr"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -18,7 +18,7 @@ import (
 // Server is the internal REST API Server.
 type Server struct {
 	ctx          context.Context
-	logger       *zap.Logger
+	logger       logr.Logger
 	grpcEndpoint string
 	server       http.Server
 }
@@ -26,7 +26,7 @@ type Server struct {
 // ServerConfig is the configuration mechanism for the *server.
 type ServerConfig struct {
 	Context      context.Context
-	Logger       *zap.Logger
+	Logger       logr.Logger
 	GRPCEndpoint string
 	RESTEndpoint string
 }

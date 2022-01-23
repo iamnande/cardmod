@@ -7,13 +7,17 @@ require (
 	github.com/caarlos0/env/v6 v6.9.1
 	github.com/envoyproxy/protoc-gen-validate v0.6.3
 	github.com/go-chi/chi/v5 v5.0.7
+	github.com/go-logr/logr v1.2.2
+	github.com/go-logr/zerologr v1.2.1
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.0
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.3
 	github.com/jackc/pgx/v4 v4.14.1
 	github.com/mattn/go-sqlite3 v1.14.10
 	github.com/onsi/ginkgo/v2 v2.1.0
 	github.com/onsi/gomega v1.18.0
+	github.com/rs/zerolog v1.25.0
 	go.uber.org/zap v1.20.0
 	google.golang.org/genproto v0.0.0-20220118154757-00ab72f36ad5
 	google.golang.org/grpc v1.43.0
@@ -38,7 +42,6 @@ require (
 	github.com/jackc/pgtype v1.9.1 // indirect
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect

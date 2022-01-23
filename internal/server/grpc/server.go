@@ -3,7 +3,7 @@ package grpc
 import (
 	"net"
 
-	"go.uber.org/zap"
+	"github.com/go-logr/logr"
 	"google.golang.org/grpc"
 
 	"github.com/iamnande/cardmod/internal/daos"
@@ -19,7 +19,7 @@ import (
 type Server struct {
 	version string
 	port    string
-	logger  *zap.Logger
+	logger  logr.Logger
 	server  *grpc.Server
 
 	// repositories
@@ -30,7 +30,7 @@ type Server struct {
 // ServerConfig is the server configuration.
 type ServerConfig struct {
 	Port    string
-	Logger  *zap.Logger
+	Logger  logr.Logger
 	Version string
 
 	// Repositories
