@@ -78,7 +78,7 @@ func marshalCard(card card.Card) *cardv1.Card {
 
 func marshalCards(records []card.Card) []*cardv1.Card {
 	cards := make([]*cardv1.Card, len(records))
-	for i := range cards {
+	for i := 0; i < len(records); i++ {
 		cards[i] = marshalCard(records[i])
 	}
 	return cards

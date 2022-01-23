@@ -61,17 +61,20 @@ build-proto: ## build: generate proto files and swagger docs
 	@echo $(APP_LOG_FMT) "generating proto files and swagger docs"
 	@buf generate $(APP_WORKDIR)/internal/proto
 
+.PHONY: build-mocks
+build-mocks: ## build: generate mock implementations for testing
+	@echo $(APP_LOG_FMT) "generating mock implementations for testing"
+	@go generate $(APP_PACKAGES)
+
 # --------------------------------------------------
 # Test Targets
 # --------------------------------------------------
 COVERAGE_DIR := $(APP_WORKDIR)/coverage
-LINT_DIR     := $(COVERAGE_DIR)/lint
-UNIT_DIR     := $(COVERAGE_DIR)/unit
 
 # unit coverage
+UNIT_DIR     := $(COVERAGE_DIR)/unit
 UNIT_WEBPAGE  := $(UNIT_DIR)/index.html
-UNIT_REPORT   := $(UNIT_DIR)/report.out
-UNIT_COVERAGE := $(UNIT_DIR)/coverage.out
+UNIT_COVERAGE := $(UNIT_DIR)/coverage.txt
 
 .PHONY: test-clean
 test-clean: ## test: clean test workspace
@@ -88,10 +91,9 @@ test-unit: ## test: execute unit test suite
 	@echo $(APP_LOG_FMT) "executing unit test suite"
 	@mkdir -p $(UNIT_DIR)
 	@go test -v \
+		-race \
 		-covermode=atomic \
 		-coverprofile=$(UNIT_COVERAGE) \
-		$(APP_PACKAGES) \
-		2>&1 > $(UNIT_REPORT) || cat $(UNIT_REPORT)
-	@cat $(UNIT_REPORT)
+		$(APP_PACKAGES)
 	@go tool cover -func=$(UNIT_COVERAGE)
 	@go tool cover -html=$(UNIT_COVERAGE) -o $(UNIT_WEBPAGE)

@@ -78,7 +78,7 @@ func marshalMagic(magic magic.Magic) *magicv1.Magic {
 
 func marshalMagics(records []magic.Magic) []*magicv1.Magic {
 	magics := make([]*magicv1.Magic, len(records))
-	for i := range magics {
+	for i := 0; i < len(records); i++ {
 		magics[i] = marshalMagic(records[i])
 	}
 	return magics

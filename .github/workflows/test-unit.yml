@@ -13,8 +13,11 @@ jobs:
         with:
           go-version: 1.17
 
-      - name: Build
-        run: make build-binary
-
       - name: Run Test Suite
         run: make test-unit
+
+      - name: Record Code Coverage
+        uses: codecov/codecov-action@v2
+        with:
+          files: ./coverage/unit/coverage.txt
+          flags: unittests

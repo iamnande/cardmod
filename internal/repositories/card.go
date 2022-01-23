@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 
@@ -12,6 +13,7 @@ import (
 )
 
 // cardRepository is a repository layer for accessing card entities in the data layer.
+//go:generate mockgen -source ../daos/card.go -destination=mocks/card.go -package mocks github.com/iamnande/cardmod/internal/daos CardDAO
 type cardRepository struct {
 	client *database.Client
 }
@@ -53,16 +55,22 @@ func (repo *cardRepository) ListCards(ctx context.Context, search string) ([]car
 // CreateCard creates a new card entity.
 func (repo *cardRepository) CreateCard(ctx context.Context, name string) (card.Card, error) {
 
-	// create: create the card
-	card, err := repo.client.Card.Create().
-		SetName(name).
-		Save(ctx)
+	// create: initialize transaction
+	tx, err := repo.client.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return nil, err
 	}
 
+	// create: create the card
+	card, err := tx.Card.Create().
+		SetName(name).
+		Save(ctx)
+	if err != nil {
+		return nil, rollback(tx, err)
+	}
+
 	// create: return the newly created card
-	return &cardContainer{card}, nil
+	return &cardContainer{card}, tx.Commit()
 
 }
 
@@ -83,12 +91,18 @@ func (repo *cardRepository) GetCard(ctx context.Context, id uuid.UUID) (card.Car
 // DeleteCard deletes an existing card entity.
 func (repo *cardRepository) DeleteCard(ctx context.Context, id uuid.UUID) error {
 
-	// delete: delete the card
-	if err := repo.client.Card.DeleteOneID(id).Exec(ctx); err != nil {
+	// delete: initialize transaction
+	tx, err := repo.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
 		return err
 	}
 
+	// delete: delete the card
+	if err := repo.client.Card.DeleteOneID(id).Exec(ctx); err != nil {
+		return rollback(tx, err)
+	}
+
 	// delete: return "success"
-	return nil
+	return tx.Commit()
 
 }
