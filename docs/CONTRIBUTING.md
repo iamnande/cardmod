@@ -148,9 +148,11 @@ $ make status
 NAME                COMMAND                  SERVICE             STATUS              PORTS
 cardmod_api         "./entrypoint.sh"        api                 running             0.0.0.0:8000->8000/tcp, 0.0.0.0:9000->9000/tcp
 cardmod_database    "docker-entrypoint.s…"   database            running (healthy)   0.0.0.0:5432->5432/tcp
-cardmod_api  | 1/u initial_schema (26.347291ms)
-cardmod_api  | {"level":"info","ts":1642317907.2159672,"caller":"cardmodd/main.go:76","msg":"starting gRPC server"}
-cardmod_api  | {"level":"info","ts":1642317907.2160308,"caller":"cardmodd/main.go:84","msg":"starting REST server"}
+cardmod_api  | 1/u initial_schema (17.3295ms)
+cardmod_api  | {"level":"info","service":{"name":"gardner","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-23T04:21:34Z","message":"seeding magics into database"}
+cardmod_api  | {"level":"info","service":{"name":"gardner","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-23T04:21:34Z","message":"seeding cards into database"}
+cardmod_api  | {"level":"info","service":{"name":"cardmod","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-23T04:21:34Z","message":"starting gRPC server"}
+cardmod_api  | {"level":"info","service":{"name":"cardmod","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-23T04:21:34Z","message":"starting REST server"}
 ```
 
 As you can see by the output above, both a gRPC and a REST server have been started on ports `:9000` and `:8000` respectively.
@@ -190,9 +192,6 @@ $ tree -aC -I '.git' -I '.vscode' --dirsfirst -d | less -FRX
 ├── migrations
 └── pkg
     └── api             # generated gRPC/REST interfaces
-        ├── cardv1
-        ├── livezv1
-        └── magicv1
 ```
 
 _note: if you do make a change, or addition, to the directory structure we ask that you update this section of the guide._

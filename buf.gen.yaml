@@ -22,5 +22,3 @@ plugins:
       - module=github.com/iamnande/cardmod/pkg/api
       - lang=go
       - Mvalidate/validate.proto=github.com/envoyproxy/protoc-gen-validate/validate
-  - name: openapiv2
-    out: docs/openapi

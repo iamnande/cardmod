@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/iamnande/cardmod/pkg/api/cardv1"
-	"github.com/iamnande/cardmod/pkg/api/livezv1"
+	"github.com/iamnande/cardmod/pkg/api/healthv1"
 	"github.com/iamnande/cardmod/pkg/api/magicv1"
 )
 
@@ -49,7 +49,7 @@ func NewServer(cfg *ServerConfig) (*Server, error) {
 
 	// server: register the gRPC gateway handler(s)
 	// TODO: wrap this in a loop or something
-	if err := livezv1.RegisterLivezAPIHandler(cfg.Context, mux, connection); err != nil {
+	if err := healthv1.RegisterHealthAPIHandler(cfg.Context, mux, connection); err != nil {
 		return nil, err
 	}
 	if err := cardv1.RegisterCardAPIHandler(cfg.Context, mux, connection); err != nil {

@@ -8,10 +8,10 @@ import (
 
 	"github.com/iamnande/cardmod/internal/daos"
 	"github.com/iamnande/cardmod/internal/grpc/cardapi"
-	"github.com/iamnande/cardmod/internal/grpc/livezapi"
+	"github.com/iamnande/cardmod/internal/grpc/healthapi"
 	"github.com/iamnande/cardmod/internal/grpc/magicapi"
 	"github.com/iamnande/cardmod/pkg/api/cardv1"
-	"github.com/iamnande/cardmod/pkg/api/livezv1"
+	"github.com/iamnande/cardmod/pkg/api/healthv1"
 	"github.com/iamnande/cardmod/pkg/api/magicv1"
 )
 
@@ -69,14 +69,14 @@ func (s *Server) Serve() error {
 	}
 
 	// add the services to the server
-	livezService := livezapi.New()
-	livezv1.RegisterLivezAPIServer(server, &livezService)
+	healthAPI := healthapi.New()
+	healthv1.RegisterHealthAPIServer(server, &healthAPI)
 
-	cardService := cardapi.New(s.cardRepository)
-	cardv1.RegisterCardAPIServer(server, &cardService)
+	cardAPI := cardapi.New(s.cardRepository)
+	cardv1.RegisterCardAPIServer(server, &cardAPI)
 
-	magicService := magicapi.New(s.magicRepository)
-	magicv1.RegisterMagicAPIServer(server, &magicService)
+	magicAPI := magicapi.New(s.magicRepository)
+	magicv1.RegisterMagicAPIServer(server, &magicAPI)
 
 	// start the server
 	s.server = server
