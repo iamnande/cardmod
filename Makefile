@@ -66,6 +66,11 @@ build-mocks: ## build: generate mock implementations for testing
 	@echo $(APP_LOG_FMT) "generating mock implementations for testing"
 	@go generate $(APP_PACKAGES)
 
+.PHONY: build-schemas
+build-schemas: ## build: generate ent files from schemas
+	@echo $(APP_LOG_FMT) "generating ent files from schemas"
+	@ent generate $(APP_WORKDIR)/internal/database/schema
+
 # --------------------------------------------------
 # Test Targets
 # --------------------------------------------------
