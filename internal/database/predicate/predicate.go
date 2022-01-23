@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Calculation is the predicate function for calculation builders.
+type Calculation func(*sql.Selector)
+
 // Card is the predicate function for card builders.
 type Card func(*sql.Selector)
 

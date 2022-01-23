@@ -9,6 +9,19 @@ import (
 	"github.com/iamnande/cardmod/internal/database"
 )
 
+// The CalculationFunc type is an adapter to allow the use of ordinary
+// function as Calculation mutator.
+type CalculationFunc func(context.Context, *database.CalculationMutation) (database.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CalculationFunc) Mutate(ctx context.Context, m database.Mutation) (database.Value, error) {
+	mv, ok := m.(*database.CalculationMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *database.CalculationMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The CardFunc type is an adapter to allow the use of ordinary
 // function as Card mutator.
 type CardFunc func(context.Context, *database.CardMutation) (database.Value, error)

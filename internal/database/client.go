@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/iamnande/cardmod/internal/database/migrate"
 
+	"github.com/iamnande/cardmod/internal/database/calculation"
 	"github.com/iamnande/cardmod/internal/database/card"
 	"github.com/iamnande/cardmod/internal/database/magic"
 
@@ -22,6 +23,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// Calculation is the client for interacting with the Calculation builders.
+	Calculation *CalculationClient
 	// Card is the client for interacting with the Card builders.
 	Card *CardClient
 	// Magic is the client for interacting with the Magic builders.
@@ -39,6 +42,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.Calculation = NewCalculationClient(c.config)
 	c.Card = NewCardClient(c.config)
 	c.Magic = NewMagicClient(c.config)
 }
@@ -72,10 +76,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Card:   NewCardClient(cfg),
-		Magic:  NewMagicClient(cfg),
+		ctx:         ctx,
+		config:      cfg,
+		Calculation: NewCalculationClient(cfg),
+		Card:        NewCardClient(cfg),
+		Magic:       NewMagicClient(cfg),
 	}, nil
 }
 
@@ -93,16 +98,17 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		config: cfg,
-		Card:   NewCardClient(cfg),
-		Magic:  NewMagicClient(cfg),
+		config:      cfg,
+		Calculation: NewCalculationClient(cfg),
+		Card:        NewCardClient(cfg),
+		Magic:       NewMagicClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Card.
+//		Calculation.
 //		Query().
 //		Count(ctx)
 //
@@ -125,8 +131,99 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.Calculation.Use(hooks...)
 	c.Card.Use(hooks...)
 	c.Magic.Use(hooks...)
+}
+
+// CalculationClient is a client for the Calculation schema.
+type CalculationClient struct {
+	config
+}
+
+// NewCalculationClient returns a client for the Calculation from the given config.
+func NewCalculationClient(c config) *CalculationClient {
+	return &CalculationClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `calculation.Hooks(f(g(h())))`.
+func (c *CalculationClient) Use(hooks ...Hook) {
+	c.hooks.Calculation = append(c.hooks.Calculation, hooks...)
+}
+
+// Create returns a create builder for Calculation.
+func (c *CalculationClient) Create() *CalculationCreate {
+	mutation := newCalculationMutation(c.config, OpCreate)
+	return &CalculationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Calculation entities.
+func (c *CalculationClient) CreateBulk(builders ...*CalculationCreate) *CalculationCreateBulk {
+	return &CalculationCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Calculation.
+func (c *CalculationClient) Update() *CalculationUpdate {
+	mutation := newCalculationMutation(c.config, OpUpdate)
+	return &CalculationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CalculationClient) UpdateOne(ca *Calculation) *CalculationUpdateOne {
+	mutation := newCalculationMutation(c.config, OpUpdateOne, withCalculation(ca))
+	return &CalculationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CalculationClient) UpdateOneID(id uuid.UUID) *CalculationUpdateOne {
+	mutation := newCalculationMutation(c.config, OpUpdateOne, withCalculationID(id))
+	return &CalculationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Calculation.
+func (c *CalculationClient) Delete() *CalculationDelete {
+	mutation := newCalculationMutation(c.config, OpDelete)
+	return &CalculationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *CalculationClient) DeleteOne(ca *Calculation) *CalculationDeleteOne {
+	return c.DeleteOneID(ca.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *CalculationClient) DeleteOneID(id uuid.UUID) *CalculationDeleteOne {
+	builder := c.Delete().Where(calculation.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CalculationDeleteOne{builder}
+}
+
+// Query returns a query builder for Calculation.
+func (c *CalculationClient) Query() *CalculationQuery {
+	return &CalculationQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Calculation entity by its id.
+func (c *CalculationClient) Get(ctx context.Context, id uuid.UUID) (*Calculation, error) {
+	return c.Query().Where(calculation.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CalculationClient) GetX(ctx context.Context, id uuid.UUID) *Calculation {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CalculationClient) Hooks() []Hook {
+	return c.hooks.Calculation
 }
 
 // CardClient is a client for the Card schema.

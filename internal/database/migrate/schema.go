@@ -8,6 +8,20 @@ import (
 )
 
 var (
+	// CalculationsColumns holds the columns for the "calculations" table.
+	CalculationsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "card_id", Type: field.TypeUUID},
+		{Name: "magic_id", Type: field.TypeUUID},
+		{Name: "card_ratio", Type: field.TypeInt32},
+		{Name: "magic_ratio", Type: field.TypeInt32},
+	}
+	// CalculationsTable holds the schema information for the "calculations" table.
+	CalculationsTable = &schema.Table{
+		Name:       "calculations",
+		Columns:    CalculationsColumns,
+		PrimaryKey: []*schema.Column{CalculationsColumns[0]},
+	}
 	// CardsColumns holds the columns for the "cards" table.
 	CardsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
@@ -32,6 +46,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		CalculationsTable,
 		CardsTable,
 		MagicsTable,
 	}
