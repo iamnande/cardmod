@@ -47,6 +47,7 @@ func main() {
 	// api: initialize repositories
 	cardRepository := repositories.NewCardRepository(dbClient)
 	magicRepository := repositories.NewMagicRepository(dbClient)
+	calculationRepository := repositories.NewCalculationRepository(dbClient)
 
 	// api: initialize the gRPC server
 	grpcServer := grpc.NewServer(&grpc.ServerConfig{
@@ -55,8 +56,9 @@ func main() {
 		Version: ServiceVersion,
 
 		// Repositories
-		CardRepository:  cardRepository,
-		MagicRepository: magicRepository,
+		CardRepository:        cardRepository,
+		MagicRepository:       magicRepository,
+		CalculationRepository: calculationRepository,
 	})
 
 	// api: start gRPC listener
