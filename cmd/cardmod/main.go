@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/iamnande/cardmod/pkg/api/calculationv1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/iamnande/cardmod/pkg/api/calculationv1"
 )
 
 var (
