@@ -134,9 +134,8 @@ To spin up a complete environment, you can run `make up`. After that you can che
 Example:
 ```sh
 $ make up
-2022-01-15 14:28:03 -0800 [cardmod] starting local environment
-[+] Building 8.7s (19/19) FINISHED
-
+2022-01-23 21:28:38 -0800 [cardmod] stopping local environment
+2022-01-23 21:28:38 -0800 [cardmod] starting local environment
 <... docker vomit ...>
 
 [+] Running 3/3
@@ -148,11 +147,11 @@ $ make status
 NAME                COMMAND                  SERVICE             STATUS              PORTS
 cardmod_api         "./entrypoint.sh"        api                 running             0.0.0.0:8000->8000/tcp, 0.0.0.0:9000->9000/tcp
 cardmod_database    "docker-entrypoint.s…"   database            running (healthy)   0.0.0.0:5432->5432/tcp
-cardmod_api  | 1/u initial_schema (17.3295ms)
-cardmod_api  | {"level":"info","service":{"name":"gardner","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-23T04:21:34Z","message":"seeding magics into database"}
-cardmod_api  | {"level":"info","service":{"name":"gardner","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-23T04:21:34Z","message":"seeding cards into database"}
-cardmod_api  | {"level":"info","service":{"name":"cardmod","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-23T04:21:34Z","message":"starting gRPC server"}
-cardmod_api  | {"level":"info","service":{"name":"cardmod","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-23T04:21:34Z","message":"starting REST server"}
+cardmod_api  | 1/u initial_schema (17.818791ms)
+cardmod_api  | 2/u calculations (23.181084ms)
+cardmod_api  | {"level":"info","service":{"name":"gardner","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-24T05:29:00Z","message":"seeding data into database"}
+cardmod_api  | {"level":"info","service":{"name":"cardmod","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-24T05:29:00Z","message":"starting REST server"}
+cardmod_api  | {"level":"info","service":{"name":"cardmod","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-24T05:29:00Z","message":"starting gRPC server"}
 ```
 
 As you can see by the output above, both a gRPC and a REST server have been started on ports `:9000` and `:8000` respectively.
