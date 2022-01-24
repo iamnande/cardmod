@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package iamnande.cardmod.calculation.v1;
+
+import "validate/validate.proto";
+
+option go_package = "github.com/iamnande/cardmod/pkg/api/calculationv1;calculationv1";
+
+// Calculation API Service.
+service CalculationAPI {
+
+    // Calculate will calculate the number, and which type, of cards are needed for n number of a given magic.
+    rpc Calculate(CalculateRequest) returns (CalculateResponse);
+
+}
+
+// CalculateRequest is the request model for Calculate.
+message CalculateRequest {
+
+    // name is the name of the magic to calculate against.
+    string name = 1;
+
+    // count is the number of the magic desired for calculation.
+    int32 count = 2;
+
+}
+
+// CalculateResponse is the response model for Calculate.
+// TODO: make this return a collection of options instead of a singular.
+message CalculateResponse {
+
+    // name is the name of the card need for the requested magic.
+    string name = 1;
+
+    // count is the number of the card needed for the request count of magic.
+    int32 count = 2;
+
+}
