@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/iamnande/cardmod/internal/database/calculation"
 	"github.com/iamnande/cardmod/internal/database/card"
 	"github.com/iamnande/cardmod/internal/database/magic"
 )
@@ -30,8 +31,9 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		card.Table:  card.ValidColumn,
-		magic.Table: magic.ValidColumn,
+		calculation.Table: calculation.ValidColumn,
+		card.Table:        card.ValidColumn,
+		magic.Table:       magic.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

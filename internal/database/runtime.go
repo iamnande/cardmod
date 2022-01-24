@@ -4,6 +4,7 @@ package database
 
 import (
 	"github.com/google/uuid"
+	"github.com/iamnande/cardmod/internal/database/calculation"
 	"github.com/iamnande/cardmod/internal/database/card"
 	"github.com/iamnande/cardmod/internal/database/magic"
 	"github.com/iamnande/cardmod/internal/database/schema"
@@ -13,6 +14,20 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	calculationFields := schema.Calculation{}.Fields()
+	_ = calculationFields
+	// calculationDescCardRatio is the schema descriptor for card_ratio field.
+	calculationDescCardRatio := calculationFields[3].Descriptor()
+	// calculation.CardRatioValidator is a validator for the "card_ratio" field. It is called by the builders before save.
+	calculation.CardRatioValidator = calculationDescCardRatio.Validators[0].(func(int32) error)
+	// calculationDescMagicRatio is the schema descriptor for magic_ratio field.
+	calculationDescMagicRatio := calculationFields[4].Descriptor()
+	// calculation.MagicRatioValidator is a validator for the "magic_ratio" field. It is called by the builders before save.
+	calculation.MagicRatioValidator = calculationDescMagicRatio.Validators[0].(func(int32) error)
+	// calculationDescID is the schema descriptor for id field.
+	calculationDescID := calculationFields[0].Descriptor()
+	// calculation.DefaultID holds the default value on creation for the id field.
+	calculation.DefaultID = calculationDescID.Default.(func() uuid.UUID)
 	cardFields := schema.Card{}.Fields()
 	_ = cardFields
 	// cardDescName is the schema descriptor for name field.

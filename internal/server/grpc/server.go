@@ -7,9 +7,11 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/iamnande/cardmod/internal/daos"
+	"github.com/iamnande/cardmod/internal/grpc/calculationapi"
 	"github.com/iamnande/cardmod/internal/grpc/cardapi"
 	"github.com/iamnande/cardmod/internal/grpc/healthapi"
 	"github.com/iamnande/cardmod/internal/grpc/magicapi"
+	"github.com/iamnande/cardmod/pkg/api/calculationv1"
 	"github.com/iamnande/cardmod/pkg/api/cardv1"
 	"github.com/iamnande/cardmod/pkg/api/healthv1"
 	"github.com/iamnande/cardmod/pkg/api/magicv1"
@@ -23,8 +25,9 @@ type Server struct {
 	server  *grpc.Server
 
 	// repositories
-	cardRepository  daos.CardDAO
-	magicRepository daos.MagicDAO
+	cardRepository        daos.CardDAO
+	magicRepository       daos.MagicDAO
+	calculationRepository daos.CalculationDAO
 }
 
 // ServerConfig is the server configuration.
@@ -34,8 +37,9 @@ type ServerConfig struct {
 	Version string
 
 	// Repositories
-	CardRepository  daos.CardDAO
-	MagicRepository daos.MagicDAO
+	CardRepository        daos.CardDAO
+	MagicRepository       daos.MagicDAO
+	CalculationRepository daos.CalculationDAO
 }
 
 // NewServer creates a new, pre-configured, gRPC server.
@@ -48,8 +52,9 @@ func NewServer(cfg *ServerConfig) *Server {
 		version: cfg.Version,
 
 		// repositories
-		cardRepository:  cfg.CardRepository,
-		magicRepository: cfg.MagicRepository,
+		cardRepository:        cfg.CardRepository,
+		magicRepository:       cfg.MagicRepository,
+		calculationRepository: cfg.CalculationRepository,
 	}
 
 }
@@ -77,6 +82,9 @@ func (s *Server) Serve() error {
 
 	magicAPI := magicapi.New(s.magicRepository)
 	magicv1.RegisterMagicAPIServer(server, &magicAPI)
+
+	calculationAPI := calculationapi.New(s.calculationRepository, s.cardRepository)
+	calculationv1.RegisterCalculationAPIServer(server, &calculationAPI)
 
 	// start the server
 	s.server = server

@@ -17,7 +17,7 @@ const (
 	DefaultEnvironment = "local"
 
 	// DefaultDatabaseEndpoint is the default database connection endpoint string.
-	DefaultDatabaseEndpoint = "postgres://postgres:5432/cardmod?sslmode=disable&user=postgres&password=postgres"
+	DefaultDatabaseEndpoint = "postgres://localhost:5432/cardmod?sslmode=disable&user=postgres&password=postgres"
 )
 
 var (
@@ -44,7 +44,7 @@ type Config struct {
 	// DatabaseEndpoint is the database endpoint used for connection. This is
 	// currently configured to be a DSN (relational database speak for
 	// connection details).
-	DatabaseEndpoint string `env:"DATABASE_ENDPOINT,required"`
+	DatabaseEndpoint string `env:"DATABASE_ENDPOINT"`
 }
 
 // MustLoad will load the configuration from the runtime environment and

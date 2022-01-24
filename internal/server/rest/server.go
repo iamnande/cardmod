@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	"github.com/iamnande/cardmod/pkg/api/calculationv1"
 	"github.com/iamnande/cardmod/pkg/api/cardv1"
 	"github.com/iamnande/cardmod/pkg/api/healthv1"
 	"github.com/iamnande/cardmod/pkg/api/magicv1"
@@ -56,6 +57,9 @@ func NewServer(cfg *ServerConfig) (*Server, error) {
 		return nil, err
 	}
 	if err := magicv1.RegisterMagicAPIHandler(cfg.Context, mux, connection); err != nil {
+		return nil, err
+	}
+	if err := calculationv1.RegisterCalculationAPIHandler(cfg.Context, mux, connection); err != nil {
 		return nil, err
 	}
 

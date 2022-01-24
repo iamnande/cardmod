@@ -41,53 +41,37 @@ func main() {
 	dbClient := database.NewClient(database.Driver(driver))
 
 	// gardner: initialize repositories
-	ctx := context.TODO()
+	ctx := context.Background()
 	cardRepository := repositories.NewCardRepository(dbClient)
 	magicRepository := repositories.NewMagicRepository(dbClient)
+	calculationRepository := repositories.NewCalculationRepository(dbClient)
 
-	// gardner: fetch list of magics to create
-	// TODO: handle diff/patching
-	magics := LoadMagics()
-	log.Info("seeding magics into database")
-	for _, new := range magics {
+	// gardner: seed the database with cards, magics, and calculations (card<->magic ratios)
+	log.Info("seeding data into database")
+	for i := 0; i < len(calculations); i++ {
 
-		// check if it exists first
-		results, listErr := magicRepository.ListMagics(ctx, new)
+		// ratio to operate on (for simplicity)
+		ratio := calculations[i]
+
+		// create card record
+		card, err := cardRepository.CreateCard(ctx, ratio.card)
 		if err != nil {
-			log.Error(listErr, "failed to search for %s magic", new)
+			log.Error(err, "failed to create card")
 			os.Exit(1)
 		}
 
-		// if it doesn't exist, create it
-		if len(results) == 0 {
-			_, err = magicRepository.CreateMagic(ctx, new)
-			if err != nil {
-				log.Error(err, "failed to create %s magic", new)
-				os.Exit(1)
-			}
-		}
-
-	}
-
-	// gardner: fetch list of cards to create
-	// TODO: handle diff/patching
-	cards := LoadCards()
-	log.Info("seeding cards into database")
-	for _, new := range cards {
-
-		// check if it exists first
-		results, listErr := cardRepository.ListCards(ctx, new)
+		// create magic record
+		magic, err := magicRepository.CreateMagic(ctx, ratio.magic)
 		if err != nil {
-			log.Error(listErr, "failed to search for %s card", new)
+			log.Error(err, "failed to create magic")
 			os.Exit(1)
 		}
 
-		// if it doesn't exist, create it
-		if len(results) == 0 {
-			_, err = cardRepository.CreateCard(ctx, new)
-			if err != nil {
-				log.Error(err, "failed to create %s card")
-			}
+		// create the calcuation record (card<->magic ratio)
+		_, err = calculationRepository.CreateCalculation(ctx, card.ID(), magic.ID(), ratio.cardRatio, ratio.magicRatio)
+		if err != nil {
+			log.Error(err, "failed to create calculation")
+			os.Exit(1)
 		}
 
 	}

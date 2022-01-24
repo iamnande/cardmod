@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	"github.com/google/uuid"
+	"github.com/iamnande/cardmod/internal/database/calculation"
 	"github.com/iamnande/cardmod/internal/database/card"
 	"github.com/iamnande/cardmod/internal/database/magic"
 	"github.com/iamnande/cardmod/internal/database/predicate"
@@ -24,9 +25,539 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeCard  = "Card"
-	TypeMagic = "Magic"
+	TypeCalculation = "Calculation"
+	TypeCard        = "Card"
+	TypeMagic       = "Magic"
 )
+
+// CalculationMutation represents an operation that mutates the Calculation nodes in the graph.
+type CalculationMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *uuid.UUID
+	card_id        *uuid.UUID
+	magic_id       *uuid.UUID
+	card_ratio     *int32
+	addcard_ratio  *int32
+	magic_ratio    *int32
+	addmagic_ratio *int32
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*Calculation, error)
+	predicates     []predicate.Calculation
+}
+
+var _ ent.Mutation = (*CalculationMutation)(nil)
+
+// calculationOption allows management of the mutation configuration using functional options.
+type calculationOption func(*CalculationMutation)
+
+// newCalculationMutation creates new mutation for the Calculation entity.
+func newCalculationMutation(c config, op Op, opts ...calculationOption) *CalculationMutation {
+	m := &CalculationMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeCalculation,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withCalculationID sets the ID field of the mutation.
+func withCalculationID(id uuid.UUID) calculationOption {
+	return func(m *CalculationMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Calculation
+		)
+		m.oldValue = func(ctx context.Context) (*Calculation, error) {
+			once.Do(func() {
+				if m.done {
+					err = fmt.Errorf("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Calculation.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withCalculation sets the old Calculation of the mutation.
+func withCalculation(node *Calculation) calculationOption {
+	return func(m *CalculationMutation) {
+		m.oldValue = func(context.Context) (*Calculation, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m CalculationMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m CalculationMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, fmt.Errorf("database: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Calculation entities.
+func (m *CalculationMutation) SetID(id uuid.UUID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *CalculationMutation) ID() (id uuid.UUID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// SetCardID sets the "card_id" field.
+func (m *CalculationMutation) SetCardID(u uuid.UUID) {
+	m.card_id = &u
+}
+
+// CardID returns the value of the "card_id" field in the mutation.
+func (m *CalculationMutation) CardID() (r uuid.UUID, exists bool) {
+	v := m.card_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCardID returns the old "card_id" field's value of the Calculation entity.
+// If the Calculation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CalculationMutation) OldCardID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldCardID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldCardID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCardID: %w", err)
+	}
+	return oldValue.CardID, nil
+}
+
+// ResetCardID resets all changes to the "card_id" field.
+func (m *CalculationMutation) ResetCardID() {
+	m.card_id = nil
+}
+
+// SetMagicID sets the "magic_id" field.
+func (m *CalculationMutation) SetMagicID(u uuid.UUID) {
+	m.magic_id = &u
+}
+
+// MagicID returns the value of the "magic_id" field in the mutation.
+func (m *CalculationMutation) MagicID() (r uuid.UUID, exists bool) {
+	v := m.magic_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMagicID returns the old "magic_id" field's value of the Calculation entity.
+// If the Calculation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CalculationMutation) OldMagicID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldMagicID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldMagicID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMagicID: %w", err)
+	}
+	return oldValue.MagicID, nil
+}
+
+// ResetMagicID resets all changes to the "magic_id" field.
+func (m *CalculationMutation) ResetMagicID() {
+	m.magic_id = nil
+}
+
+// SetCardRatio sets the "card_ratio" field.
+func (m *CalculationMutation) SetCardRatio(i int32) {
+	m.card_ratio = &i
+	m.addcard_ratio = nil
+}
+
+// CardRatio returns the value of the "card_ratio" field in the mutation.
+func (m *CalculationMutation) CardRatio() (r int32, exists bool) {
+	v := m.card_ratio
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCardRatio returns the old "card_ratio" field's value of the Calculation entity.
+// If the Calculation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CalculationMutation) OldCardRatio(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldCardRatio is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldCardRatio requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCardRatio: %w", err)
+	}
+	return oldValue.CardRatio, nil
+}
+
+// AddCardRatio adds i to the "card_ratio" field.
+func (m *CalculationMutation) AddCardRatio(i int32) {
+	if m.addcard_ratio != nil {
+		*m.addcard_ratio += i
+	} else {
+		m.addcard_ratio = &i
+	}
+}
+
+// AddedCardRatio returns the value that was added to the "card_ratio" field in this mutation.
+func (m *CalculationMutation) AddedCardRatio() (r int32, exists bool) {
+	v := m.addcard_ratio
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCardRatio resets all changes to the "card_ratio" field.
+func (m *CalculationMutation) ResetCardRatio() {
+	m.card_ratio = nil
+	m.addcard_ratio = nil
+}
+
+// SetMagicRatio sets the "magic_ratio" field.
+func (m *CalculationMutation) SetMagicRatio(i int32) {
+	m.magic_ratio = &i
+	m.addmagic_ratio = nil
+}
+
+// MagicRatio returns the value of the "magic_ratio" field in the mutation.
+func (m *CalculationMutation) MagicRatio() (r int32, exists bool) {
+	v := m.magic_ratio
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMagicRatio returns the old "magic_ratio" field's value of the Calculation entity.
+// If the Calculation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CalculationMutation) OldMagicRatio(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldMagicRatio is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldMagicRatio requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMagicRatio: %w", err)
+	}
+	return oldValue.MagicRatio, nil
+}
+
+// AddMagicRatio adds i to the "magic_ratio" field.
+func (m *CalculationMutation) AddMagicRatio(i int32) {
+	if m.addmagic_ratio != nil {
+		*m.addmagic_ratio += i
+	} else {
+		m.addmagic_ratio = &i
+	}
+}
+
+// AddedMagicRatio returns the value that was added to the "magic_ratio" field in this mutation.
+func (m *CalculationMutation) AddedMagicRatio() (r int32, exists bool) {
+	v := m.addmagic_ratio
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetMagicRatio resets all changes to the "magic_ratio" field.
+func (m *CalculationMutation) ResetMagicRatio() {
+	m.magic_ratio = nil
+	m.addmagic_ratio = nil
+}
+
+// Where appends a list predicates to the CalculationMutation builder.
+func (m *CalculationMutation) Where(ps ...predicate.Calculation) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *CalculationMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (Calculation).
+func (m *CalculationMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *CalculationMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.card_id != nil {
+		fields = append(fields, calculation.FieldCardID)
+	}
+	if m.magic_id != nil {
+		fields = append(fields, calculation.FieldMagicID)
+	}
+	if m.card_ratio != nil {
+		fields = append(fields, calculation.FieldCardRatio)
+	}
+	if m.magic_ratio != nil {
+		fields = append(fields, calculation.FieldMagicRatio)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *CalculationMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case calculation.FieldCardID:
+		return m.CardID()
+	case calculation.FieldMagicID:
+		return m.MagicID()
+	case calculation.FieldCardRatio:
+		return m.CardRatio()
+	case calculation.FieldMagicRatio:
+		return m.MagicRatio()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *CalculationMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case calculation.FieldCardID:
+		return m.OldCardID(ctx)
+	case calculation.FieldMagicID:
+		return m.OldMagicID(ctx)
+	case calculation.FieldCardRatio:
+		return m.OldCardRatio(ctx)
+	case calculation.FieldMagicRatio:
+		return m.OldMagicRatio(ctx)
+	}
+	return nil, fmt.Errorf("unknown Calculation field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CalculationMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case calculation.FieldCardID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCardID(v)
+		return nil
+	case calculation.FieldMagicID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMagicID(v)
+		return nil
+	case calculation.FieldCardRatio:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCardRatio(v)
+		return nil
+	case calculation.FieldMagicRatio:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMagicRatio(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Calculation field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *CalculationMutation) AddedFields() []string {
+	var fields []string
+	if m.addcard_ratio != nil {
+		fields = append(fields, calculation.FieldCardRatio)
+	}
+	if m.addmagic_ratio != nil {
+		fields = append(fields, calculation.FieldMagicRatio)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *CalculationMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case calculation.FieldCardRatio:
+		return m.AddedCardRatio()
+	case calculation.FieldMagicRatio:
+		return m.AddedMagicRatio()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CalculationMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case calculation.FieldCardRatio:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCardRatio(v)
+		return nil
+	case calculation.FieldMagicRatio:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddMagicRatio(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Calculation numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *CalculationMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *CalculationMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *CalculationMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Calculation nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *CalculationMutation) ResetField(name string) error {
+	switch name {
+	case calculation.FieldCardID:
+		m.ResetCardID()
+		return nil
+	case calculation.FieldMagicID:
+		m.ResetMagicID()
+		return nil
+	case calculation.FieldCardRatio:
+		m.ResetCardRatio()
+		return nil
+	case calculation.FieldMagicRatio:
+		m.ResetMagicRatio()
+		return nil
+	}
+	return fmt.Errorf("unknown Calculation field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *CalculationMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *CalculationMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *CalculationMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *CalculationMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *CalculationMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *CalculationMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *CalculationMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Calculation unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *CalculationMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Calculation edge %s", name)
+}
 
 // CardMutation represents an operation that mutates the Card nodes in the graph.
 type CardMutation struct {

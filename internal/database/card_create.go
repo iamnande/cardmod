@@ -32,6 +32,14 @@ func (cc *CardCreate) SetID(u uuid.UUID) *CardCreate {
 	return cc
 }
 
+// SetNillableID sets the "id" field if the given value is not nil.
+func (cc *CardCreate) SetNillableID(u *uuid.UUID) *CardCreate {
+	if u != nil {
+		cc.SetID(*u)
+	}
+	return cc
+}
+
 // Mutation returns the CardMutation object of the builder.
 func (cc *CardCreate) Mutation() *CardMutation {
 	return cc.mutation

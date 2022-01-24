@@ -32,6 +32,14 @@ func (mc *MagicCreate) SetID(u uuid.UUID) *MagicCreate {
 	return mc
 }
 
+// SetNillableID sets the "id" field if the given value is not nil.
+func (mc *MagicCreate) SetNillableID(u *uuid.UUID) *MagicCreate {
+	if u != nil {
+		mc.SetID(*u)
+	}
+	return mc
+}
+
 // Mutation returns the MagicMutation object of the builder.
 func (mc *MagicCreate) Mutation() *MagicMutation {
 	return mc.mutation

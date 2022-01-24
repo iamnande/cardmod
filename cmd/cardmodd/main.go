@@ -32,10 +32,6 @@ var (
 
 func main() {
 
-	// api: initialize root context
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
 	// api: initialize application config
 	cfg := config.MustLoad()
 
@@ -54,19 +50,23 @@ func main() {
 	// api: initialize repositories
 	cardRepository := repositories.NewCardRepository(dbClient)
 	magicRepository := repositories.NewMagicRepository(dbClient)
+	calculationRepository := repositories.NewCalculationRepository(dbClient)
 
 	// api: initialize the gRPC server
 	grpcServer := grpc.NewServer(&grpc.ServerConfig{
 		Logger:  log,
-		Version: "v1.0.0",
 		Port:    cfg.GRPCPort,
+		Version: ServiceVersion,
 
 		// Repositories
-		CardRepository:  cardRepository,
-		MagicRepository: magicRepository,
+		CardRepository:        cardRepository,
+		MagicRepository:       magicRepository,
+		CalculationRepository: calculationRepository,
 	})
 
 	// api: initialize REST server
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	restServer, err := rest.NewServer(&rest.ServerConfig{
 		Context:      ctx,
 		Logger:       log,
@@ -103,36 +103,32 @@ func main() {
 	signal.Notify(doneChan, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP)
 	<-doneChan
 	log.Info("shutdown signal received")
-	cancel()
 
 	// api: setup graceful gRPC server stop
-	grpcStop := stopServer(func(ctx context.Context) {
+	grpcWait, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	go func() {
 		log.Info("stopping gRPC server")
 		grpcServer.Stop()
-	})
+		cancel()
+	}()
 
 	// api: setup graceful REST server stop
-	restStop := stopServer(func(ctx context.Context) {
+	restWait, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	go func() {
 		log.Info("stopping REST server")
 		if err = restServer.Stop(ctx); err != nil {
 			log.Error(err, "failed to stop REST server")
 		}
-	})
+		cancel()
+	}()
 
-	// api: gracefully stop all the things
-	<-grpcStop.Done()
-	<-restStop.Done()
+	// api: wait to gracefully stop all the things
+	<-grpcWait.Done()
+	<-restWait.Done()
 
 	// api: we've completely closed everything, goodbye
 	log.Info("goodbye, neo.")
 
-}
-
-func stopServer(stopHandler func(context.Context)) context.Context {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	go func() {
-		stopHandler(ctx)
-		cancel()
-	}()
-	return ctx
 }

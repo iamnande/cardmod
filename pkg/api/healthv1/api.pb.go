@@ -75,6 +75,8 @@ func (ServiceStatus) EnumDescriptor() ([]byte, []int) {
 }
 
 // HealthCheckRequest is the request model of the heartbeat endpoint.
+// TODO: enable service specific checking
+//       services so far: api (implicit)?, database?.
 type HealthCheckRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -114,6 +116,7 @@ func (*HealthCheckRequest) Descriptor() ([]byte, []int) {
 }
 
 // HealthCheckRequest is the response model of the heartbeat endpoint.
+// TODO: enable service wholistic/specific response
 type HealthCheckResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
