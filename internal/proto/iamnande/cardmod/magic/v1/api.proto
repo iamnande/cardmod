@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package iamnande.cardmod.magic.v1;
 
+import "google/api/annotations.proto";
 import "validate/validate.proto";
 import "iamnande/cardmod/magic/v1/magic.proto";
 
@@ -11,10 +12,18 @@ option go_package = "github.com/iamnande/cardmod/pkg/api/magicv1;magicv1";
 service MagicAPI {
 
     // ListMagics lists all available magic resources.
-    rpc ListMagics(ListMagicsRequest) returns (ListMagicsResponse);
+    rpc ListMagics(ListMagicsRequest) returns (ListMagicsResponse) {
+        option (google.api.http) = {
+            get: "/v1/magics"
+        };
+    }
 
     // GetMagic gets a single magic.
-    rpc GetMagic(GetMagicRequest) returns (Magic);
+    rpc GetMagic(GetMagicRequest) returns (Magic) {
+        option (google.api.http) = {
+            get: "/v1/magics/{magic_id}"
+        };
+    }
 
 }
 

@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"database/sql"
+	"errors"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -16,6 +18,7 @@ import (
 	"github.com/iamnande/cardmod/internal/logger"
 	"github.com/iamnande/cardmod/internal/repositories"
 	"github.com/iamnande/cardmod/internal/server/grpc"
+	"github.com/iamnande/cardmod/internal/server/rest"
 )
 
 var (
@@ -61,12 +64,37 @@ func main() {
 		CalculationRepository: calculationRepository,
 	})
 
+	// api: initialize REST server
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	restServer, err := rest.NewServer(&rest.ServerConfig{
+		Context:      ctx,
+		Logger:       log,
+		GRPCEndpoint: cfg.GRPCPort,
+		RESTEndpoint: cfg.RESTPort,
+	})
+	if err != nil {
+		log.Error(err, "failed to initialize REST server instance")
+		os.Exit(1)
+	}
+
 	// api: start gRPC listener
 	go func() {
 		log.Info("starting gRPC server")
 		if err = grpcServer.Serve(); err != nil {
 			log.Error(err, "failed to start gRPC server")
 			os.Exit(1)
+		}
+	}()
+
+	// api: start REST listener
+	go func() {
+		log.Info("starting REST server")
+		if err = restServer.Serve(); err != nil {
+			if !errors.Is(err, http.ErrServerClosed) {
+				log.Error(err, "failed to start REST server")
+				os.Exit(1)
+			}
 		}
 	}()
 
@@ -77,7 +105,7 @@ func main() {
 	log.Info("shutdown signal received")
 
 	// api: setup graceful gRPC server stop
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	grpcWait, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 	go func() {
 		log.Info("stopping gRPC server")
@@ -85,8 +113,20 @@ func main() {
 		cancel()
 	}()
 
+	// api: setup graceful REST server stop
+	restWait, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	go func() {
+		log.Info("stopping REST server")
+		if err = restServer.Stop(ctx); err != nil {
+			log.Error(err, "failed to stop REST server")
+		}
+		cancel()
+	}()
+
 	// api: wait to gracefully stop all the things
-	<-ctx.Done()
+	<-grpcWait.Done()
+	<-restWait.Done()
 
 	// api: we've completely closed everything, goodbye
 	log.Info("goodbye, neo.")

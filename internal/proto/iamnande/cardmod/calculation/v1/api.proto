@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package iamnande.cardmod.calculation.v1;
 
+import "google/api/annotations.proto";
 import "validate/validate.proto";
 
 option go_package = "github.com/iamnande/cardmod/pkg/api/calculationv1;calculationv1";
@@ -10,7 +11,12 @@ option go_package = "github.com/iamnande/cardmod/pkg/api/calculationv1;calculati
 service CalculationAPI {
 
     // Calculate will calculate the number, and which type, of cards are needed for n number of a given magic.
-    rpc Calculate(CalculateRequest) returns (CalculateResponse);
+    rpc Calculate(CalculateRequest) returns (CalculateResponse) {
+        option (google.api.http) = {
+            post: "/v1/calculate"
+            body: "*"
+        };
+    }
 
 }
 
