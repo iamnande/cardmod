@@ -1,12 +1,6 @@
 name: Unit
 
-# TODO: I don't like doing anything on main. Find a way to make codecove happy
-#       without doing this on main.
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: [ pull_request ]
 
 jobs:
   test:
