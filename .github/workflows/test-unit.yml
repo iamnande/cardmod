@@ -15,9 +15,3 @@ jobs:
 
       - name: Run Test Suite
         run: make test-unit
-
-      - name: Record Code Coverage
-        uses: codecov/codecov-action@v2
-        with:
-          files: ./coverage/unit/coverage.txt
-          flags: unittests
