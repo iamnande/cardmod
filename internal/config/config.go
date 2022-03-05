@@ -1,10 +1,8 @@
 package config
 
 import (
-	"sync"
+	"fmt"
 	"time"
-
-	"github.com/caarlos0/env/v6"
 )
 
 const (
@@ -12,22 +10,32 @@ const (
 	// appEnvPrefix is the application level environment variable prefix to search under.
 	appEnvPrefix = "CARDMOD_"
 
-	// DefaultEnvironment is the default environment name.
+	// defaultEnvironment is the default environment name.
 	defaultEnvironment = "local"
 
-	// DefaultServerPort is the default port listener for the gRPC server.
+	// defaultDatabaseHostname is the default database hostname.
+	defaultDatabaseHostname = "localhost"
+
+	// defaultDatabasePort is the default database port.
+	defaultDatabasePort = 5432
+
+	// defaultDatabaseName is the default database name.
+	defaultDatabaseName = "cardmod"
+
+	// defaultDatabaseSSLMode is the default database SSL mode.
+	defaultDatabaseSSLMode = "disable"
+
+	// defaultDatabaseUsername is the default database username.
+	defaultDatabaseUsername = "cardmod"
+
+	// defaultDatabasePassword is the default database password.
+	defaultDatabasePassword = "cardmod"
+
+	// defaultServerPort is the default port listener for the gRPC server.
 	defaultServerPort = 9000
 
-	// DefaultServerShutdownGracePeriod is the default timeout of the graceful shutdown.
+	// defaultServerShutdownGracePeriod is the default timeout of the graceful shutdown.
 	defaultServerShutdownGracePeriod = time.Second * 5
-)
-
-var (
-	// config is the private instance loaded during API instantiation.
-	config *Config
-
-	// once is used to ensure the configuration is loaded only one time.
-	once sync.Once
 )
 
 // Config is the configuration mechanism used for various instantiations
@@ -37,11 +45,42 @@ type Config struct {
 	// Environment is the name of the environment where the service is running.
 	Environment string `env:"ENVIRONMENT" json:"environment" yaml:"environment"`
 
+	// Database is the database specific configurations.
+	Database *DatabaseConfig `envPrefix:"DATABASE_" json:"database" yaml:"database"`
+
 	// Server is the server specific configurations.
 	Server *ServerConfig `envPrefix:"SERVER_" json:"server" yaml:"server"`
 }
 
-// ServerConfig is the gRPC server configuration mechanism.
+// DatabaseConfig is the database configuration.
+type DatabaseConfig struct {
+
+	// Hostname is the hostname of the database.
+	Hostname string `env:"HOSTNAME" json:"hostname" yaml:"hostname"`
+
+	// Port is the port of the database.
+	Port int `env:"PORT" json:"port" yaml:"port"`
+
+	// Name is the name of the database to connect to.
+	Name string `env:"NAME" json:"name" yaml:"name"`
+
+	// SSLMode is the database SSL mode used for connection.
+	SSLMode string `env:"SSL_MODE" json:"ssl_mode" yaml:"ssl_mode"`
+
+	// Username is the username to connect to the database with.
+	Username string `env:"USERNAME" json:"username" yaml:"username"`
+
+	// Password is the password to connect to the database with.
+	Password string `env:"PASSWORD" json:"password" yaml:"password"`
+}
+
+// DSN is a stringer method on the DatabaseConfig attributes to construct a DSN.
+func (dc *DatabaseConfig) DSN() string {
+	return fmt.Sprintf("postgres://%s:%d/%s?sslmode=%s&user=%s&password=%s",
+		dc.Hostname, dc.Port, dc.Name, dc.SSLMode, dc.Username, dc.Password)
+}
+
+// ServerConfig is the gRPC server configuration.
 type ServerConfig struct {
 
 	// Port is the port the gRPC server will listen on.
@@ -52,36 +91,7 @@ type ServerConfig struct {
 	ShutdownGracePeriod time.Duration `env:"SHUTDOWN_GRACE_PERIOD" json:"shutdown_grace_period" yaml:"shutdown_grace_period"`
 }
 
-// MustLoad will load the configuration from the runtime environment and
-// will panic if unable to do so.
-func MustLoad() *Config {
-	once.Do(func() {
-		config = mustLoad()
-	})
-	return config
-}
-
-// mustLoad is the underlying doer of fetching the *Config from the
-// environment.
-func mustLoad() *Config {
-
-	// load: initialize new instance of config
-	cfg := &Config{
-		Environment: defaultEnvironment,
-		Server: &ServerConfig{
-			Port:                defaultServerPort,
-			ShutdownGracePeriod: defaultServerShutdownGracePeriod,
-		},
-	}
-
-	// load: extract attributes from environment variables
-	// NOTE: unless there are required attributes that are not supplied, which
-	// is not how we use this library, this library will not error.
-	_ = env.Parse(cfg, env.Options{
-		Prefix: appEnvPrefix,
-	})
-
-	// load: return constructed Config instance
-	return cfg
-
+// PortListener is a stringer method on the Port attribute.
+func (sc *ServerConfig) PortListener() string {
+	return fmt.Sprintf(":%d", sc.Port)
 }

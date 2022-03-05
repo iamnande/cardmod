@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package iamnande.cardmod.limitbreak.v1;
+
+option go_package = "github.com/iamnande/cardmod/pkg/api/limitbreakv1;limitbreakv1";
+
+// An limitbreak resource.
+message LimitBreak {
+
+    // Name of the limitbreak.
+    string name = 1;
+
+}

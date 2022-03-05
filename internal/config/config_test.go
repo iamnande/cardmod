@@ -1,53 +1,42 @@
 package config
 
 import (
-	"os"
-
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Config", func() {
 
-	Describe("mustLoad", func() {
+	Describe("PortListener", func() {
 
-		// Default Test Cases
-		Context("Default Values", func() {
-
-			// No env vars supplied
-			When("No Environment Variables are Supplied", func() {
-				It("Loads All Defaults", func() {
-					actual := mustLoad()
-					Expect(actual.Environment).To(Equal(defaultEnvironment))
-					Expect(actual.Server.Port).To(Equal(defaultServerPort))
-					Expect(actual.Server.ShutdownGracePeriod).To(Equal(defaultServerShutdownGracePeriod))
-				})
+		// Can properly translate.
+		When("Port is 9000", func() {
+			It("Translates to ':9000'", func() {
+				cfg := &ServerConfig{
+					Port: 9000,
+				}
+				actual := cfg.PortListener()
+				Expect(actual).To(Equal(":9000"))
 			})
-
-			// Some env vars supplied
-			When("Some Environment Variables are Supplied", func() {
-				It("Injects Supplied & Defaults the Rest", func() {
-					expected := "test"
-					_ = os.Setenv("CARDMOD_ENVIRONMENT", expected)
-					actual := mustLoad()
-					Expect(actual.Environment).To(Equal(expected))
-					Expect(actual.Server.Port).To(Equal(defaultServerPort))
-					Expect(actual.Server.ShutdownGracePeriod).To(Equal(defaultServerShutdownGracePeriod))
-				})
-			})
-
 		})
 
 	})
 
-	Describe("MustLoad", func() {
+	Describe("DSN", func() {
 
-		// Is only loaded truly once
-		When("Called Multiple Times", func() {
-			It("Uses Once-ed/Cached Config", func() {
-				expected := MustLoad()
-				actual := MustLoad()
-				Expect(actual).To(Equal(expected))
+		// Can properly translate.
+		When("Values are Provide", func() {
+			It("Translates Properly", func() {
+				cfg := &DatabaseConfig{
+					Hostname: "hostname",
+					Port:     12345,
+					Name:     "name",
+					SSLMode:  "prefer",
+					Username: "username",
+					Password: "password",
+				}
+				actual := cfg.DSN()
+				Expect(actual).To(Equal("postgres://hostname:12345/name?sslmode=prefer&user=username&password=password"))
 			})
 		})
 

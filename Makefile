@@ -15,7 +15,7 @@ APP_LOG_FMT  := `/bin/date "+%Y-%m-%d %H:%M:%S %z [$(APP_NAME)]"`
 # Runtime Targets
 # --------------------------------------------------
 .PHONY: up
-up: down ## runtime: start local environment
+up: build-binary ## runtime: start local environment
 	@echo $(APP_LOG_FMT) "starting local environment"
 	@docker compose up --build --remove-orphans --detach
 
