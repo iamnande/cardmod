@@ -25,6 +25,12 @@ func (cc *CardCreate) SetName(s string) *CardCreate {
 	return cc
 }
 
+// SetLevel sets the "level" field.
+func (cc *CardCreate) SetLevel(i int32) *CardCreate {
+	cc.mutation.SetLevel(i)
+	return cc
+}
+
 // Mutation returns the CardMutation object of the builder.
 func (cc *CardCreate) Mutation() *CardMutation {
 	return cc.mutation
@@ -103,6 +109,14 @@ func (cc *CardCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`database: validator failed for field "name": %w`, err)}
 		}
 	}
+	if _, ok := cc.mutation.Level(); !ok {
+		return &ValidationError{Name: "level", err: errors.New(`database: missing required field "level"`)}
+	}
+	if v, ok := cc.mutation.Level(); ok {
+		if err := card.LevelValidator(v); err != nil {
+			return &ValidationError{Name: "level", err: fmt.Errorf(`database: validator failed for field "level": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -137,6 +151,14 @@ func (cc *CardCreate) createSpec() (*Card, *sqlgraph.CreateSpec) {
 			Column: card.FieldName,
 		})
 		_node.Name = value
+	}
+	if value, ok := cc.mutation.Level(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt32,
+			Value:  value,
+			Column: card.FieldLevel,
+		})
+		_node.Level = value
 	}
 	return _node, _spec
 }

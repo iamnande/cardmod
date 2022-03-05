@@ -32,6 +32,12 @@ func (mu *MagicUpdate) SetName(s string) *MagicUpdate {
 	return mu
 }
 
+// SetPurpose sets the "purpose" field.
+func (mu *MagicUpdate) SetPurpose(m magic.Purpose) *MagicUpdate {
+	mu.mutation.SetPurpose(m)
+	return mu
+}
+
 // Mutation returns the MagicMutation object of the builder.
 func (mu *MagicUpdate) Mutation() *MagicMutation {
 	return mu.mutation
@@ -104,6 +110,11 @@ func (mu *MagicUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf("database: validator failed for field \"name\": %w", err)}
 		}
 	}
+	if v, ok := mu.mutation.Purpose(); ok {
+		if err := magic.PurposeValidator(v); err != nil {
+			return &ValidationError{Name: "purpose", err: fmt.Errorf("database: validator failed for field \"purpose\": %w", err)}
+		}
+	}
 	return nil
 }
 
@@ -132,6 +143,13 @@ func (mu *MagicUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: magic.FieldName,
 		})
 	}
+	if value, ok := mu.mutation.Purpose(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Value:  value,
+			Column: magic.FieldPurpose,
+		})
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, mu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{magic.Label}
@@ -154,6 +172,12 @@ type MagicUpdateOne struct {
 // SetName sets the "name" field.
 func (muo *MagicUpdateOne) SetName(s string) *MagicUpdateOne {
 	muo.mutation.SetName(s)
+	return muo
+}
+
+// SetPurpose sets the "purpose" field.
+func (muo *MagicUpdateOne) SetPurpose(m magic.Purpose) *MagicUpdateOne {
+	muo.mutation.SetPurpose(m)
 	return muo
 }
 
@@ -236,6 +260,11 @@ func (muo *MagicUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf("database: validator failed for field \"name\": %w", err)}
 		}
 	}
+	if v, ok := muo.mutation.Purpose(); ok {
+		if err := magic.PurposeValidator(v); err != nil {
+			return &ValidationError{Name: "purpose", err: fmt.Errorf("database: validator failed for field \"purpose\": %w", err)}
+		}
+	}
 	return nil
 }
 
@@ -279,6 +308,13 @@ func (muo *MagicUpdateOne) sqlSave(ctx context.Context) (_node *Magic, err error
 			Type:   field.TypeString,
 			Value:  value,
 			Column: magic.FieldName,
+		})
+	}
+	if value, ok := muo.mutation.Purpose(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Value:  value,
+			Column: magic.FieldPurpose,
 		})
 	}
 	_node = &Magic{config: muo.config}

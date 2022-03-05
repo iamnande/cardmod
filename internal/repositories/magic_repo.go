@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"google.golang.org/grpc/codes"
 
@@ -30,7 +31,24 @@ func NewMagicRepository(client *database.Client) *magicRepository {
 }
 
 // CreateMagic creates a new magic.
-func (r *magicRepository) CreateMagic(ctx context.Context, name string) (models.Magic, error) {
+func (r *magicRepository) CreateMagic(ctx context.Context, name string, purpose string) (models.Magic, error) {
+
+	// create: determine purpose
+	var magicPurpose magic.Purpose
+	switch purpose {
+	case magic.PurposeIndirect.String():
+		magicPurpose = magic.PurposeIndirect
+	case magic.PurposeOffensive.String():
+		magicPurpose = magic.PurposeOffensive
+	case magic.PurposeRestorative.String():
+		magicPurpose = magic.PurposeRestorative
+	default:
+		return nil, &cerrors.APIError{
+			Code:      codes.InvalidArgument,
+			Message:   "invalid magic purpose",
+			BaseError: fmt.Errorf("purpose %s is invalid", purpose),
+		}
+	}
 
 	// create: initialize transaction
 	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{})
@@ -39,8 +57,9 @@ func (r *magicRepository) CreateMagic(ctx context.Context, name string) (models.
 	}
 
 	// create: create the magic
-	magic, err := tx.Magic.Create().
+	m, err := tx.Magic.Create().
 		SetName(name).
+		SetPurpose(magicPurpose).
 		Save(ctx)
 	if err != nil {
 		if database.IsConstraintError(err) {
@@ -54,7 +73,7 @@ func (r *magicRepository) CreateMagic(ctx context.Context, name string) (models.
 	}
 
 	// create: return the newly created magic
-	return marshalMagicDAO(magic), tx.Commit()
+	return marshalMagicDAO(m), tx.Commit()
 
 }
 

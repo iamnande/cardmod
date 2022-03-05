@@ -17,6 +17,8 @@ type Magic struct {
 	ID int `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// Purpose holds the value of the "purpose" field.
+	Purpose magic.Purpose `json:"purpose,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -26,7 +28,7 @@ func (*Magic) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case magic.FieldID:
 			values[i] = new(sql.NullInt64)
-		case magic.FieldName:
+		case magic.FieldName, magic.FieldPurpose:
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Magic", columns[i])
@@ -54,6 +56,12 @@ func (m *Magic) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				m.Name = value.String
+			}
+		case magic.FieldPurpose:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field purpose", values[i])
+			} else if value.Valid {
+				m.Purpose = magic.Purpose(value.String)
 			}
 		}
 	}
@@ -85,6 +93,8 @@ func (m *Magic) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", m.ID))
 	builder.WriteString(", name=")
 	builder.WriteString(m.Name)
+	builder.WriteString(", purpose=")
+	builder.WriteString(fmt.Sprintf("%v", m.Purpose))
 	builder.WriteByte(')')
 	return builder.String()
 }

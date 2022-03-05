@@ -10,31 +10,31 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockCard is a mock of Card interface.
-type MockCard struct {
+// MockItem is a mock of Item interface.
+type MockItem struct {
 	ctrl     *gomock.Controller
-	recorder *MockCardMockRecorder
+	recorder *MockItemMockRecorder
 }
 
-// MockCardMockRecorder is the mock recorder for MockCard.
-type MockCardMockRecorder struct {
-	mock *MockCard
+// MockItemMockRecorder is the mock recorder for MockItem.
+type MockItemMockRecorder struct {
+	mock *MockItem
 }
 
-// NewMockCard creates a new mock instance.
-func NewMockCard(ctrl *gomock.Controller) *MockCard {
-	mock := &MockCard{ctrl: ctrl}
-	mock.recorder = &MockCardMockRecorder{mock}
+// NewMockItem creates a new mock instance.
+func NewMockItem(ctrl *gomock.Controller) *MockItem {
+	mock := &MockItem{ctrl: ctrl}
+	mock.recorder = &MockItemMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockCard) EXPECT() *MockCardMockRecorder {
+func (m *MockItem) EXPECT() *MockItemMockRecorder {
 	return m.recorder
 }
 
 // Name mocks base method.
-func (m *MockCard) Name() string {
+func (m *MockItem) Name() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Name")
 	ret0, _ := ret[0].(string)
@@ -42,7 +42,7 @@ func (m *MockCard) Name() string {
 }
 
 // Name indicates an expected call of Name.
-func (mr *MockCardMockRecorder) Name() *gomock.Call {
+func (mr *MockItemMockRecorder) Name() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockCard)(nil).Name))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockItem)(nil).Name))
 }

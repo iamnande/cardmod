@@ -30,7 +30,7 @@ func NewCardRepository(client *database.Client) *cardRepository {
 }
 
 // CreateCard creates a new card.
-func (r *cardRepository) CreateCard(ctx context.Context, name string) (models.Card, error) {
+func (r *cardRepository) CreateCard(ctx context.Context, name string, level int32) (models.Card, error) {
 
 	// create: initialize transaction
 	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{})
@@ -41,6 +41,7 @@ func (r *cardRepository) CreateCard(ctx context.Context, name string) (models.Ca
 	// create: create the card
 	card, err := tx.Card.Create().
 		SetName(name).
+		SetLevel(level).
 		Save(ctx)
 	if err != nil {
 		if database.IsConstraintError(err) {

@@ -68,7 +68,8 @@ func (a *api) ListMagics(ctx context.Context, _ *magicv1.ListMagicsRequest) (*ma
 // marshalMagic translates the DAO model to an API model.
 func marshalMagic(magic models.Magic) *magicv1.Magic {
 	return &magicv1.Magic{
-		Name: magic.Name(),
+		Name:    magic.Name(),
+		Purpose: magic.Purpose(),
 	}
 }
 

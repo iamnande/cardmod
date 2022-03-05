@@ -32,6 +32,19 @@ func (cu *CardUpdate) SetName(s string) *CardUpdate {
 	return cu
 }
 
+// SetLevel sets the "level" field.
+func (cu *CardUpdate) SetLevel(i int32) *CardUpdate {
+	cu.mutation.ResetLevel()
+	cu.mutation.SetLevel(i)
+	return cu
+}
+
+// AddLevel adds i to the "level" field.
+func (cu *CardUpdate) AddLevel(i int32) *CardUpdate {
+	cu.mutation.AddLevel(i)
+	return cu
+}
+
 // Mutation returns the CardMutation object of the builder.
 func (cu *CardUpdate) Mutation() *CardMutation {
 	return cu.mutation
@@ -104,6 +117,11 @@ func (cu *CardUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf("database: validator failed for field \"name\": %w", err)}
 		}
 	}
+	if v, ok := cu.mutation.Level(); ok {
+		if err := card.LevelValidator(v); err != nil {
+			return &ValidationError{Name: "level", err: fmt.Errorf("database: validator failed for field \"level\": %w", err)}
+		}
+	}
 	return nil
 }
 
@@ -132,6 +150,20 @@ func (cu *CardUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: card.FieldName,
 		})
 	}
+	if value, ok := cu.mutation.Level(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt32,
+			Value:  value,
+			Column: card.FieldLevel,
+		})
+	}
+	if value, ok := cu.mutation.AddedLevel(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt32,
+			Value:  value,
+			Column: card.FieldLevel,
+		})
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{card.Label}
@@ -154,6 +186,19 @@ type CardUpdateOne struct {
 // SetName sets the "name" field.
 func (cuo *CardUpdateOne) SetName(s string) *CardUpdateOne {
 	cuo.mutation.SetName(s)
+	return cuo
+}
+
+// SetLevel sets the "level" field.
+func (cuo *CardUpdateOne) SetLevel(i int32) *CardUpdateOne {
+	cuo.mutation.ResetLevel()
+	cuo.mutation.SetLevel(i)
+	return cuo
+}
+
+// AddLevel adds i to the "level" field.
+func (cuo *CardUpdateOne) AddLevel(i int32) *CardUpdateOne {
+	cuo.mutation.AddLevel(i)
 	return cuo
 }
 
@@ -236,6 +281,11 @@ func (cuo *CardUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf("database: validator failed for field \"name\": %w", err)}
 		}
 	}
+	if v, ok := cuo.mutation.Level(); ok {
+		if err := card.LevelValidator(v); err != nil {
+			return &ValidationError{Name: "level", err: fmt.Errorf("database: validator failed for field \"level\": %w", err)}
+		}
+	}
 	return nil
 }
 
@@ -279,6 +329,20 @@ func (cuo *CardUpdateOne) sqlSave(ctx context.Context) (_node *Card, err error) 
 			Type:   field.TypeString,
 			Value:  value,
 			Column: card.FieldName,
+		})
+	}
+	if value, ok := cuo.mutation.Level(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt32,
+			Value:  value,
+			Column: card.FieldLevel,
+		})
+	}
+	if value, ok := cuo.mutation.AddedLevel(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt32,
+			Value:  value,
+			Column: card.FieldLevel,
 		})
 	}
 	_node = &Card{config: cuo.config}

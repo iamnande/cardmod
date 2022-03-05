@@ -10,31 +10,45 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockItem is a mock of Item interface.
-type MockItem struct {
+// MockCard is a mock of Card interface.
+type MockCard struct {
 	ctrl     *gomock.Controller
-	recorder *MockItemMockRecorder
+	recorder *MockCardMockRecorder
 }
 
-// MockItemMockRecorder is the mock recorder for MockItem.
-type MockItemMockRecorder struct {
-	mock *MockItem
+// MockCardMockRecorder is the mock recorder for MockCard.
+type MockCardMockRecorder struct {
+	mock *MockCard
 }
 
-// NewMockItem creates a new mock instance.
-func NewMockItem(ctrl *gomock.Controller) *MockItem {
-	mock := &MockItem{ctrl: ctrl}
-	mock.recorder = &MockItemMockRecorder{mock}
+// NewMockCard creates a new mock instance.
+func NewMockCard(ctrl *gomock.Controller) *MockCard {
+	mock := &MockCard{ctrl: ctrl}
+	mock.recorder = &MockCardMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockItem) EXPECT() *MockItemMockRecorder {
+func (m *MockCard) EXPECT() *MockCardMockRecorder {
 	return m.recorder
 }
 
+// Level mocks base method.
+func (m *MockCard) Level() int32 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Level")
+	ret0, _ := ret[0].(int32)
+	return ret0
+}
+
+// Level indicates an expected call of Level.
+func (mr *MockCardMockRecorder) Level() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Level", reflect.TypeOf((*MockCard)(nil).Level))
+}
+
 // Name mocks base method.
-func (m *MockItem) Name() string {
+func (m *MockCard) Name() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Name")
 	ret0, _ := ret[0].(string)
@@ -42,7 +56,7 @@ func (m *MockItem) Name() string {
 }
 
 // Name indicates an expected call of Name.
-func (mr *MockItemMockRecorder) Name() *gomock.Call {
+func (mr *MockCardMockRecorder) Name() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockItem)(nil).Name))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockCard)(nil).Name))
 }

@@ -58,6 +58,8 @@ func (m *Magic) validate(all bool) error {
 
 	// no validation rules for Name
 
+	// no validation rules for Purpose
+
 	if len(errors) > 0 {
 		return MagicMultiError(errors)
 	}

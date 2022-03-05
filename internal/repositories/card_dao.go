@@ -14,6 +14,10 @@ func (db *cardDAOWrapper) Name() string {
 	return db.card.Name
 }
 
+func (db *cardDAOWrapper) Level() int32 {
+	return db.card.Level
+}
+
 // marshalCardDAO creates a DAO instance from the database schema.
 func marshalCardDAO(record *database.Card) models.Card {
 	return &cardDAOWrapper{record}

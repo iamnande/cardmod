@@ -12,6 +12,7 @@ var (
 	CardsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "level", Type: field.TypeInt32},
 	}
 	// CardsTable holds the schema information for the "cards" table.
 	CardsTable = &schema.Table{
@@ -45,6 +46,7 @@ var (
 	MagicsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "purpose", Type: field.TypeEnum, Enums: []string{"Offensive", "Restorative", "Indirect"}},
 	}
 	// MagicsTable holds the schema information for the "magics" table.
 	MagicsTable = &schema.Table{

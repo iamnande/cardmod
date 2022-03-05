@@ -14,6 +14,7 @@ type Card struct {
 func (Card) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").Unique().NotEmpty(),
+		field.Int32("level").Positive().Range(1, 10),
 	}
 }
 

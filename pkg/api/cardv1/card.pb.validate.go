@@ -58,6 +58,8 @@ func (m *Card) validate(all bool) error {
 
 	// no validation rules for Name
 
+	// no validation rules for Level
+
 	if len(errors) > 0 {
 		return CardMultiError(errors)
 	}

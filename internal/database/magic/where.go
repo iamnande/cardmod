@@ -208,6 +208,54 @@ func NameContainsFold(v string) predicate.Magic {
 	})
 }
 
+// PurposeEQ applies the EQ predicate on the "purpose" field.
+func PurposeEQ(v Purpose) predicate.Magic {
+	return predicate.Magic(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPurpose), v))
+	})
+}
+
+// PurposeNEQ applies the NEQ predicate on the "purpose" field.
+func PurposeNEQ(v Purpose) predicate.Magic {
+	return predicate.Magic(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldPurpose), v))
+	})
+}
+
+// PurposeIn applies the In predicate on the "purpose" field.
+func PurposeIn(vs ...Purpose) predicate.Magic {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Magic(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldPurpose), v...))
+	})
+}
+
+// PurposeNotIn applies the NotIn predicate on the "purpose" field.
+func PurposeNotIn(vs ...Purpose) predicate.Magic {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Magic(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldPurpose), v...))
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Magic) predicate.Magic {
 	return predicate.Magic(func(s *sql.Selector) {

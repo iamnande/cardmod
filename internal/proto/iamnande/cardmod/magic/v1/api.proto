@@ -23,15 +23,15 @@ message GetMagicRequest {
 
     // Name of the magic to get.
     string name  = 1 [(validate.rules).string = {
-        pattern:   "^[-, \\w]+$",
+        pattern: "^[-, \\w]+$",
         min_len: 3,
         max_len: 25,
-     }];
+    }];
 
 }
 
 // Request schema for the ListMagics request.
-// TODO: pagination, filtering, and sorting
+// TODO: filtering, and sorting (name, purpose)
 message ListMagicsRequest {}
 
 // Response schema for the ListMagics request.

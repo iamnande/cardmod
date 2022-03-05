@@ -71,7 +71,7 @@ func (x *GetCardRequest) GetName() string {
 }
 
 // Request schema for the ListCards request.
-// TODO: pagination, filtering, and sorting
+// TODO: filtering, and sorting (name, level)
 type ListCardsRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

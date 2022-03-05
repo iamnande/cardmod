@@ -20,6 +20,24 @@ func init() {
 	cardDescName := cardFields[0].Descriptor()
 	// card.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	card.NameValidator = cardDescName.Validators[0].(func(string) error)
+	// cardDescLevel is the schema descriptor for level field.
+	cardDescLevel := cardFields[1].Descriptor()
+	// card.LevelValidator is a validator for the "level" field. It is called by the builders before save.
+	card.LevelValidator = func() func(int32) error {
+		validators := cardDescLevel.Validators
+		fns := [...]func(int32) error{
+			validators[0].(func(int32) error),
+			validators[1].(func(int32) error),
+		}
+		return func(level int32) error {
+			for _, fn := range fns {
+				if err := fn(level); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	itemFields := schema.Item{}.Fields()
 	_ = itemFields
 	// itemDescName is the schema descriptor for name field.

@@ -97,6 +97,13 @@ func Name(v string) predicate.Card {
 	})
 }
 
+// Level applies equality check predicate on the "level" field. It's identical to LevelEQ.
+func Level(v int32) predicate.Card {
+	return predicate.Card(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldLevel), v))
+	})
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.Card {
 	return predicate.Card(func(s *sql.Selector) {
@@ -205,6 +212,82 @@ func NameEqualFold(v string) predicate.Card {
 func NameContainsFold(v string) predicate.Card {
 	return predicate.Card(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldName), v))
+	})
+}
+
+// LevelEQ applies the EQ predicate on the "level" field.
+func LevelEQ(v int32) predicate.Card {
+	return predicate.Card(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldLevel), v))
+	})
+}
+
+// LevelNEQ applies the NEQ predicate on the "level" field.
+func LevelNEQ(v int32) predicate.Card {
+	return predicate.Card(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldLevel), v))
+	})
+}
+
+// LevelIn applies the In predicate on the "level" field.
+func LevelIn(vs ...int32) predicate.Card {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Card(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldLevel), v...))
+	})
+}
+
+// LevelNotIn applies the NotIn predicate on the "level" field.
+func LevelNotIn(vs ...int32) predicate.Card {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Card(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldLevel), v...))
+	})
+}
+
+// LevelGT applies the GT predicate on the "level" field.
+func LevelGT(v int32) predicate.Card {
+	return predicate.Card(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldLevel), v))
+	})
+}
+
+// LevelGTE applies the GTE predicate on the "level" field.
+func LevelGTE(v int32) predicate.Card {
+	return predicate.Card(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldLevel), v))
+	})
+}
+
+// LevelLT applies the LT predicate on the "level" field.
+func LevelLT(v int32) predicate.Card {
+	return predicate.Card(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldLevel), v))
+	})
+}
+
+// LevelLTE applies the LTE predicate on the "level" field.
+func LevelLTE(v int32) predicate.Card {
+	return predicate.Card(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldLevel), v))
 	})
 }
 

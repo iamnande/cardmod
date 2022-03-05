@@ -10,4 +10,7 @@ message Magic {
     // Name of the magic.
     string name = 1;
 
+    // Purpose of the magic.
+    string purpose = 2;
+
 }

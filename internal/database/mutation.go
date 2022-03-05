@@ -38,6 +38,8 @@ type CardMutation struct {
 	typ           string
 	id            *int
 	name          *string
+	level         *int32
+	addlevel      *int32
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Card, error)
@@ -159,6 +161,62 @@ func (m *CardMutation) ResetName() {
 	m.name = nil
 }
 
+// SetLevel sets the "level" field.
+func (m *CardMutation) SetLevel(i int32) {
+	m.level = &i
+	m.addlevel = nil
+}
+
+// Level returns the value of the "level" field in the mutation.
+func (m *CardMutation) Level() (r int32, exists bool) {
+	v := m.level
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLevel returns the old "level" field's value of the Card entity.
+// If the Card object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CardMutation) OldLevel(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldLevel is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldLevel requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLevel: %w", err)
+	}
+	return oldValue.Level, nil
+}
+
+// AddLevel adds i to the "level" field.
+func (m *CardMutation) AddLevel(i int32) {
+	if m.addlevel != nil {
+		*m.addlevel += i
+	} else {
+		m.addlevel = &i
+	}
+}
+
+// AddedLevel returns the value that was added to the "level" field in this mutation.
+func (m *CardMutation) AddedLevel() (r int32, exists bool) {
+	v := m.addlevel
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLevel resets all changes to the "level" field.
+func (m *CardMutation) ResetLevel() {
+	m.level = nil
+	m.addlevel = nil
+}
+
 // Where appends a list predicates to the CardMutation builder.
 func (m *CardMutation) Where(ps ...predicate.Card) {
 	m.predicates = append(m.predicates, ps...)
@@ -178,9 +236,12 @@ func (m *CardMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CardMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 2)
 	if m.name != nil {
 		fields = append(fields, card.FieldName)
+	}
+	if m.level != nil {
+		fields = append(fields, card.FieldLevel)
 	}
 	return fields
 }
@@ -192,6 +253,8 @@ func (m *CardMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case card.FieldName:
 		return m.Name()
+	case card.FieldLevel:
+		return m.Level()
 	}
 	return nil, false
 }
@@ -203,6 +266,8 @@ func (m *CardMutation) OldField(ctx context.Context, name string) (ent.Value, er
 	switch name {
 	case card.FieldName:
 		return m.OldName(ctx)
+	case card.FieldLevel:
+		return m.OldLevel(ctx)
 	}
 	return nil, fmt.Errorf("unknown Card field %s", name)
 }
@@ -219,6 +284,13 @@ func (m *CardMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
+	case card.FieldLevel:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLevel(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Card field %s", name)
 }
@@ -226,13 +298,21 @@ func (m *CardMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *CardMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addlevel != nil {
+		fields = append(fields, card.FieldLevel)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *CardMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case card.FieldLevel:
+		return m.AddedLevel()
+	}
 	return nil, false
 }
 
@@ -241,6 +321,13 @@ func (m *CardMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *CardMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case card.FieldLevel:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLevel(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Card numeric field %s", name)
 }
@@ -270,6 +357,9 @@ func (m *CardMutation) ResetField(name string) error {
 	switch name {
 	case card.FieldName:
 		m.ResetName()
+		return nil
+	case card.FieldLevel:
+		m.ResetLevel()
 		return nil
 	}
 	return fmt.Errorf("unknown Card field %s", name)
@@ -914,6 +1004,7 @@ type MagicMutation struct {
 	typ           string
 	id            *int
 	name          *string
+	purpose       *magic.Purpose
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Magic, error)
@@ -1035,6 +1126,42 @@ func (m *MagicMutation) ResetName() {
 	m.name = nil
 }
 
+// SetPurpose sets the "purpose" field.
+func (m *MagicMutation) SetPurpose(value magic.Purpose) {
+	m.purpose = &value
+}
+
+// Purpose returns the value of the "purpose" field in the mutation.
+func (m *MagicMutation) Purpose() (r magic.Purpose, exists bool) {
+	v := m.purpose
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPurpose returns the old "purpose" field's value of the Magic entity.
+// If the Magic object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MagicMutation) OldPurpose(ctx context.Context) (v magic.Purpose, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldPurpose is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldPurpose requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPurpose: %w", err)
+	}
+	return oldValue.Purpose, nil
+}
+
+// ResetPurpose resets all changes to the "purpose" field.
+func (m *MagicMutation) ResetPurpose() {
+	m.purpose = nil
+}
+
 // Where appends a list predicates to the MagicMutation builder.
 func (m *MagicMutation) Where(ps ...predicate.Magic) {
 	m.predicates = append(m.predicates, ps...)
@@ -1054,9 +1181,12 @@ func (m *MagicMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *MagicMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 2)
 	if m.name != nil {
 		fields = append(fields, magic.FieldName)
+	}
+	if m.purpose != nil {
+		fields = append(fields, magic.FieldPurpose)
 	}
 	return fields
 }
@@ -1068,6 +1198,8 @@ func (m *MagicMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case magic.FieldName:
 		return m.Name()
+	case magic.FieldPurpose:
+		return m.Purpose()
 	}
 	return nil, false
 }
@@ -1079,6 +1211,8 @@ func (m *MagicMutation) OldField(ctx context.Context, name string) (ent.Value, e
 	switch name {
 	case magic.FieldName:
 		return m.OldName(ctx)
+	case magic.FieldPurpose:
+		return m.OldPurpose(ctx)
 	}
 	return nil, fmt.Errorf("unknown Magic field %s", name)
 }
@@ -1094,6 +1228,13 @@ func (m *MagicMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
+		return nil
+	case magic.FieldPurpose:
+		v, ok := value.(magic.Purpose)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPurpose(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Magic field %s", name)
@@ -1146,6 +1287,9 @@ func (m *MagicMutation) ResetField(name string) error {
 	switch name {
 	case magic.FieldName:
 		m.ResetName()
+		return nil
+	case magic.FieldPurpose:
+		m.ResetPurpose()
 		return nil
 	}
 	return fmt.Errorf("unknown Magic field %s", name)

@@ -9,6 +9,8 @@ const (
 	FieldID = "id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldLevel holds the string denoting the level field in the database.
+	FieldLevel = "level"
 	// Table holds the table name of the card in the database.
 	Table = "cards"
 )
@@ -17,6 +19,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldName,
+	FieldLevel,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -32,4 +35,6 @@ func ValidColumn(column string) bool {
 var (
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
+	// LevelValidator is a validator for the "level" field. It is called by the builders before save.
+	LevelValidator func(int32) error
 )

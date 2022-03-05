@@ -31,7 +31,7 @@ message GetCardRequest {
 }
 
 // Request schema for the ListCards request.
-// TODO: pagination, filtering, and sorting
+// TODO: filtering, and sorting (name, level)
 message ListCardsRequest {}
 
 // Response schema for the ListCards request.

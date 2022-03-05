@@ -28,7 +28,6 @@ func New(repo daos.CardDAO) *api {
 func (a *api) GetCard(ctx context.Context, req *cardv1.GetCardRequest) (*cardv1.Card, error) {
 
 	// get: fetch the card
-	// TODO: verify there wasn't a not found error
 	res, err := a.cardRepository.GetCard(ctx, req.GetName())
 	if err != nil {
 		if _, ok := err.(*cerrors.APIError); ok {
@@ -69,7 +68,8 @@ func (a *api) ListCards(ctx context.Context, _ *cardv1.ListCardsRequest) (*cardv
 // marshalCard translates the DAO model to an API model.
 func marshalCard(card models.Card) *cardv1.Card {
 	return &cardv1.Card{
-		Name: card.Name(),
+		Name:  card.Name(),
+		Level: card.Level(),
 	}
 }
 

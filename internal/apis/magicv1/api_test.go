@@ -57,24 +57,27 @@ var _ = Describe("MagicAPI", func() {
 			It("Should Get the Magic", func() {
 
 				// setup
-				expected := "L?Death"
+				expectedName := "Firaga"
+				expectedPurpose := "Offensive"
 
 				// init mock magic instance
 				fakeMagic := mockMagic.NewMockMagic(ctrl)
-				fakeMagic.EXPECT().Name().Return(expected)
+				fakeMagic.EXPECT().Name().Return(expectedName)
+				fakeMagic.EXPECT().Purpose().Return(expectedPurpose)
 
 				// mock repository call
 				req := &magicv1.GetMagicRequest{
-					Name: expected,
+					Name: expectedName,
 				}
-				magicDB.EXPECT().GetMagic(ctx, expected).Return(fakeMagic, nil)
+				magicDB.EXPECT().GetMagic(ctx, expectedName).Return(fakeMagic, nil)
 
 				// make the call
 				actual, err := magicAPI.GetMagic(ctx, req)
 
 				// validate expecations
 				Expect(err).To(BeNil())
-				Expect(actual.GetName()).To(Equal(expected))
+				Expect(actual.GetName()).To(Equal(expectedName))
+				Expect(actual.GetPurpose()).To(Equal(expectedPurpose))
 
 			})
 		})
@@ -132,6 +135,7 @@ var _ = Describe("MagicAPI", func() {
 			for i := 0; i < numMagics; i++ {
 				magic := mockMagic.NewMockMagic(ctrl)
 				magic.EXPECT().Name().Return(faker.Name().String()).AnyTimes()
+				magic.EXPECT().Purpose().Return("Indirect").AnyTimes()
 				magics = append(magics, magic)
 			}
 

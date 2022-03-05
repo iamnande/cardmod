@@ -25,6 +25,12 @@ func (mc *MagicCreate) SetName(s string) *MagicCreate {
 	return mc
 }
 
+// SetPurpose sets the "purpose" field.
+func (mc *MagicCreate) SetPurpose(m magic.Purpose) *MagicCreate {
+	mc.mutation.SetPurpose(m)
+	return mc
+}
+
 // Mutation returns the MagicMutation object of the builder.
 func (mc *MagicCreate) Mutation() *MagicMutation {
 	return mc.mutation
@@ -103,6 +109,14 @@ func (mc *MagicCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`database: validator failed for field "name": %w`, err)}
 		}
 	}
+	if _, ok := mc.mutation.Purpose(); !ok {
+		return &ValidationError{Name: "purpose", err: errors.New(`database: missing required field "purpose"`)}
+	}
+	if v, ok := mc.mutation.Purpose(); ok {
+		if err := magic.PurposeValidator(v); err != nil {
+			return &ValidationError{Name: "purpose", err: fmt.Errorf(`database: validator failed for field "purpose": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -137,6 +151,14 @@ func (mc *MagicCreate) createSpec() (*Magic, *sqlgraph.CreateSpec) {
 			Column: magic.FieldName,
 		})
 		_node.Name = value
+	}
+	if value, ok := mc.mutation.Purpose(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Value:  value,
+			Column: magic.FieldPurpose,
+		})
+		_node.Purpose = value
 	}
 	return _node, _spec
 }

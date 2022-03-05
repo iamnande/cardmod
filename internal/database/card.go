@@ -17,6 +17,8 @@ type Card struct {
 	ID int `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// Level holds the value of the "level" field.
+	Level int32 `json:"level,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -24,7 +26,7 @@ func (*Card) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case card.FieldID:
+		case card.FieldID, card.FieldLevel:
 			values[i] = new(sql.NullInt64)
 		case card.FieldName:
 			values[i] = new(sql.NullString)
@@ -54,6 +56,12 @@ func (c *Card) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				c.Name = value.String
+			}
+		case card.FieldLevel:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field level", values[i])
+			} else if value.Valid {
+				c.Level = int32(value.Int64)
 			}
 		}
 	}
@@ -85,6 +93,8 @@ func (c *Card) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", c.ID))
 	builder.WriteString(", name=")
 	builder.WriteString(c.Name)
+	builder.WriteString(", level=")
+	builder.WriteString(fmt.Sprintf("%v", c.Level))
 	builder.WriteByte(')')
 	return builder.String()
 }

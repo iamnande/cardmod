@@ -2,6 +2,10 @@
 
 package magic
 
+import (
+	"fmt"
+)
+
 const (
 	// Label holds the string label denoting the magic type in the database.
 	Label = "magic"
@@ -9,6 +13,8 @@ const (
 	FieldID = "id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldPurpose holds the string denoting the purpose field in the database.
+	FieldPurpose = "purpose"
 	// Table holds the table name of the magic in the database.
 	Table = "magics"
 )
@@ -17,6 +23,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldName,
+	FieldPurpose,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -33,3 +40,27 @@ var (
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
 )
+
+// Purpose defines the type for the "purpose" enum field.
+type Purpose string
+
+// Purpose values.
+const (
+	PurposeOffensive   Purpose = "Offensive"
+	PurposeRestorative Purpose = "Restorative"
+	PurposeIndirect    Purpose = "Indirect"
+)
+
+func (pu Purpose) String() string {
+	return string(pu)
+}
+
+// PurposeValidator is a validator for the "purpose" field enum values. It is called by the builders before save.
+func PurposeValidator(pu Purpose) error {
+	switch pu {
+	case PurposeOffensive, PurposeRestorative, PurposeIndirect:
+		return nil
+	default:
+		return fmt.Errorf("magic: invalid enum value for purpose field: %q", pu)
+	}
+}

@@ -44,13 +44,15 @@ var _ = Describe("Magic", func() {
 
 				// create the magic
 				name := "Firaga"
-				actual, err := magicDB.CreateMagic(ctx, name)
+				purpose := "Offensive"
+				actual, err := magicDB.CreateMagic(ctx, name, purpose)
 
 				// expect no error
 				Expect(err).To(BeNil())
 
 				// validate construction
 				Expect(actual.Name()).To(Equal(name))
+				Expect(actual.Purpose()).To(Equal(purpose))
 
 			})
 		})
@@ -58,7 +60,19 @@ var _ = Describe("Magic", func() {
 			It("Should Fail to Create", func() {
 
 				// create the magic
-				actual, err := magicDB.CreateMagic(ctx, "")
+				actual, err := magicDB.CreateMagic(ctx, "", "Offensive")
+
+				// expect error
+				Expect(err).NotTo(BeNil())
+				Expect(actual).To(BeNil())
+
+			})
+		})
+		Context("Without a Proper Purpose", func() {
+			It("Should Fail to Create", func() {
+
+				// create the magic
+				actual, err := magicDB.CreateMagic(ctx, "Firaga", "potatoes")
 
 				// expect error
 				Expect(err).NotTo(BeNil())
@@ -74,8 +88,8 @@ var _ = Describe("Magic", func() {
 			It("Should Find the Magic", func() {
 
 				// create a proper magic
-				name := "Death Claw"
-				created, err := magicDB.CreateMagic(ctx, name)
+				name := "Blizzard"
+				created, err := magicDB.CreateMagic(ctx, name, "Indirect")
 				Expect(err).To(BeNil())
 
 				// retrieve the magic
@@ -113,7 +127,7 @@ var _ = Describe("Magic", func() {
 			numMagics = rand.Intn(max-min+1) + min
 
 			for i := 0; i < numMagics; i++ {
-				magic, err := magicDB.CreateMagic(ctx, faker.Name().String())
+				magic, err := magicDB.CreateMagic(ctx, faker.Name().String(), "Restorative")
 				Expect(err).To(BeNil())
 				magics = append(magics, magic)
 			}

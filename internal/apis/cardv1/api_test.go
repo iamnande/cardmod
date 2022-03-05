@@ -57,11 +57,13 @@ var _ = Describe("CardAPI", func() {
 			It("Should Get the Card", func() {
 
 				// setup
-				expected := "Tonberry King"
+				level := int32(10)
+				expected := "Seifer"
 
 				// init mock card instance
 				fakeCard := mockCard.NewMockCard(ctrl)
 				fakeCard.EXPECT().Name().Return(expected)
+				fakeCard.EXPECT().Level().Return(level)
 
 				// mock repository call
 				req := &cardv1.GetCardRequest{
@@ -74,6 +76,7 @@ var _ = Describe("CardAPI", func() {
 
 				// validate expecations
 				Expect(err).To(BeNil())
+				Expect(actual.GetLevel()).To(Equal(level))
 				Expect(actual.GetName()).To(Equal(expected))
 
 			})
@@ -125,13 +128,14 @@ var _ = Describe("CardAPI", func() {
 
 		BeforeEach(func() {
 
-			min, max := 3, 15
+			min, max := 2, 10
 			rand.Seed(time.Now().UnixNano())
 			numCards = rand.Intn(max-min+1) + min
 
 			for i := 0; i < numCards; i++ {
 				card := mockCard.NewMockCard(ctrl)
 				card.EXPECT().Name().Return(faker.Name().String()).AnyTimes()
+				card.EXPECT().Level().Return(int32(numCards)).AnyTimes()
 				cards = append(cards, card)
 			}
 

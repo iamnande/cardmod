@@ -39,18 +39,20 @@ var _ = Describe("Card", func() {
 
 	// CreateCard
 	Describe("CreateCard", func() {
-		Context("With a Proper Name", func() {
+		Context("With a Proper Name and Level", func() {
 			It("Should Create Without Issue", func() {
 
 				// create the card
 				name := "Blood Soul"
-				actual, err := cardDB.CreateCard(ctx, name)
+				level := int32(3)
+				actual, err := cardDB.CreateCard(ctx, name, level)
 
 				// expect no error
 				Expect(err).To(BeNil())
 
 				// validate construction
 				Expect(actual.Name()).To(Equal(name))
+				Expect(actual.Level()).To(Equal(level))
 
 			})
 		})
@@ -58,7 +60,19 @@ var _ = Describe("Card", func() {
 			It("Should Fail to Create", func() {
 
 				// create the card
-				actual, err := cardDB.CreateCard(ctx, "")
+				actual, err := cardDB.CreateCard(ctx, "", 1)
+
+				// expect error
+				Expect(err).NotTo(BeNil())
+				Expect(actual).To(BeNil())
+
+			})
+		})
+		Context("Without a Proper Level", func() {
+			It("Should Fail to Create", func() {
+
+				// create the card
+				actual, err := cardDB.CreateCard(ctx, "", -1)
 
 				// expect error
 				Expect(err).NotTo(BeNil())
@@ -75,7 +89,8 @@ var _ = Describe("Card", func() {
 
 				// create a proper card
 				name := "Death Claw"
-				created, err := cardDB.CreateCard(ctx, name)
+				level := int32(3)
+				created, err := cardDB.CreateCard(ctx, name, level)
 				Expect(err).To(BeNil())
 
 				// retrieve the card
@@ -108,12 +123,12 @@ var _ = Describe("Card", func() {
 
 		BeforeEach(func() {
 
-			min, max := 3, 15
+			min, max := 2, 10
 			rand.Seed(time.Now().UnixNano())
 			numCards = rand.Intn(max-min+1) + min
 
 			for i := 0; i < numCards; i++ {
-				card, err := cardDB.CreateCard(ctx, faker.Name().String())
+				card, err := cardDB.CreateCard(ctx, faker.Name().String(), int32(numCards))
 				Expect(err).To(BeNil())
 				cards = append(cards, card)
 			}

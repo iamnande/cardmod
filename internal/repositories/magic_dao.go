@@ -14,6 +14,10 @@ func (db *magicDAOWrapper) Name() string {
 	return db.magic.Name
 }
 
+func (db *magicDAOWrapper) Purpose() string {
+	return db.magic.Purpose.String()
+}
+
 // marshalMagicDAO creates a DAO instance from the database schema.
 func marshalMagicDAO(record *database.Magic) models.Magic {
 	return &magicDAOWrapper{record}

@@ -10,7 +10,7 @@ message Card {
     // Name of the card.
     string name = 1;
 
-    // TODO: LEVEL OF THE CARD
-    // int32 level = 2;
+    // Level of the card.
+    int32 level = 2;
 
 }

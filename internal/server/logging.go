@@ -63,7 +63,7 @@ func (s *Server) LoggingInterceptor() grpc.UnaryServerInterceptor {
 			Error:    err,
 		}
 		if apiError != nil {
-			resLog.Error = apiError
+			resLog.Error = apiError.BaseError
 		}
 		log = log.WithValues("response", resLog)
 
