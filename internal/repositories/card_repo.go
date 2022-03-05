@@ -22,7 +22,6 @@ type cardRepository struct {
 var _ daos.CardDAO = (*cardRepository)(nil)
 
 // NewCardRepository initializes a new card repository instance.
-// TODO: repository specific errors (think APIError, but RepositoryError).
 func NewCardRepository(client *database.Client) *cardRepository {
 	return &cardRepository{
 		db: client,

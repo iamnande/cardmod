@@ -13,6 +13,7 @@ import (
 	"github.com/iamnande/cardmod/internal/database/item"
 	"github.com/iamnande/cardmod/internal/database/limitbreak"
 	"github.com/iamnande/cardmod/internal/database/magic"
+	"github.com/iamnande/cardmod/internal/database/refinement"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -31,6 +32,8 @@ type Client struct {
 	LimitBreak *LimitBreakClient
 	// Magic is the client for interacting with the Magic builders.
 	Magic *MagicClient
+	// Refinement is the client for interacting with the Refinement builders.
+	Refinement *RefinementClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -48,6 +51,7 @@ func (c *Client) init() {
 	c.Item = NewItemClient(c.config)
 	c.LimitBreak = NewLimitBreakClient(c.config)
 	c.Magic = NewMagicClient(c.config)
+	c.Refinement = NewRefinementClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -85,6 +89,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Item:       NewItemClient(cfg),
 		LimitBreak: NewLimitBreakClient(cfg),
 		Magic:      NewMagicClient(cfg),
+		Refinement: NewRefinementClient(cfg),
 	}, nil
 }
 
@@ -107,6 +112,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Item:       NewItemClient(cfg),
 		LimitBreak: NewLimitBreakClient(cfg),
 		Magic:      NewMagicClient(cfg),
+		Refinement: NewRefinementClient(cfg),
 	}, nil
 }
 
@@ -140,6 +146,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Item.Use(hooks...)
 	c.LimitBreak.Use(hooks...)
 	c.Magic.Use(hooks...)
+	c.Refinement.Use(hooks...)
 }
 
 // CardClient is a client for the Card schema.
@@ -500,4 +507,94 @@ func (c *MagicClient) GetX(ctx context.Context, id int) *Magic {
 // Hooks returns the client hooks.
 func (c *MagicClient) Hooks() []Hook {
 	return c.hooks.Magic
+}
+
+// RefinementClient is a client for the Refinement schema.
+type RefinementClient struct {
+	config
+}
+
+// NewRefinementClient returns a client for the Refinement from the given config.
+func NewRefinementClient(c config) *RefinementClient {
+	return &RefinementClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `refinement.Hooks(f(g(h())))`.
+func (c *RefinementClient) Use(hooks ...Hook) {
+	c.hooks.Refinement = append(c.hooks.Refinement, hooks...)
+}
+
+// Create returns a create builder for Refinement.
+func (c *RefinementClient) Create() *RefinementCreate {
+	mutation := newRefinementMutation(c.config, OpCreate)
+	return &RefinementCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Refinement entities.
+func (c *RefinementClient) CreateBulk(builders ...*RefinementCreate) *RefinementCreateBulk {
+	return &RefinementCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Refinement.
+func (c *RefinementClient) Update() *RefinementUpdate {
+	mutation := newRefinementMutation(c.config, OpUpdate)
+	return &RefinementUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *RefinementClient) UpdateOne(r *Refinement) *RefinementUpdateOne {
+	mutation := newRefinementMutation(c.config, OpUpdateOne, withRefinement(r))
+	return &RefinementUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *RefinementClient) UpdateOneID(id int) *RefinementUpdateOne {
+	mutation := newRefinementMutation(c.config, OpUpdateOne, withRefinementID(id))
+	return &RefinementUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Refinement.
+func (c *RefinementClient) Delete() *RefinementDelete {
+	mutation := newRefinementMutation(c.config, OpDelete)
+	return &RefinementDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *RefinementClient) DeleteOne(r *Refinement) *RefinementDeleteOne {
+	return c.DeleteOneID(r.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *RefinementClient) DeleteOneID(id int) *RefinementDeleteOne {
+	builder := c.Delete().Where(refinement.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &RefinementDeleteOne{builder}
+}
+
+// Query returns a query builder for Refinement.
+func (c *RefinementClient) Query() *RefinementQuery {
+	return &RefinementQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Refinement entity by its id.
+func (c *RefinementClient) Get(ctx context.Context, id int) (*Refinement, error) {
+	return c.Query().Where(refinement.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *RefinementClient) GetX(ctx context.Context, id int) *Refinement {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *RefinementClient) Hooks() []Hook {
+	return c.hooks.Refinement
 }

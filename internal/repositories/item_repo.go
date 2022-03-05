@@ -22,7 +22,6 @@ type itemRepository struct {
 var _ daos.ItemDAO = (*itemRepository)(nil)
 
 // NewItemRepository initializes a new item repository instance.
-// TODO: repository specific errors (think APIError, but RepositoryError).
 func NewItemRepository(client *database.Client) *itemRepository {
 	return &itemRepository{
 		db: client,

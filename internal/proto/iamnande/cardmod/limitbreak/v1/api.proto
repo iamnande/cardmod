@@ -22,11 +22,11 @@ service LimitBreakAPI {
 message GetLimitBreakRequest {
 
     // Name of the limitbreak to get.
-    string name  = 1 [(validate.rules).string = {
-        pattern:   "^[-, \\w]+$",
+    string name = 1 [(validate.rules).string = {
+        pattern: "^[-, \\w]+$",
         min_len: 3,
         max_len: 25,
-     }];
+    }];
 
 }
 

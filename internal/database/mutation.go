@@ -12,6 +12,7 @@ import (
 	"github.com/iamnande/cardmod/internal/database/limitbreak"
 	"github.com/iamnande/cardmod/internal/database/magic"
 	"github.com/iamnande/cardmod/internal/database/predicate"
+	"github.com/iamnande/cardmod/internal/database/refinement"
 
 	"entgo.io/ent"
 )
@@ -29,6 +30,7 @@ const (
 	TypeItem       = "Item"
 	TypeLimitBreak = "LimitBreak"
 	TypeMagic      = "Magic"
+	TypeRefinement = "Refinement"
 )
 
 // CardMutation represents an operation that mutates the Card nodes in the graph.
@@ -1341,4 +1343,527 @@ func (m *MagicMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *MagicMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Magic edge %s", name)
+}
+
+// RefinementMutation represents an operation that mutates the Refinement nodes in the graph.
+type RefinementMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *int
+	source         *string
+	target         *string
+	numerator      *int32
+	addnumerator   *int32
+	denominator    *int32
+	adddenominator *int32
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*Refinement, error)
+	predicates     []predicate.Refinement
+}
+
+var _ ent.Mutation = (*RefinementMutation)(nil)
+
+// refinementOption allows management of the mutation configuration using functional options.
+type refinementOption func(*RefinementMutation)
+
+// newRefinementMutation creates new mutation for the Refinement entity.
+func newRefinementMutation(c config, op Op, opts ...refinementOption) *RefinementMutation {
+	m := &RefinementMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeRefinement,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withRefinementID sets the ID field of the mutation.
+func withRefinementID(id int) refinementOption {
+	return func(m *RefinementMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Refinement
+		)
+		m.oldValue = func(ctx context.Context) (*Refinement, error) {
+			once.Do(func() {
+				if m.done {
+					err = fmt.Errorf("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Refinement.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withRefinement sets the old Refinement of the mutation.
+func withRefinement(node *Refinement) refinementOption {
+	return func(m *RefinementMutation) {
+		m.oldValue = func(context.Context) (*Refinement, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m RefinementMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m RefinementMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, fmt.Errorf("database: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *RefinementMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// SetSource sets the "source" field.
+func (m *RefinementMutation) SetSource(s string) {
+	m.source = &s
+}
+
+// Source returns the value of the "source" field in the mutation.
+func (m *RefinementMutation) Source() (r string, exists bool) {
+	v := m.source
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSource returns the old "source" field's value of the Refinement entity.
+// If the Refinement object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RefinementMutation) OldSource(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldSource is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldSource requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSource: %w", err)
+	}
+	return oldValue.Source, nil
+}
+
+// ResetSource resets all changes to the "source" field.
+func (m *RefinementMutation) ResetSource() {
+	m.source = nil
+}
+
+// SetTarget sets the "target" field.
+func (m *RefinementMutation) SetTarget(s string) {
+	m.target = &s
+}
+
+// Target returns the value of the "target" field in the mutation.
+func (m *RefinementMutation) Target() (r string, exists bool) {
+	v := m.target
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTarget returns the old "target" field's value of the Refinement entity.
+// If the Refinement object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RefinementMutation) OldTarget(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldTarget is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldTarget requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTarget: %w", err)
+	}
+	return oldValue.Target, nil
+}
+
+// ResetTarget resets all changes to the "target" field.
+func (m *RefinementMutation) ResetTarget() {
+	m.target = nil
+}
+
+// SetNumerator sets the "numerator" field.
+func (m *RefinementMutation) SetNumerator(i int32) {
+	m.numerator = &i
+	m.addnumerator = nil
+}
+
+// Numerator returns the value of the "numerator" field in the mutation.
+func (m *RefinementMutation) Numerator() (r int32, exists bool) {
+	v := m.numerator
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNumerator returns the old "numerator" field's value of the Refinement entity.
+// If the Refinement object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RefinementMutation) OldNumerator(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldNumerator is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldNumerator requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNumerator: %w", err)
+	}
+	return oldValue.Numerator, nil
+}
+
+// AddNumerator adds i to the "numerator" field.
+func (m *RefinementMutation) AddNumerator(i int32) {
+	if m.addnumerator != nil {
+		*m.addnumerator += i
+	} else {
+		m.addnumerator = &i
+	}
+}
+
+// AddedNumerator returns the value that was added to the "numerator" field in this mutation.
+func (m *RefinementMutation) AddedNumerator() (r int32, exists bool) {
+	v := m.addnumerator
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetNumerator resets all changes to the "numerator" field.
+func (m *RefinementMutation) ResetNumerator() {
+	m.numerator = nil
+	m.addnumerator = nil
+}
+
+// SetDenominator sets the "denominator" field.
+func (m *RefinementMutation) SetDenominator(i int32) {
+	m.denominator = &i
+	m.adddenominator = nil
+}
+
+// Denominator returns the value of the "denominator" field in the mutation.
+func (m *RefinementMutation) Denominator() (r int32, exists bool) {
+	v := m.denominator
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDenominator returns the old "denominator" field's value of the Refinement entity.
+// If the Refinement object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RefinementMutation) OldDenominator(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldDenominator is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldDenominator requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDenominator: %w", err)
+	}
+	return oldValue.Denominator, nil
+}
+
+// AddDenominator adds i to the "denominator" field.
+func (m *RefinementMutation) AddDenominator(i int32) {
+	if m.adddenominator != nil {
+		*m.adddenominator += i
+	} else {
+		m.adddenominator = &i
+	}
+}
+
+// AddedDenominator returns the value that was added to the "denominator" field in this mutation.
+func (m *RefinementMutation) AddedDenominator() (r int32, exists bool) {
+	v := m.adddenominator
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDenominator resets all changes to the "denominator" field.
+func (m *RefinementMutation) ResetDenominator() {
+	m.denominator = nil
+	m.adddenominator = nil
+}
+
+// Where appends a list predicates to the RefinementMutation builder.
+func (m *RefinementMutation) Where(ps ...predicate.Refinement) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *RefinementMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (Refinement).
+func (m *RefinementMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *RefinementMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.source != nil {
+		fields = append(fields, refinement.FieldSource)
+	}
+	if m.target != nil {
+		fields = append(fields, refinement.FieldTarget)
+	}
+	if m.numerator != nil {
+		fields = append(fields, refinement.FieldNumerator)
+	}
+	if m.denominator != nil {
+		fields = append(fields, refinement.FieldDenominator)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *RefinementMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case refinement.FieldSource:
+		return m.Source()
+	case refinement.FieldTarget:
+		return m.Target()
+	case refinement.FieldNumerator:
+		return m.Numerator()
+	case refinement.FieldDenominator:
+		return m.Denominator()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *RefinementMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case refinement.FieldSource:
+		return m.OldSource(ctx)
+	case refinement.FieldTarget:
+		return m.OldTarget(ctx)
+	case refinement.FieldNumerator:
+		return m.OldNumerator(ctx)
+	case refinement.FieldDenominator:
+		return m.OldDenominator(ctx)
+	}
+	return nil, fmt.Errorf("unknown Refinement field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RefinementMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case refinement.FieldSource:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSource(v)
+		return nil
+	case refinement.FieldTarget:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTarget(v)
+		return nil
+	case refinement.FieldNumerator:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNumerator(v)
+		return nil
+	case refinement.FieldDenominator:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDenominator(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Refinement field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *RefinementMutation) AddedFields() []string {
+	var fields []string
+	if m.addnumerator != nil {
+		fields = append(fields, refinement.FieldNumerator)
+	}
+	if m.adddenominator != nil {
+		fields = append(fields, refinement.FieldDenominator)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *RefinementMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case refinement.FieldNumerator:
+		return m.AddedNumerator()
+	case refinement.FieldDenominator:
+		return m.AddedDenominator()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RefinementMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case refinement.FieldNumerator:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddNumerator(v)
+		return nil
+	case refinement.FieldDenominator:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDenominator(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Refinement numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *RefinementMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *RefinementMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *RefinementMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Refinement nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *RefinementMutation) ResetField(name string) error {
+	switch name {
+	case refinement.FieldSource:
+		m.ResetSource()
+		return nil
+	case refinement.FieldTarget:
+		m.ResetTarget()
+		return nil
+	case refinement.FieldNumerator:
+		m.ResetNumerator()
+		return nil
+	case refinement.FieldDenominator:
+		m.ResetDenominator()
+		return nil
+	}
+	return fmt.Errorf("unknown Refinement field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *RefinementMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *RefinementMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *RefinementMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *RefinementMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *RefinementMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *RefinementMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *RefinementMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Refinement unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *RefinementMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Refinement edge %s", name)
 }

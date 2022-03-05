@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS items (
     name VARCHAR UNIQUE NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS limitbreaks (
+CREATE TABLE IF NOT EXISTS limit_breaks (
     id SERIAL NOT NULL,
     name VARCHAR UNIQUE NOT NULL
 );
@@ -24,6 +24,14 @@ CREATE TABLE IF NOT EXISTS magics (
     id SERIAL NOT NULL,
     name VARCHAR UNIQUE NOT NULL,
     purpose magic_purpose NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS refinements (
+    id SERIAL NOT NULL,
+    source VARCHAR NOT NULL,
+    target VARCHAR NOT NULL,
+    numerator SMALLINT NOT NULL,
+    denominator SMALLINT NOT NULL
 );
 
 COMMIT;

@@ -22,7 +22,6 @@ type limitbreakRepository struct {
 var _ daos.LimitBreakDAO = (*limitbreakRepository)(nil)
 
 // NewLimitBreakRepository initializes a new limitbreak repository instance.
-// TODO: repository specific errors (think APIError, but RepositoryError).
 func NewLimitBreakRepository(client *database.Client) *limitbreakRepository {
 	return &limitbreakRepository{
 		db: client,

@@ -54,12 +54,27 @@ var (
 		Columns:    MagicsColumns,
 		PrimaryKey: []*schema.Column{MagicsColumns[0]},
 	}
+	// RefinementsColumns holds the columns for the "refinements" table.
+	RefinementsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "source", Type: field.TypeString},
+		{Name: "target", Type: field.TypeString},
+		{Name: "numerator", Type: field.TypeInt32},
+		{Name: "denominator", Type: field.TypeInt32},
+	}
+	// RefinementsTable holds the schema information for the "refinements" table.
+	RefinementsTable = &schema.Table{
+		Name:       "refinements",
+		Columns:    RefinementsColumns,
+		PrimaryKey: []*schema.Column{RefinementsColumns[0]},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		CardsTable,
 		ItemsTable,
 		LimitBreaksTable,
 		MagicsTable,
+		RefinementsTable,
 	}
 )
 

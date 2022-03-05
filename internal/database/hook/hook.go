@@ -61,6 +61,19 @@ func (f MagicFunc) Mutate(ctx context.Context, m database.Mutation) (database.Va
 	return f(ctx, mv)
 }
 
+// The RefinementFunc type is an adapter to allow the use of ordinary
+// function as Refinement mutator.
+type RefinementFunc func(context.Context, *database.RefinementMutation) (database.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f RefinementFunc) Mutate(ctx context.Context, m database.Mutation) (database.Value, error) {
+	mv, ok := m.(*database.RefinementMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *database.RefinementMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // Condition is a hook condition function.
 type Condition func(context.Context, database.Mutation) bool
 

@@ -12,6 +12,7 @@ import (
 	"github.com/iamnande/cardmod/internal/database/item"
 	"github.com/iamnande/cardmod/internal/database/limitbreak"
 	"github.com/iamnande/cardmod/internal/database/magic"
+	"github.com/iamnande/cardmod/internal/database/refinement"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -36,6 +37,7 @@ func columnChecker(table string) func(string) error {
 		item.Table:       item.ValidColumn,
 		limitbreak.Table: limitbreak.ValidColumn,
 		magic.Table:      magic.ValidColumn,
+		refinement.Table: refinement.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

@@ -17,3 +17,6 @@ type LimitBreak func(*sql.Selector)
 
 // Magic is the predicate function for magic builders.
 type Magic func(*sql.Selector)
+
+// Refinement is the predicate function for refinement builders.
+type Refinement func(*sql.Selector)

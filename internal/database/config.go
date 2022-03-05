@@ -28,6 +28,7 @@ type hooks struct {
 	Item       []ent.Hook
 	LimitBreak []ent.Hook
 	Magic      []ent.Hook
+	Refinement []ent.Hook
 }
 
 // Options applies the options on the config object.

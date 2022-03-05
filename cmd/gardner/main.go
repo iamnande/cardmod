@@ -45,21 +45,27 @@ func main() {
 		os.Exit(1)
 	}
 
-	// // client: seed items
-	// if err := seedItems(ctx, conn); err != nil {
-	// 	log.Error(err, "failed to seed items")
-	// 	os.Exit(1)
-	// }
+	// client: seed items
+	if err := seedItems(ctx, databaseClient); err != nil {
+		log.Error(err, "failed to seed items")
+		os.Exit(1)
+	}
 
-	// // client: seed limit breaks
-	// if err := seedLimitBreaks(ctx, conn); err != nil {
-	// 	log.Error(err, "failed to seed limit breaks")
-	// 	os.Exit(1)
-	// }
+	// client: seed limit breaks
+	if err := seedLimitBreaks(ctx, databaseClient); err != nil {
+		log.Error(err, "failed to seed limit breaks")
+		os.Exit(1)
+	}
 
 	// client: seed magic
 	if err := seedMagics(ctx, databaseClient); err != nil {
 		log.Error(err, "failed to seed magics")
+		os.Exit(1)
+	}
+
+	// client: seed refinements
+	if err := seedRefinements(ctx, databaseClient); err != nil {
+		log.Error(err, "failed to seed refinements")
 		os.Exit(1)
 	}
 

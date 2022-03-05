@@ -22,7 +22,7 @@ service MagicAPI {
 message GetMagicRequest {
 
     // Name of the magic to get.
-    string name  = 1 [(validate.rules).string = {
+    string name = 1 [(validate.rules).string = {
         pattern: "^[-, \\w]+$",
         min_len: 3,
         max_len: 25,

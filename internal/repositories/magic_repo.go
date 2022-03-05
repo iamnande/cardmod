@@ -23,7 +23,6 @@ type magicRepository struct {
 var _ daos.MagicDAO = (*magicRepository)(nil)
 
 // NewMagicRepository initializes a new magic repository instance.
-// TODO: repository specific errors (think APIError, but RepositoryError).
 func NewMagicRepository(client *database.Client) *magicRepository {
 	return &magicRepository{
 		db: client,

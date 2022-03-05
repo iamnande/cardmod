@@ -7,6 +7,7 @@ import (
 	"github.com/iamnande/cardmod/internal/database/item"
 	"github.com/iamnande/cardmod/internal/database/limitbreak"
 	"github.com/iamnande/cardmod/internal/database/magic"
+	"github.com/iamnande/cardmod/internal/database/refinement"
 	"github.com/iamnande/cardmod/internal/database/schema"
 )
 
@@ -56,4 +57,22 @@ func init() {
 	magicDescName := magicFields[0].Descriptor()
 	// magic.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	magic.NameValidator = magicDescName.Validators[0].(func(string) error)
+	refinementFields := schema.Refinement{}.Fields()
+	_ = refinementFields
+	// refinementDescSource is the schema descriptor for source field.
+	refinementDescSource := refinementFields[0].Descriptor()
+	// refinement.SourceValidator is a validator for the "source" field. It is called by the builders before save.
+	refinement.SourceValidator = refinementDescSource.Validators[0].(func(string) error)
+	// refinementDescTarget is the schema descriptor for target field.
+	refinementDescTarget := refinementFields[1].Descriptor()
+	// refinement.TargetValidator is a validator for the "target" field. It is called by the builders before save.
+	refinement.TargetValidator = refinementDescTarget.Validators[0].(func(string) error)
+	// refinementDescNumerator is the schema descriptor for numerator field.
+	refinementDescNumerator := refinementFields[2].Descriptor()
+	// refinement.NumeratorValidator is a validator for the "numerator" field. It is called by the builders before save.
+	refinement.NumeratorValidator = refinementDescNumerator.Validators[0].(func(int32) error)
+	// refinementDescDenominator is the schema descriptor for denominator field.
+	refinementDescDenominator := refinementFields[3].Descriptor()
+	// refinement.DenominatorValidator is a validator for the "denominator" field. It is called by the builders before save.
+	refinement.DenominatorValidator = refinementDescDenominator.Validators[0].(func(int32) error)
 }

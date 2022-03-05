@@ -22,11 +22,11 @@ service ItemAPI {
 message GetItemRequest {
 
     // Name of the item to get.
-    string name  = 1 [(validate.rules).string = {
-        pattern:   "^[-, \\w]+$",
+    string name = 1 [(validate.rules).string = {
+        pattern: "^[-, \\w]+$",
         min_len: 3,
         max_len: 25,
-     }];
+    }];
 
 }
 

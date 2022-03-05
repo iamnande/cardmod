@@ -20,6 +20,8 @@ type Tx struct {
 	LimitBreak *LimitBreakClient
 	// Magic is the client for interacting with the Magic builders.
 	Magic *MagicClient
+	// Refinement is the client for interacting with the Refinement builders.
+	Refinement *RefinementClient
 
 	// lazily loaded.
 	client     *Client
@@ -159,6 +161,7 @@ func (tx *Tx) init() {
 	tx.Item = NewItemClient(tx.config)
 	tx.LimitBreak = NewLimitBreakClient(tx.config)
 	tx.Magic = NewMagicClient(tx.config)
+	tx.Refinement = NewRefinementClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
