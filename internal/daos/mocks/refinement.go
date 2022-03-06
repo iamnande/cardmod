@@ -36,18 +36,18 @@ func (m *MockRefinementDAO) EXPECT() *MockRefinementDAOMockRecorder {
 }
 
 // GetRefinement mocks base method.
-func (m *MockRefinementDAO) GetRefinement(ctx context.Context, name string) (models.Refinement, error) {
+func (m *MockRefinementDAO) GetRefinement(ctx context.Context, source, target string) (models.Refinement, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRefinement", ctx, name)
+	ret := m.ctrl.Call(m, "GetRefinement", ctx, source, target)
 	ret0, _ := ret[0].(models.Refinement)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetRefinement indicates an expected call of GetRefinement.
-func (mr *MockRefinementDAOMockRecorder) GetRefinement(ctx, name interface{}) *gomock.Call {
+func (mr *MockRefinementDAOMockRecorder) GetRefinement(ctx, source, target interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRefinement", reflect.TypeOf((*MockRefinementDAO)(nil).GetRefinement), ctx, name)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRefinement", reflect.TypeOf((*MockRefinementDAO)(nil).GetRefinement), ctx, source, target)
 }
 
 // ListRefinements mocks base method.

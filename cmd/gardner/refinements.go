@@ -55,6 +55,14 @@ var (
 		{source: "Curse Spike", target: "L?Death", numerator: 1, denominator: 1},
 		{source: "Caterchipillar", target: "Spider Web", numerator: 1, denominator: 1},
 		{source: "Spider Web", target: "Ultra Waves", numerator: 1, denominator: 1},
+
+		// Initial Magic
+		{source: "Abyss Worm", target: "Windmill", numerator: 1, denominator: 1},
+		{source: "Windmill", target: "Tornado", numerator: 1, denominator: 20},
+		{source: "Ruby Dragon", target: "Inferno Fang", numerator: 10, denominator: 1},
+		{source: "Inferno Fang", target: "Flare", numerator: 1, denominator: 20},
+		{source: "Hexadrago", target: "Red Fang", numerator: 3, denominator: 1},
+		{source: "Red Fang", target: "Firaga", numerator: 1, denominator: 20},
 	}
 )
 

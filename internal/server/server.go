@@ -11,6 +11,7 @@ import (
 	itemv1api "github.com/iamnande/cardmod/internal/apis/itemv1"
 	limitbreakv1api "github.com/iamnande/cardmod/internal/apis/limitbreakv1"
 	magicv1api "github.com/iamnande/cardmod/internal/apis/magicv1"
+	refinementv1api "github.com/iamnande/cardmod/internal/apis/refinementv1"
 	"github.com/iamnande/cardmod/internal/config"
 	"github.com/iamnande/cardmod/internal/database"
 	"github.com/iamnande/cardmod/internal/repositories"
@@ -18,6 +19,7 @@ import (
 	"github.com/iamnande/cardmod/pkg/api/itemv1"
 	"github.com/iamnande/cardmod/pkg/api/limitbreakv1"
 	"github.com/iamnande/cardmod/pkg/api/magicv1"
+	"github.com/iamnande/cardmod/pkg/api/refinementv1"
 )
 
 // Config is the server configuration.
@@ -65,12 +67,14 @@ func (s *Server) Serve() error {
 	itemAPI := itemv1api.New(repositories.NewItemRepository(s.databaseClient))
 	limitbreakAPI := limitbreakv1api.New(repositories.NewLimitBreakRepository(s.databaseClient))
 	magicAPI := magicv1api.New(repositories.NewMagicRepository(s.databaseClient))
+	refinementAPI := refinementv1api.New(repositories.NewRefinementRepository(s.databaseClient))
 
 	// serve: register APIs
 	cardv1.RegisterCardAPIServer(srvr, cardAPI)
 	itemv1.RegisterItemAPIServer(srvr, itemAPI)
 	limitbreakv1.RegisterLimitBreakAPIServer(srvr, limitbreakAPI)
 	magicv1.RegisterMagicAPIServer(srvr, magicAPI)
+	refinementv1.RegisterRefinementAPIServer(srvr, refinementAPI)
 
 	// serve: enable reflection
 	reflection.Register(srvr)
