@@ -5,7 +5,6 @@
 package mocks
 
 import (
-	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -36,31 +35,30 @@ func (m *MockCardDAO) EXPECT() *MockCardDAOMockRecorder {
 }
 
 // GetCard mocks base method.
-func (m *MockCardDAO) GetCard(ctx context.Context, name string) (models.Card, error) {
+func (m *MockCardDAO) GetCard(name string) (models.Card, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetCard", ctx, name)
+	ret := m.ctrl.Call(m, "GetCard", name)
 	ret0, _ := ret[0].(models.Card)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetCard indicates an expected call of GetCard.
-func (mr *MockCardDAOMockRecorder) GetCard(ctx, name interface{}) *gomock.Call {
+func (mr *MockCardDAOMockRecorder) GetCard(name interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCard", reflect.TypeOf((*MockCardDAO)(nil).GetCard), ctx, name)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCard", reflect.TypeOf((*MockCardDAO)(nil).GetCard), name)
 }
 
 // ListCards mocks base method.
-func (m *MockCardDAO) ListCards(ctx context.Context) ([]models.Card, error) {
+func (m *MockCardDAO) ListCards() []models.Card {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListCards", ctx)
+	ret := m.ctrl.Call(m, "ListCards")
 	ret0, _ := ret[0].([]models.Card)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	return ret0
 }
 
 // ListCards indicates an expected call of ListCards.
-func (mr *MockCardDAOMockRecorder) ListCards(ctx interface{}) *gomock.Call {
+func (mr *MockCardDAOMockRecorder) ListCards() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCards", reflect.TypeOf((*MockCardDAO)(nil).ListCards), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCards", reflect.TypeOf((*MockCardDAO)(nil).ListCards))
 }

@@ -5,7 +5,6 @@
 package mocks
 
 import (
-	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -36,31 +35,30 @@ func (m *MockRefinementDAO) EXPECT() *MockRefinementDAOMockRecorder {
 }
 
 // GetRefinement mocks base method.
-func (m *MockRefinementDAO) GetRefinement(ctx context.Context, source, target string) (models.Refinement, error) {
+func (m *MockRefinementDAO) GetRefinement(source, target string) (models.Refinement, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRefinement", ctx, source, target)
+	ret := m.ctrl.Call(m, "GetRefinement", source, target)
 	ret0, _ := ret[0].(models.Refinement)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetRefinement indicates an expected call of GetRefinement.
-func (mr *MockRefinementDAOMockRecorder) GetRefinement(ctx, source, target interface{}) *gomock.Call {
+func (mr *MockRefinementDAOMockRecorder) GetRefinement(source, target interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRefinement", reflect.TypeOf((*MockRefinementDAO)(nil).GetRefinement), ctx, source, target)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRefinement", reflect.TypeOf((*MockRefinementDAO)(nil).GetRefinement), source, target)
 }
 
 // ListRefinements mocks base method.
-func (m *MockRefinementDAO) ListRefinements(ctx context.Context) ([]models.Refinement, error) {
+func (m *MockRefinementDAO) ListRefinements() []models.Refinement {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListRefinements", ctx)
+	ret := m.ctrl.Call(m, "ListRefinements")
 	ret0, _ := ret[0].([]models.Refinement)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	return ret0
 }
 
 // ListRefinements indicates an expected call of ListRefinements.
-func (mr *MockRefinementDAOMockRecorder) ListRefinements(ctx interface{}) *gomock.Call {
+func (mr *MockRefinementDAOMockRecorder) ListRefinements() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRefinements", reflect.TypeOf((*MockRefinementDAO)(nil).ListRefinements), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRefinements", reflect.TypeOf((*MockRefinementDAO)(nil).ListRefinements))
 }

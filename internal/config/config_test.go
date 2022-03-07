@@ -22,24 +22,4 @@ var _ = Describe("Config", func() {
 
 	})
 
-	Describe("DSN", func() {
-
-		// Can properly translate.
-		When("Values are Provide", func() {
-			It("Translates Properly", func() {
-				cfg := &DatabaseConfig{
-					Hostname: "hostname",
-					Port:     12345,
-					Name:     "name",
-					SSLMode:  "prefer",
-					Username: "username",
-					Password: "password",
-				}
-				actual := cfg.DSN()
-				Expect(actual).To(Equal("postgres://hostname:12345/name?sslmode=prefer&user=username&password=password"))
-			})
-		})
-
-	})
-
 })

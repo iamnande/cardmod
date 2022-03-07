@@ -1,46 +1,6 @@
 version: '3.9'
 services:
 
-  # database
-  database:
-    image: postgres:13.5
-    container_name: cardmod_database
-    environment:
-      POSTGRES_DB: cardmod
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d cardmod"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    ports:
-      - 5432:5432
-
-  # database migration
-  migration:
-    image: migrate/migrate:4
-    container_name: cardmod_database_migration
-    command: -verbose -database 'postgres://database:5432/cardmod?sslmode=disable&user=postgres&password=postgres' -path ./migrations up
-    volumes:
-      - "./migrations:/migrations"
-    depends_on:
-      database:
-        condition: service_healthy
-
-  # gardner
-  gardner:
-    image: cardmod/gardner:local
-    container_name: cardmod_gardner
-    build:
-      context: .
-      dockerfile: cmd/gardner/Dockerfile
-    restart: on-failure
-    environment:
-      CARDMOD_DATABASE_HOSTNAME: database
-      CARDMOD_DATABASE_USERNAME: postgres
-      CARDMOD_DATABASE_PASSWORD: postgres
-
   # api
   api:
     image: cardmod/api:local
@@ -48,9 +8,5 @@ services:
     build:
       context: .
       dockerfile: cmd/cardmodd/Dockerfile
-    environment:
-      CARDMOD_DATABASE_HOSTNAME: database
-      CARDMOD_DATABASE_USERNAME: postgres
-      CARDMOD_DATABASE_PASSWORD: postgres
     ports:
       - 9000:9000

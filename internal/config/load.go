@@ -33,16 +33,6 @@ func mustLoad() *Config {
 		// core
 		Environment: defaultEnvironment,
 
-		// database
-		Database: &DatabaseConfig{
-			Hostname: defaultDatabaseHostname,
-			Port:     defaultDatabasePort,
-			Name:     defaultDatabaseName,
-			SSLMode:  defaultDatabaseSSLMode,
-			Username: defaultDatabaseUsername,
-			Password: defaultDatabasePassword,
-		},
-
 		// server
 		Server: &ServerConfig{
 			Port:                defaultServerPort,

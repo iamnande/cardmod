@@ -5,7 +5,6 @@
 package mocks
 
 import (
-	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -36,31 +35,30 @@ func (m *MockLimitBreakDAO) EXPECT() *MockLimitBreakDAOMockRecorder {
 }
 
 // GetLimitBreak mocks base method.
-func (m *MockLimitBreakDAO) GetLimitBreak(ctx context.Context, name string) (models.LimitBreak, error) {
+func (m *MockLimitBreakDAO) GetLimitBreak(name string) (models.LimitBreak, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetLimitBreak", ctx, name)
+	ret := m.ctrl.Call(m, "GetLimitBreak", name)
 	ret0, _ := ret[0].(models.LimitBreak)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetLimitBreak indicates an expected call of GetLimitBreak.
-func (mr *MockLimitBreakDAOMockRecorder) GetLimitBreak(ctx, name interface{}) *gomock.Call {
+func (mr *MockLimitBreakDAOMockRecorder) GetLimitBreak(name interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLimitBreak", reflect.TypeOf((*MockLimitBreakDAO)(nil).GetLimitBreak), ctx, name)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLimitBreak", reflect.TypeOf((*MockLimitBreakDAO)(nil).GetLimitBreak), name)
 }
 
 // ListLimitBreaks mocks base method.
-func (m *MockLimitBreakDAO) ListLimitBreaks(ctx context.Context) ([]models.LimitBreak, error) {
+func (m *MockLimitBreakDAO) ListLimitBreaks() []models.LimitBreak {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListLimitBreaks", ctx)
+	ret := m.ctrl.Call(m, "ListLimitBreaks")
 	ret0, _ := ret[0].([]models.LimitBreak)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	return ret0
 }
 
 // ListLimitBreaks indicates an expected call of ListLimitBreaks.
-func (mr *MockLimitBreakDAOMockRecorder) ListLimitBreaks(ctx interface{}) *gomock.Call {
+func (mr *MockLimitBreakDAOMockRecorder) ListLimitBreaks() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListLimitBreaks", reflect.TypeOf((*MockLimitBreakDAO)(nil).ListLimitBreaks), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListLimitBreaks", reflect.TypeOf((*MockLimitBreakDAO)(nil).ListLimitBreaks))
 }

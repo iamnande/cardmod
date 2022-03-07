@@ -5,7 +5,6 @@
 package mocks
 
 import (
-	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -36,31 +35,30 @@ func (m *MockMagicDAO) EXPECT() *MockMagicDAOMockRecorder {
 }
 
 // GetMagic mocks base method.
-func (m *MockMagicDAO) GetMagic(ctx context.Context, name string) (models.Magic, error) {
+func (m *MockMagicDAO) GetMagic(name string) (models.Magic, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMagic", ctx, name)
+	ret := m.ctrl.Call(m, "GetMagic", name)
 	ret0, _ := ret[0].(models.Magic)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetMagic indicates an expected call of GetMagic.
-func (mr *MockMagicDAOMockRecorder) GetMagic(ctx, name interface{}) *gomock.Call {
+func (mr *MockMagicDAOMockRecorder) GetMagic(name interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMagic", reflect.TypeOf((*MockMagicDAO)(nil).GetMagic), ctx, name)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMagic", reflect.TypeOf((*MockMagicDAO)(nil).GetMagic), name)
 }
 
 // ListMagics mocks base method.
-func (m *MockMagicDAO) ListMagics(ctx context.Context) ([]models.Magic, error) {
+func (m *MockMagicDAO) ListMagics() []models.Magic {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListMagics", ctx)
+	ret := m.ctrl.Call(m, "ListMagics")
 	ret0, _ := ret[0].([]models.Magic)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	return ret0
 }
 
 // ListMagics indicates an expected call of ListMagics.
-func (mr *MockMagicDAOMockRecorder) ListMagics(ctx interface{}) *gomock.Call {
+func (mr *MockMagicDAOMockRecorder) ListMagics() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMagics", reflect.TypeOf((*MockMagicDAO)(nil).ListMagics), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMagics", reflect.TypeOf((*MockMagicDAO)(nil).ListMagics))
 }

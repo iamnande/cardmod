@@ -5,7 +5,6 @@
 package mocks
 
 import (
-	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -36,31 +35,30 @@ func (m *MockItemDAO) EXPECT() *MockItemDAOMockRecorder {
 }
 
 // GetItem mocks base method.
-func (m *MockItemDAO) GetItem(ctx context.Context, name string) (models.Item, error) {
+func (m *MockItemDAO) GetItem(name string) (models.Item, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetItem", ctx, name)
+	ret := m.ctrl.Call(m, "GetItem", name)
 	ret0, _ := ret[0].(models.Item)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetItem indicates an expected call of GetItem.
-func (mr *MockItemDAOMockRecorder) GetItem(ctx, name interface{}) *gomock.Call {
+func (mr *MockItemDAOMockRecorder) GetItem(name interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetItem", reflect.TypeOf((*MockItemDAO)(nil).GetItem), ctx, name)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetItem", reflect.TypeOf((*MockItemDAO)(nil).GetItem), name)
 }
 
 // ListItems mocks base method.
-func (m *MockItemDAO) ListItems(ctx context.Context) ([]models.Item, error) {
+func (m *MockItemDAO) ListItems() []models.Item {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListItems", ctx)
+	ret := m.ctrl.Call(m, "ListItems")
 	ret0, _ := ret[0].([]models.Item)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	return ret0
 }
 
 // ListItems indicates an expected call of ListItems.
-func (mr *MockItemDAOMockRecorder) ListItems(ctx interface{}) *gomock.Call {
+func (mr *MockItemDAOMockRecorder) ListItems() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListItems", reflect.TypeOf((*MockItemDAO)(nil).ListItems), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListItems", reflect.TypeOf((*MockItemDAO)(nil).ListItems))
 }

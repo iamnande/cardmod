@@ -7,14 +7,12 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	cardv1api "github.com/iamnande/cardmod/internal/apis/cardv1"
-	itemv1api "github.com/iamnande/cardmod/internal/apis/itemv1"
-	limitbreakv1api "github.com/iamnande/cardmod/internal/apis/limitbreakv1"
-	magicv1api "github.com/iamnande/cardmod/internal/apis/magicv1"
-	refinementv1api "github.com/iamnande/cardmod/internal/apis/refinementv1"
+	cardv1api "github.com/iamnande/cardmod/internal/api/cardv1"
+	itemv1api "github.com/iamnande/cardmod/internal/api/itemv1"
+	limitbreakv1api "github.com/iamnande/cardmod/internal/api/limitbreakv1"
+	magicv1api "github.com/iamnande/cardmod/internal/api/magicv1"
+	refinementv1api "github.com/iamnande/cardmod/internal/api/refinementv1"
 	"github.com/iamnande/cardmod/internal/config"
-	"github.com/iamnande/cardmod/internal/database"
-	"github.com/iamnande/cardmod/internal/repositories"
 	"github.com/iamnande/cardmod/pkg/api/cardv1"
 	"github.com/iamnande/cardmod/pkg/api/itemv1"
 	"github.com/iamnande/cardmod/pkg/api/limitbreakv1"
@@ -27,18 +25,15 @@ type Config struct {
 	Config  *config.Config
 	Logger  logr.Logger
 	Version string
-
-	DatabaseClient *database.Client
 }
 
 // Server is the server instance.
 type Server struct {
 
 	// configurable attributes
-	config         *config.Config
-	logger         logr.Logger
-	version        string
-	databaseClient *database.Client
+	config  *config.Config
+	logger  logr.Logger
+	version string
 
 	// constructed attributes
 	server *grpc.Server
@@ -47,10 +42,9 @@ type Server struct {
 // NewServer initializes a new gRPC server instance using the provided configuration.
 func NewServer(cfg *Config) *Server {
 	return &Server{
-		config:         cfg.Config,
-		logger:         cfg.Logger,
-		version:        cfg.Version,
-		databaseClient: cfg.DatabaseClient,
+		config:  cfg.Config,
+		logger:  cfg.Logger,
+		version: cfg.Version,
 	}
 }
 
@@ -62,19 +56,12 @@ func (s *Server) Serve() error {
 		s.LoggingInterceptor(),
 	))
 
-	// serve: initialize APIs
-	cardAPI := cardv1api.New(repositories.NewCardRepository(s.databaseClient))
-	itemAPI := itemv1api.New(repositories.NewItemRepository(s.databaseClient))
-	limitbreakAPI := limitbreakv1api.New(repositories.NewLimitBreakRepository(s.databaseClient))
-	magicAPI := magicv1api.New(repositories.NewMagicRepository(s.databaseClient))
-	refinementAPI := refinementv1api.New(repositories.NewRefinementRepository(s.databaseClient))
-
 	// serve: register APIs
-	cardv1.RegisterCardAPIServer(srvr, cardAPI)
-	itemv1.RegisterItemAPIServer(srvr, itemAPI)
-	limitbreakv1.RegisterLimitBreakAPIServer(srvr, limitbreakAPI)
-	magicv1.RegisterMagicAPIServer(srvr, magicAPI)
-	refinementv1.RegisterRefinementAPIServer(srvr, refinementAPI)
+	cardv1.RegisterCardAPIServer(srvr, cardv1api.New())
+	itemv1.RegisterItemAPIServer(srvr, itemv1api.New())
+	limitbreakv1.RegisterLimitBreakAPIServer(srvr, limitbreakv1api.New())
+	magicv1.RegisterMagicAPIServer(srvr, magicv1api.New())
+	refinementv1.RegisterRefinementAPIServer(srvr, refinementv1api.New())
 
 	// serve: enable reflection
 	reflection.Register(srvr)

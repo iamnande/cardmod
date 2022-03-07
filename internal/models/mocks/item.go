@@ -46,3 +46,17 @@ func (mr *MockItemMockRecorder) Name() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockItem)(nil).Name))
 }
+
+// Purpose mocks base method.
+func (m *MockItem) Purpose() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Purpose")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// Purpose indicates an expected call of Purpose.
+func (mr *MockItemMockRecorder) Purpose() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Purpose", reflect.TypeOf((*MockItem)(nil).Purpose))
+}

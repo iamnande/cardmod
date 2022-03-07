@@ -2,18 +2,14 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"os"
 	"os/signal"
 	"syscall"
 
-	entsql "entgo.io/ent/dialect/sql"
 	"github.com/go-logr/logr"
-	_ "github.com/jackc/pgx/v4/stdlib"
 
 	"github.com/iamnande/cardmod/internal/config"
-	"github.com/iamnande/cardmod/internal/database"
 	"github.com/iamnande/cardmod/internal/logger"
 	"github.com/iamnande/cardmod/internal/server"
 )
@@ -35,20 +31,11 @@ func main() {
 	// api: initialize config
 	cfg := config.MustLoad()
 
-	// api: initialize database client
-	conn, err := sql.Open("pgx", cfg.Database.DSN())
-	if err != nil {
-		log.Error(err, "failed to connect to the database")
-		os.Exit(-1)
-	}
-	databaseClient := database.NewClient(database.Driver(entsql.OpenDB("postgres", conn)))
-
 	// api: initialize server
 	api := server.NewServer(&server.Config{
-		Config:         cfg,
-		Logger:         log,
-		Version:        ServiceVersion,
-		DatabaseClient: databaseClient,
+		Config:  cfg,
+		Logger:  log,
+		Version: ServiceVersion,
 	})
 
 	// api: start the gRPC server

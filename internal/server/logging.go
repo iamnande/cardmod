@@ -6,12 +6,11 @@ import (
 	"time"
 
 	"github.com/go-logr/logr"
-	grpc_logging "github.com/grpc-ecosystem/go-grpc-middleware/logging"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/iamnande/cardmod/internal/cerrors"
+	"github.com/iamnande/cardmod/internal/api/errors"
 )
 
 // request is the request data to log.
@@ -25,7 +24,7 @@ type request struct {
 type response struct {
 	Code     string        `json:"code"`
 	Duration time.Duration `json:"duration"`
-	Error    error         `json:"error"`
+	Error    string        `json:"error,omitempty"`
 }
 
 // LoggingInterceptor is the gRPC server access logging interceptor (middleware).
@@ -46,25 +45,22 @@ func (s *Server) LoggingInterceptor() grpc.UnaryServerInterceptor {
 		reqCTX := logr.NewContext(ctx, log)
 
 		// log: execute handler
-		var apiError *cerrors.APIError
+		resLog := &response{
+			Code: codes.OK.String(),
+		}
 		res, err = handler(reqCTX, req)
 		if err != nil {
+			resLog.Error = err.Error()
 			switch apiErr := err.(type) {
-			case *cerrors.APIError:
-				apiError = apiErr
-				err = status.Error(apiErr.Code, apiErr.Message)
+			case *errors.APIError:
+				resLog.Code = apiErr.Code().String()
+				resLog.Error = apiErr.BaseError().Error()
+				err = status.Error(apiErr.Code(), apiErr.Message())
 			}
 		}
 
 		// log: construct the response log
-		resLog := &response{
-			Code:     grpc_logging.DefaultErrorToCode(err).String(),
-			Duration: time.Since(start),
-			Error:    err,
-		}
-		if apiError != nil {
-			resLog.Error = apiError.BaseError
-		}
+		resLog.Duration = time.Since(start)
 		log = log.WithValues("response", resLog)
 
 		// log: log the request/response

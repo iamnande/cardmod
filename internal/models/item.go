@@ -4,4 +4,5 @@ package models
 //go:generate mockgen -source item.go -destination=./mocks/item.go -package mocks
 type Item interface {
 	Name() string
+	Purpose() string
 }
