@@ -57,11 +57,6 @@ build-proto: ## build: generate proto files
 	@echo $(APP_LOG_FMT) "generating proto files"
 	@buf generate $(APP_WORKDIR)/internal/proto
 
-.PHONY: build-mocks
-build-mocks: ## build: generate mock implementations for testing
-	@echo $(APP_LOG_FMT) "generating mock implementations for testing"
-	@go generate $(APP_PACKAGES)
-
 # --------------------------------------------------
 # Test Targets
 # --------------------------------------------------

@@ -5,7 +5,6 @@ import (
 )
 
 // MagicDAO is the DAO for the Magic model.
-//go:generate mockgen -source magic.go -destination=./mocks/magic.go -package mocks
 type MagicDAO interface {
 
 	// Lists a collection of magics.

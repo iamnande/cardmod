@@ -5,7 +5,6 @@ import (
 )
 
 // RefinementDAO is the DAO for the Refinement model.
-//go:generate mockgen -source refinement.go -destination=./mocks/refinement.go -package mocks
 type RefinementDAO interface {
 
 	// Lists a collection of refinements.

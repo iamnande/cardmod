@@ -11,14 +11,14 @@ import (
 type APIError struct {
 
 	// code is the response code.
-	code codes.Code `json:"code"`
+	code codes.Code
 
 	// message is the client message.
-	message string `json:"message"`
+	message string
 
 	// baseError is the underlying error of what went wrong.
 	// NOTE: this should not be returned to callers.
-	baseError error `json:"error"`
+	baseError error
 }
 
 // Code gets the error code.
