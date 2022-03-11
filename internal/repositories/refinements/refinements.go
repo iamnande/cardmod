@@ -2,7 +2,7 @@ package refinements
 
 var (
 	// refinement is the collection of refinement entities.
-	refinements = [69]*refinement{
+	refinements = [96]*refinement{
 		// Blue Magic
 		{source: "Gesper", target: "Black Hole", numerator: 1, denominator: 1},
 		{source: "Black Hole", target: "Degenerator", numerator: 1, denominator: 1},
@@ -79,5 +79,69 @@ var (
 		{source: "Venom Fang", target: "Bio", numerator: 1, denominator: 20},
 		{source: "Malboro", target: "Malboro Tentacle", numerator: 4, denominator: 1},
 		{source: "Malboro Tentacle", target: "Bio", numerator: 1, denominator: 40},
+		{source: "Gesper", target: "Black Hole", numerator: 1, denominator: 1},
+		{source: "Black Hole", target: "Demi", numerator: 1, denominator: 30},
+		{source: "Wendigo", target: "Steel Orb", numerator: 1, denominator: 1},
+		{source: "Steel Orb", target: "Demi", numerator: 1, denominator: 15},
+		{source: "Torama", target: "Life Ring", numerator: 1, denominator: 1},
+		{source: "Life Ring", target: "Life", numerator: 1, denominator: 20},
+		{source: "Elastoid", target: "Steel Pipe", numerator: 1, denominator: 1},
+		{source: "Steel Pipe", target: "Berserk", numerator: 1, denominator: 20},
+		{source: "Grendel", target: "Dragon Fin", numerator: 1, denominator: 1},
+		{source: "Dragon Fin", target: "Double", numerator: 1, denominator: 20},
+		{source: "Blood Soul", target: "Zombie Powder", numerator: 1, denominator: 1},
+		{source: "Zombie Powder", target: "Zombie", numerator: 1, denominator: 20},
+		{source: "Imp", target: "Wizard Stone", numerator: 1, denominator: 1},
+		{source: "Wizard Stone", target: "Stop", numerator: 1, denominator: 5},
+		{source: "Caterchipillar", target: "Spider Web", numerator: 1, denominator: 1},
+		{source: "Spider Web", target: "Slow", numerator: 1, denominator: 20},
+		{source: "Grat", target: "Magic Stone", numerator: 1, denominator: 1},
+		{source: "Buel", target: "Magic Stone", numerator: 1, denominator: 1},
+		{source: "Jelleye", target: "Magic Stone", numerator: 1, denominator: 1},
+		{source: "Magic Stone", target: "Haste", numerator: 1, denominator: 5},
+		{source: "Ochu", target: "Ochu Tentacle", numerator: 1, denominator: 1},
+		{source: "Ochu Tentacle", target: "Blind", numerator: 1, denominator: 20},
+		{source: "Chimera", target: "Regen Ring", numerator: 10, denominator: 1},
+		{source: "Regen Ring", target: "Full-Life", numerator: 1, denominator: 20},
+		{source: "Elnoyle", target: "Energy Crystal", numerator: 20, denominator: 2},
+		{source: "Energy Crystal", target: "Pulse Ammo", numerator: 2, denominator: 20},
+		{source: "Iron Giant", target: "Star Fragment", numerator: 9, denominator: 3},
+
+		// Refinement Moment #3
+		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/the-timber-mission
+
+		// Refinement Moment #4
+		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/galbadia-garden
+
+		// Refinement Moment #5
+		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/deling-city
+
+		// Refinement Moment #6
+		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/deling-city
+
+		// Refinement Moment #7
+		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/the-escape
+
+		// Refinement Moment #8
+		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/exploring-the-world
+
+		// Refinement Moment #9
+		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/trabia-garden
+
+		// Refinement Moment #10
+		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/the-aftermath
+
+		// Refinement Moment #11
+		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/esthar
+
+		// Refinement Moment #12
+		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/lunar-base
+
+		// Refinement Moment #13
+		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/back-on-earth
+		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/the-final-mission
+
+		// Refinement Moment #14
+		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/final-preparations
 	}
 )
