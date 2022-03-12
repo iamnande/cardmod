@@ -63,6 +63,7 @@ func (m *Magic) validate(all bool) error {
 	if len(errors) > 0 {
 		return MagicMultiError(errors)
 	}
+
 	return nil
 }
 

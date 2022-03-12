@@ -82,6 +82,7 @@ func (m *GetItemRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetItemRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -183,6 +184,7 @@ func (m *ListItemsRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListItemsRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -316,6 +318,7 @@ func (m *ListItemsResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListItemsResponseMultiError(errors)
 	}
+
 	return nil
 }
 

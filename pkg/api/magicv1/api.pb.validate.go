@@ -82,6 +82,7 @@ func (m *GetMagicRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetMagicRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -183,6 +184,7 @@ func (m *ListMagicsRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListMagicsRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -318,6 +320,7 @@ func (m *ListMagicsResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListMagicsResponseMultiError(errors)
 	}
+
 	return nil
 }
 

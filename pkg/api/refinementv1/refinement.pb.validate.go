@@ -68,6 +68,7 @@ func (m *Refinement) validate(all bool) error {
 	if len(errors) > 0 {
 		return RefinementMultiError(errors)
 	}
+
 	return nil
 }
 

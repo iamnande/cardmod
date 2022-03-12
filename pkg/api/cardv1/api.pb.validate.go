@@ -82,6 +82,7 @@ func (m *GetCardRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetCardRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -183,6 +184,7 @@ func (m *ListCardsRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListCardsRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -316,6 +318,7 @@ func (m *ListCardsResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListCardsResponseMultiError(errors)
 	}
+
 	return nil
 }
 

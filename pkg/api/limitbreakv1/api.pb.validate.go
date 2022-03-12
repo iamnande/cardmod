@@ -82,6 +82,7 @@ func (m *GetLimitBreakRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetLimitBreakRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -185,6 +186,7 @@ func (m *ListLimitBreaksRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListLimitBreaksRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -320,6 +322,7 @@ func (m *ListLimitBreaksResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListLimitBreaksResponseMultiError(errors)
 	}
+
 	return nil
 }
 

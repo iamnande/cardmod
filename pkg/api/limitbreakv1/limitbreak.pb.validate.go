@@ -62,6 +62,7 @@ func (m *LimitBreak) validate(all bool) error {
 	if len(errors) > 0 {
 		return LimitBreakMultiError(errors)
 	}
+
 	return nil
 }
 

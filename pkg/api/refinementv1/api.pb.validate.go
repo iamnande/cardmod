@@ -104,6 +104,7 @@ func (m *GetRefinementRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return GetRefinementRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -209,6 +210,7 @@ func (m *ListRefinementsRequest) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListRefinementsRequestMultiError(errors)
 	}
+
 	return nil
 }
 
@@ -344,6 +346,7 @@ func (m *ListRefinementsResponse) validate(all bool) error {
 	if len(errors) > 0 {
 		return ListRefinementsResponseMultiError(errors)
 	}
+
 	return nil
 }
 
