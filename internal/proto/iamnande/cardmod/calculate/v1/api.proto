@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package iamnande.cardmod.calculate.v1;
+
+import "validate/validate.proto";
+
+option go_package = "github.com/iamnande/cardmod/pkg/api/calculatev1;calculatev1";
+
+// Calculate API Service.
+service CalculateAPI {
+
+    // Calculates quantities and sources of a given refinement.
+    rpc Calculate(CalculateRequest) returns (CalculateResponse);
+
+}
+
+// Request message for Calculate.
+message CalculateRequest {
+
+    // Target is the desired refinement target.
+    string target = 1 [(validate.rules).string = {
+        pattern: "^[-, \\w]+$",
+        min_len: 3,
+        max_len: 25,
+    }];
+
+    // Quantity of the target to calculate against.
+    int32 count = 2;
+
+}
+
+// Response output for Calculate.
+message CalculateResponse {
+
+    // Calculation output of a given refinement.
+    message Calculation {
+
+        // Source option for the refinement.
+        string source = 1;
+
+        // Quantity of the source needed for the desired amount.
+        int32 count = 2;
+
+        // Complete origin calculation required.
+        // NOTE: A maximum of two levels will ever be returned.
+        repeated Calculation calculations = 3;
+
+    }
+
+    // A collection of refinement options.
+    repeated Calculation calculations = 1;
+
+}
