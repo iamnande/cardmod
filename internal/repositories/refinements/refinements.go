@@ -2,7 +2,7 @@ package refinements
 
 var (
 	// refinement is the collection of refinement entities.
-	refinements = [96]*refinement{
+	refinements = [87]*refinement{
 		// Blue Magic
 		{source: "Gesper", target: "Black Hole", numerator: 1, denominator: 1},
 		{source: "Black Hole", target: "Degenerator", numerator: 1, denominator: 1},
@@ -29,7 +29,6 @@ var (
 		// ref: https://gamefaqs.gamespot.com/ps4/266152-final-fantasy-viii-remastered/faqs/72431/preparing-for-the-exam
 		{source: "Abyss Worm", target: "Windmill", numerator: 1, denominator: 1},
 		{source: "Windmill", target: "Tornado", numerator: 1, denominator: 20},
-		{source: "Ruby Dragon", target: "Inferno Fang", numerator: 10, denominator: 1},
 		{source: "Inferno Fang", target: "Flare", numerator: 1, denominator: 20},
 		{source: "Snow Lion", target: "North Wind", numerator: 1, denominator: 1},
 		{source: "North Wind", target: "Blizzaga", numerator: 1, denominator: 20},
@@ -37,16 +36,14 @@ var (
 		{source: "Dynamo Stone", target: "Thundaga", numerator: 1, denominator: 20},
 		{source: "Hexadrago", target: "Red Fang", numerator: 3, denominator: 1},
 		{source: "Red Fang", target: "Firaga", numerator: 1, denominator: 20},
-		{source: "Fastitocalon", target: "Water Crystal", numerator: 1, denominator: 1},
 		{source: "Fastitocalon-F", target: "Water Crystal", numerator: 5, denominator: 1},
-		{source: "Water Crystal", target: "Water Crystal", numerator: 1, denominator: 50},
+		{source: "Water Crystal", target: "Water", numerator: 1, denominator: 50},
 		{source: "Thrustaevis", target: "Shear Feather", numerator: 1, denominator: 1},
 		{source: "Shear Feather", target: "Aero", numerator: 1, denominator: 20},
 		{source: "Bomb", target: "Bomb Fragment", numerator: 1, denominator: 1},
 		{source: "Bomb Fragment", target: "Fira", numerator: 1, denominator: 20},
 		{source: "Glacial Eye", target: "Arctic Wind", numerator: 1, denominator: 1},
 		{source: "Arctic Wind", target: "Blizzara", numerator: 1, denominator: 20},
-		{source: "Creeps", target: "Coral Fragment", numerator: 1, denominator: 1},
 		{source: "Coral Fragment", target: "Thundara", numerator: 1, denominator: 20},
 
 		// Refinement Moment #2
@@ -56,9 +53,7 @@ var (
 		{source: "Zell", target: "Hyper Wrist", numerator: 1, denominator: 3},
 		{source: "Diablos", target: "Black Hole", numerator: 1, denominator: 100},
 		{source: "Black Hole", target: "Demi", numerator: 1, denominator: 30},
-		{source: "Gayla", target: "Mystery Fluid", numerator: 1, denominator: 1},
 		{source: "Mystery Fluid", target: "Meltdown", numerator: 1, denominator: 10},
-		{source: "Tri-Face", target: "Curse Spike", numerator: 1, denominator: 1},
 		{source: "Curse Spike", target: "Pain", numerator: 1, denominator: 10},
 		{source: "Armadodo", target: "Dino Bone", numerator: 1, denominator: 1},
 		{source: "T-Rexaur", target: "Dino Bone", numerator: 2, denominator: 1},
@@ -77,10 +72,7 @@ var (
 		{source: "Betrayal Sword", target: "Confuse", numerator: 1, denominator: 20},
 		{source: "Anacondaur", target: "Venom Fang", numerator: 1, denominator: 1},
 		{source: "Venom Fang", target: "Bio", numerator: 1, denominator: 20},
-		{source: "Malboro", target: "Malboro Tentacle", numerator: 4, denominator: 1},
 		{source: "Malboro Tentacle", target: "Bio", numerator: 1, denominator: 40},
-		{source: "Gesper", target: "Black Hole", numerator: 1, denominator: 1},
-		{source: "Black Hole", target: "Demi", numerator: 1, denominator: 30},
 		{source: "Wendigo", target: "Steel Orb", numerator: 1, denominator: 1},
 		{source: "Steel Orb", target: "Demi", numerator: 1, denominator: 15},
 		{source: "Torama", target: "Life Ring", numerator: 1, denominator: 1},
@@ -93,7 +85,6 @@ var (
 		{source: "Zombie Powder", target: "Zombie", numerator: 1, denominator: 20},
 		{source: "Imp", target: "Wizard Stone", numerator: 1, denominator: 1},
 		{source: "Wizard Stone", target: "Stop", numerator: 1, denominator: 5},
-		{source: "Caterchipillar", target: "Spider Web", numerator: 1, denominator: 1},
 		{source: "Spider Web", target: "Slow", numerator: 1, denominator: 20},
 		{source: "Grat", target: "Magic Stone", numerator: 1, denominator: 1},
 		{source: "Buel", target: "Magic Stone", numerator: 1, denominator: 1},

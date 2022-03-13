@@ -7,12 +7,14 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
+	calculatev1api "github.com/iamnande/cardmod/internal/api/calculatev1"
 	cardv1api "github.com/iamnande/cardmod/internal/api/cardv1"
 	itemv1api "github.com/iamnande/cardmod/internal/api/itemv1"
 	limitbreakv1api "github.com/iamnande/cardmod/internal/api/limitbreakv1"
 	magicv1api "github.com/iamnande/cardmod/internal/api/magicv1"
 	refinementv1api "github.com/iamnande/cardmod/internal/api/refinementv1"
 	"github.com/iamnande/cardmod/internal/config"
+	"github.com/iamnande/cardmod/pkg/api/calculatev1"
 	"github.com/iamnande/cardmod/pkg/api/cardv1"
 	"github.com/iamnande/cardmod/pkg/api/itemv1"
 	"github.com/iamnande/cardmod/pkg/api/limitbreakv1"
@@ -62,6 +64,7 @@ func (s *Server) Serve() error {
 	limitbreakv1.RegisterLimitBreakAPIServer(srvr, limitbreakv1api.New())
 	magicv1.RegisterMagicAPIServer(srvr, magicv1api.New())
 	refinementv1.RegisterRefinementAPIServer(srvr, refinementv1api.New())
+	calculatev1.RegisterCalculateAPIServer(srvr, calculatev1api.New())
 
 	// serve: enable reflection
 	reflection.Register(srvr)

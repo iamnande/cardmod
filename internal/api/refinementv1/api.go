@@ -3,9 +3,6 @@ package refinementv1
 import (
 	"context"
 
-	"google.golang.org/grpc/codes"
-
-	"github.com/iamnande/cardmod/internal/api/errors"
 	"github.com/iamnande/cardmod/internal/daos"
 	"github.com/iamnande/cardmod/internal/models"
 	"github.com/iamnande/cardmod/internal/repositories/refinements"
@@ -25,27 +22,16 @@ func New() *api {
 	}
 }
 
-// GetRefinement gets a refinement.
-func (a *api) GetRefinement(_ context.Context, req *refinementv1.GetRefinementRequest) (*refinementv1.Refinement, error) {
-
-	// get: fetch the refinement
-	res, err := a.refinementRepository.GetRefinement(req.GetSource(), req.GetTarget())
-	if err != nil {
-		return nil, errors.NewAPIError(codes.NotFound, "refinement not found", err)
-	}
-
-	// get: return the refinement
-	return marshalRefinement(res), nil
-
-}
-
 // ListRefinements gets a collection of refinements.
 func (a *api) ListRefinements(_ context.Context,
 	_ *refinementv1.ListRefinementsRequest) (*refinementv1.ListRefinementsResponse, error) {
 
+	// list: fetch filtered list of refinements
+	res := a.refinementRepository.ListRefinements(nil)
+
 	// list: return the refinement
 	return &refinementv1.ListRefinementsResponse{
-		Refinements: marshalRefinements(a.refinementRepository.ListRefinements()),
+		Refinements: marshalRefinements(res),
 	}, nil
 
 }

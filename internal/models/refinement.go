@@ -7,3 +7,9 @@ type Refinement interface {
 	Numerator() int32
 	Denominator() int32
 }
+
+// RefinementFilter is used to filter refinement collection results.
+type RefinementFilter interface {
+	Source() string
+	Target() string
+}

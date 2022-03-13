@@ -30,11 +30,13 @@ var _ = Describe("Repository", func() {
 	})
 
 	Describe("ListRefinements", func() {
-		Context("When Called", func() {
+
+		// No Filtering
+		Context("With No Filters", func() {
 			It("Should Return the Complete Collection", func() {
 
 				// execution
-				actual := NewRepository().ListRefinements()
+				actual := NewRepository().ListRefinements(nil)
 
 				// validations
 				Expect(len(actual)).To(Equal(len(refinements)))
@@ -47,38 +49,65 @@ var _ = Describe("Repository", func() {
 
 			})
 		})
-	})
 
-	Describe("GetRefinement", func() {
-		Context("When an Existing Refinement is Called", func() {
-			It("Should Return the Refinement", func() {
+		// Source Filter ONLY
+		// NOTE: This is basically a GetSingular due to the limitation of 1..* relationship of
+		// source refinements to target refinements.
+		Context("With Source Filter ONLY", func() {
+			It("Should Return Source Filtered Results", func() {
 
-				// setup
-				i := 5
+				// expectations
+				expected := "Tent"
 
 				// execution
-				actual, err := NewRepository().GetRefinement(refinements[i].Source(), refinements[i].Target())
+				actual := NewRepository().ListRefinements(NewFilter(expected, ""))
 
 				// validations
-				Expect(err).To(BeNil())
-				Expect(actual.Source()).To(Equal(refinements[i].Source()))
-				Expect(actual.Target()).To(Equal(refinements[i].Target()))
+				Expect(len(actual)).To(Equal(1))
+				Expect(actual[0].Source()).To(Equal(expected))
 
 			})
 		})
-		Context("When a NON-Existing Refinement is Called", func() {
-			It("Should NOT Return a Refinement", func() {
+
+		// Target Filter ONLY
+		Context("With Target Filter ONLY", func() {
+			It("Should Return Target Filtered Results", func() {
+
+				// expectations
+				expected := "Magic Stone"
 
 				// execution
-				actual, err := NewRepository().GetRefinement("no", "no")
+				actual := NewRepository().ListRefinements(NewFilter("", expected))
 
 				// validations
-				Expect(actual).To(BeNil())
-				Expect(err).NotTo(BeNil())
-				Expect(err.Error()).To(Equal("refinement not found"))
+				Expect(len(actual)).To(Equal(3))
+				for i := 0; i < 3; i++ {
+					Expect(actual[i].Target()).To(Equal(expected))
+				}
 
 			})
 		})
+
+		// Source AND Target Filter
+		// NOTE: This too is essentially a get by source name.
+		Context("With Source AND Target Filter", func() {
+			It("Should Return Singular Source<->Target Results", func() {
+
+				// expectations
+				expectedSource := "Buel"
+				expectedTarget := "Magic Stone"
+
+				// execution
+				actual := NewRepository().ListRefinements(NewFilter(expectedSource, expectedTarget))
+
+				// validations
+				Expect(len(actual)).To(Equal(1))
+				Expect(actual[0].Source()).To(Equal(expectedSource))
+				Expect(actual[0].Target()).To(Equal(expectedTarget))
+
+			})
+		})
+
 	})
 
 })

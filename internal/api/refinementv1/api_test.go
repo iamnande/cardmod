@@ -30,48 +30,6 @@ var _ = Describe("RefinementAPI", func() {
 
 	})
 
-	// GetRefinement
-	Describe("GetRefinement", func() {
-		Context("With an Existing Refinement", func() {
-			It("Should Return the Refinement", func() {
-
-				// setup
-				req := &refinementv1.GetRefinementRequest{
-					Source: "Tri-Face", Target: "Curse Spike",
-				}
-
-				// execution
-				actual, err := api.GetRefinement(ctx, req)
-
-				// validation
-				Expect(err).To(BeNil())
-				Expect(actual).NotTo(BeNil())
-				Expect(actual.GetSource()).To(Equal(req.GetSource()))
-				Expect(actual.GetTarget()).To(Equal(req.GetTarget()))
-
-			})
-		})
-		Context("With a Non-Existing Refinement", func() {
-			It("Should NOT Return a Refinement", func() {
-
-				// setup
-				req := &refinementv1.GetRefinementRequest{
-					Source: "fail", Target: "fail",
-				}
-
-				// execution
-				actual, err := api.GetRefinement(ctx, req)
-
-				// validation
-				Expect(actual).To(BeNil())
-				Expect(err).NotTo(BeNil())
-				// TODO: this feels kind weird but the separate parts make sense
-				Expect(err.Error()).To(Equal("refinement not found: refinement not found"))
-
-			})
-		})
-	})
-
 	// ListRefinements
 	Describe("ListRefinements", func() {
 		Context("With an Existing Refinement", func() {
@@ -88,7 +46,7 @@ var _ = Describe("RefinementAPI", func() {
 				Expect(actual).NotTo(BeNil())
 
 				apiRefinements := actual.GetRefinements()
-				dbRefinements := api.refinementRepository.ListRefinements()
+				dbRefinements := api.refinementRepository.ListRefinements(nil)
 				for i := 0; i < len(dbRefinements); i++ {
 					Expect(apiRefinements[i].GetSource()).To(Equal(dbRefinements[i].Source()))
 					Expect(apiRefinements[i].GetTarget()).To(Equal(dbRefinements[i].Target()))

@@ -22,8 +22,6 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RefinementAPIClient interface {
-	// Gets a refinement.
-	GetRefinement(ctx context.Context, in *GetRefinementRequest, opts ...grpc.CallOption) (*Refinement, error)
 	// Lists a collection of refinements.
 	ListRefinements(ctx context.Context, in *ListRefinementsRequest, opts ...grpc.CallOption) (*ListRefinementsResponse, error)
 }
@@ -34,15 +32,6 @@ type refinementAPIClient struct {
 
 func NewRefinementAPIClient(cc grpc.ClientConnInterface) RefinementAPIClient {
 	return &refinementAPIClient{cc}
-}
-
-func (c *refinementAPIClient) GetRefinement(ctx context.Context, in *GetRefinementRequest, opts ...grpc.CallOption) (*Refinement, error) {
-	out := new(Refinement)
-	err := c.cc.Invoke(ctx, "/iamnande.cardmod.refinement.v1.RefinementAPI/GetRefinement", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *refinementAPIClient) ListRefinements(ctx context.Context, in *ListRefinementsRequest, opts ...grpc.CallOption) (*ListRefinementsResponse, error) {
@@ -58,8 +47,6 @@ func (c *refinementAPIClient) ListRefinements(ctx context.Context, in *ListRefin
 // All implementations must embed UnimplementedRefinementAPIServer
 // for forward compatibility
 type RefinementAPIServer interface {
-	// Gets a refinement.
-	GetRefinement(context.Context, *GetRefinementRequest) (*Refinement, error)
 	// Lists a collection of refinements.
 	ListRefinements(context.Context, *ListRefinementsRequest) (*ListRefinementsResponse, error)
 	mustEmbedUnimplementedRefinementAPIServer()
@@ -69,9 +56,6 @@ type RefinementAPIServer interface {
 type UnimplementedRefinementAPIServer struct {
 }
 
-func (UnimplementedRefinementAPIServer) GetRefinement(context.Context, *GetRefinementRequest) (*Refinement, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRefinement not implemented")
-}
 func (UnimplementedRefinementAPIServer) ListRefinements(context.Context, *ListRefinementsRequest) (*ListRefinementsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListRefinements not implemented")
 }
@@ -86,24 +70,6 @@ type UnsafeRefinementAPIServer interface {
 
 func RegisterRefinementAPIServer(s grpc.ServiceRegistrar, srv RefinementAPIServer) {
 	s.RegisterService(&RefinementAPI_ServiceDesc, srv)
-}
-
-func _RefinementAPI_GetRefinement_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRefinementRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RefinementAPIServer).GetRefinement(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/iamnande.cardmod.refinement.v1.RefinementAPI/GetRefinement",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RefinementAPIServer).GetRefinement(ctx, req.(*GetRefinementRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _RefinementAPI_ListRefinements_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -131,10 +97,6 @@ var RefinementAPI_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "iamnande.cardmod.refinement.v1.RefinementAPI",
 	HandlerType: (*RefinementAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "GetRefinement",
-			Handler:    _RefinementAPI_GetRefinement_Handler,
-		},
 		{
 			MethodName: "ListRefinements",
 			Handler:    _RefinementAPI_ListRefinements_Handler,

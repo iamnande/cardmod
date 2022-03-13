@@ -79,7 +79,16 @@ func (m *CalculateRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	// no validation rules for Count
+	if val := m.GetCount(); val < 1 || val > 300 {
+		err := CalculateRequestValidationError{
+			field:  "Count",
+			reason: "value must be inside range [1, 300]",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	if len(errors) > 0 {
 		return CalculateRequestMultiError(errors)
@@ -183,7 +192,7 @@ func (m *CalculateResponse) validate(all bool) error {
 
 	var errors []error
 
-	for idx, item := range m.GetCalculations() {
+	for idx, item := range m.GetRefinements() {
 		_, _ = idx, item
 
 		if all {
@@ -191,7 +200,7 @@ func (m *CalculateResponse) validate(all bool) error {
 			case interface{ ValidateAll() error }:
 				if err := v.ValidateAll(); err != nil {
 					errors = append(errors, CalculateResponseValidationError{
-						field:  fmt.Sprintf("Calculations[%v]", idx),
+						field:  fmt.Sprintf("Refinements[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
@@ -199,7 +208,7 @@ func (m *CalculateResponse) validate(all bool) error {
 			case interface{ Validate() error }:
 				if err := v.Validate(); err != nil {
 					errors = append(errors, CalculateResponseValidationError{
-						field:  fmt.Sprintf("Calculations[%v]", idx),
+						field:  fmt.Sprintf("Refinements[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
@@ -208,7 +217,7 @@ func (m *CalculateResponse) validate(all bool) error {
 		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
 			if err := v.Validate(); err != nil {
 				return CalculateResponseValidationError{
-					field:  fmt.Sprintf("Calculations[%v]", idx),
+					field:  fmt.Sprintf("Refinements[%v]", idx),
 					reason: "embedded message failed validation",
 					cause:  err,
 				}
@@ -297,22 +306,22 @@ var _ interface {
 	ErrorName() string
 } = CalculateResponseValidationError{}
 
-// Validate checks the field values on CalculateResponse_Calculation with the
+// Validate checks the field values on CalculateResponse_Refinement with the
 // rules defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *CalculateResponse_Calculation) Validate() error {
+func (m *CalculateResponse_Refinement) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on CalculateResponse_Calculation with
-// the rules defined in the proto definition for this message. If any rules
-// are violated, the result is a list of violation errors wrapped in
-// CalculateResponse_CalculationMultiError, or nil if none found.
-func (m *CalculateResponse_Calculation) ValidateAll() error {
+// ValidateAll checks the field values on CalculateResponse_Refinement with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// CalculateResponse_RefinementMultiError, or nil if none found.
+func (m *CalculateResponse_Refinement) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *CalculateResponse_Calculation) validate(all bool) error {
+func (m *CalculateResponse_Refinement) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -323,23 +332,23 @@ func (m *CalculateResponse_Calculation) validate(all bool) error {
 
 	// no validation rules for Count
 
-	for idx, item := range m.GetCalculations() {
+	for idx, item := range m.GetRefinements() {
 		_, _ = idx, item
 
 		if all {
 			switch v := interface{}(item).(type) {
 			case interface{ ValidateAll() error }:
 				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, CalculateResponse_CalculationValidationError{
-						field:  fmt.Sprintf("Calculations[%v]", idx),
+					errors = append(errors, CalculateResponse_RefinementValidationError{
+						field:  fmt.Sprintf("Refinements[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
 				}
 			case interface{ Validate() error }:
 				if err := v.Validate(); err != nil {
-					errors = append(errors, CalculateResponse_CalculationValidationError{
-						field:  fmt.Sprintf("Calculations[%v]", idx),
+					errors = append(errors, CalculateResponse_RefinementValidationError{
+						field:  fmt.Sprintf("Refinements[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
@@ -347,8 +356,8 @@ func (m *CalculateResponse_Calculation) validate(all bool) error {
 			}
 		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
 			if err := v.Validate(); err != nil {
-				return CalculateResponse_CalculationValidationError{
-					field:  fmt.Sprintf("Calculations[%v]", idx),
+				return CalculateResponse_RefinementValidationError{
+					field:  fmt.Sprintf("Refinements[%v]", idx),
 					reason: "embedded message failed validation",
 					cause:  err,
 				}
@@ -358,19 +367,19 @@ func (m *CalculateResponse_Calculation) validate(all bool) error {
 	}
 
 	if len(errors) > 0 {
-		return CalculateResponse_CalculationMultiError(errors)
+		return CalculateResponse_RefinementMultiError(errors)
 	}
 
 	return nil
 }
 
-// CalculateResponse_CalculationMultiError is an error wrapping multiple
-// validation errors returned by CalculateResponse_Calculation.ValidateAll()
-// if the designated constraints aren't met.
-type CalculateResponse_CalculationMultiError []error
+// CalculateResponse_RefinementMultiError is an error wrapping multiple
+// validation errors returned by CalculateResponse_Refinement.ValidateAll() if
+// the designated constraints aren't met.
+type CalculateResponse_RefinementMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m CalculateResponse_CalculationMultiError) Error() string {
+func (m CalculateResponse_RefinementMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -379,12 +388,12 @@ func (m CalculateResponse_CalculationMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m CalculateResponse_CalculationMultiError) AllErrors() []error { return m }
+func (m CalculateResponse_RefinementMultiError) AllErrors() []error { return m }
 
-// CalculateResponse_CalculationValidationError is the validation error
-// returned by CalculateResponse_Calculation.Validate if the designated
-// constraints aren't met.
-type CalculateResponse_CalculationValidationError struct {
+// CalculateResponse_RefinementValidationError is the validation error returned
+// by CalculateResponse_Refinement.Validate if the designated constraints
+// aren't met.
+type CalculateResponse_RefinementValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -392,24 +401,24 @@ type CalculateResponse_CalculationValidationError struct {
 }
 
 // Field function returns field value.
-func (e CalculateResponse_CalculationValidationError) Field() string { return e.field }
+func (e CalculateResponse_RefinementValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e CalculateResponse_CalculationValidationError) Reason() string { return e.reason }
+func (e CalculateResponse_RefinementValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e CalculateResponse_CalculationValidationError) Cause() error { return e.cause }
+func (e CalculateResponse_RefinementValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e CalculateResponse_CalculationValidationError) Key() bool { return e.key }
+func (e CalculateResponse_RefinementValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e CalculateResponse_CalculationValidationError) ErrorName() string {
-	return "CalculateResponse_CalculationValidationError"
+func (e CalculateResponse_RefinementValidationError) ErrorName() string {
+	return "CalculateResponse_RefinementValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e CalculateResponse_CalculationValidationError) Error() string {
+func (e CalculateResponse_RefinementValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -421,14 +430,14 @@ func (e CalculateResponse_CalculationValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sCalculateResponse_Calculation.%s: %s%s",
+		"invalid %sCalculateResponse_Refinement.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = CalculateResponse_CalculationValidationError{}
+var _ error = CalculateResponse_RefinementValidationError{}
 
 var _ interface {
 	Field() string
@@ -436,4 +445,4 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = CalculateResponse_CalculationValidationError{}
+} = CalculateResponse_RefinementValidationError{}

@@ -25,15 +25,18 @@ message CalculateRequest {
     }];
 
     // Quantity of the target to calculate against.
-    int32 count = 2;
+    int32 count = 2 [(validate.rules).int32 = {
+        gte: 1,
+        lte: 300,
+    }];
 
 }
 
 // Response output for Calculate.
 message CalculateResponse {
 
-    // Calculation output of a given refinement.
-    message Calculation {
+    // Refinement output of a given refinement.
+    message Refinement {
 
         // Source option for the refinement.
         string source = 1;
@@ -43,11 +46,11 @@ message CalculateResponse {
 
         // Complete origin calculation required.
         // NOTE: A maximum of two levels will ever be returned.
-        repeated Calculation calculations = 3;
+        repeated Refinement refinements = 3;
 
     }
 
     // A collection of refinement options.
-    repeated Calculation calculations = 1;
+    repeated Refinement refinements = 1;
 
 }

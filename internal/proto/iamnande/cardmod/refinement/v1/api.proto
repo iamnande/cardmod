@@ -10,32 +10,8 @@ option go_package = "github.com/iamnande/cardmod/pkg/api/refinementv1;refinement
 // Refinement API Service.
 service RefinementAPI {
 
-    // Gets a refinement.
-    rpc GetRefinement(GetRefinementRequest) returns (Refinement);
-
     // Lists a collection of refinements.
     rpc ListRefinements(ListRefinementsRequest) returns (ListRefinementsResponse);
-
-}
-
-// Request schema for the GetRefinement request.
-// NOTE: one or the other is preferred, if both are supplied it is up to the caller
-//       to ensure the source does, in fact, refine into the target.
-message GetRefinementRequest {
-
-    // Get a refinement by its source.
-    string source = 1 [(validate.rules).string = {
-        pattern: "^[-, \\w]+$",
-        min_len: 3,
-        max_len: 25,
-    }];
-
-    // Get a refinement by its target.
-    string target = 2 [(validate.rules).string = {
-        pattern: "^[-, \\w]+$",
-        min_len: 3,
-        max_len: 25,
-    }];
 
 }
 

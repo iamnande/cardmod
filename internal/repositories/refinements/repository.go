@@ -3,7 +3,6 @@ package refinements
 import (
 	"github.com/iamnande/cardmod/internal/daos"
 	"github.com/iamnande/cardmod/internal/models"
-	"github.com/iamnande/cardmod/internal/repositories/errors"
 )
 
 // repository is the concrete implementation of the daos.RefinementDAO interface.
@@ -34,17 +33,48 @@ func NewRepository() repository {
 }
 
 // ListRefinements gets a collection of refinements.
-func (r repository) ListRefinements() []models.Refinement {
-	return r.refinements
-}
+// Optionally you can filter by source, target, or both.
+func (r repository) ListRefinements(filter models.RefinementFilter) []models.Refinement {
 
-// GetRefinement gets a refinement by source and target.
-func (r repository) GetRefinement(source, target string) (models.Refinement, error) {
-	for i := 0; i < len(r.refinements); i++ {
-		if r.refinements[i].Source() == source &&
-			r.refinements[i].Target() == target {
-			return r.refinements[i], nil
-		}
+	// list: if no filter, return complete collection
+	if filter == nil {
+		return r.refinements
 	}
-	return nil, errors.NewRepositoryError("refinement not found")
+
+	// list: construct empty return slice
+	res := make([]models.Refinement, 0)
+
+	// list: iterate the refinements, filtering as necessary
+	for i := 0; i < len(r.refinements); i++ {
+
+		// list: filter on just target
+		if filter.Target() != "" && filter.Source() == "" {
+			if r.refinements[i].Target() == filter.Target() {
+				res = append(res, refinements[i])
+				continue
+			}
+		}
+
+		// list: filter on just source
+		if filter.Source() != "" && filter.Target() == "" {
+			if r.refinements[i].Source() == filter.Source() {
+				res = append(res, refinements[i])
+				continue
+			}
+		}
+
+		// list: filter on both source and target
+		if filter.Source() != "" && filter.Target() != "" {
+			if r.refinements[i].Source() == filter.Source() &&
+				r.refinements[i].Target() == filter.Target() {
+				res = append(res, refinements[i])
+				continue
+			}
+		}
+
+	}
+
+	// list: return filtered refinements
+	return res
+
 }

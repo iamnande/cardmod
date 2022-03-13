@@ -18,6 +18,9 @@ type api struct {
 	cardRepository daos.CardDAO
 }
 
+// this is a build/compile time check to ensure our concrete implementation satisfies the API interface.
+var _ cardv1.CardAPIServer = (*api)(nil)
+
 // New initializes the v1 CardAPI.
 func New() *api {
 	return &api{
