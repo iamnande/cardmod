@@ -6,17 +6,6 @@
 
 <h3 align="center">Final Fantasy VIII - CardMod API</h3>
 
-<br />
-<p align="center">
-  <a href="https://github.com/iamnande/cardmod/actions/workflows/test-unit.yml">
-    <img src="https://github.com/iamnande/cardmod/actions/workflows/test-unit.yml/badge.svg?event=push"/>
-  </a>
-  <a href="https://codecov.io/gh/iamnande/cardmod">
-    <img src="https://codecov.io/gh/iamnande/cardmod/branch/main/graph/badge.svg?token=6A07S2JH4C"/>
-  </a>
-</p>
-<br />
-
 <p align="center">
     <b>FFVIII CardMod API</b> is <i>the</i> ultimate FFVIII gameplay companion.
     <br />
