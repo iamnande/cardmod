@@ -22,11 +22,13 @@ const (
 )
 
 // Request schema for the ListRefinements request.
-// TODO: pagination, filtering, and sorting
 type ListRefinementsRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	// Filter result set.
+	Filter *ListRefinementsRequest_Filter `protobuf:"bytes,1,opt,name=filter,proto3" json:"filter,omitempty"`
 }
 
 func (x *ListRefinementsRequest) Reset() {
@@ -59,6 +61,13 @@ func (x *ListRefinementsRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ListRefinementsRequest.ProtoReflect.Descriptor instead.
 func (*ListRefinementsRequest) Descriptor() ([]byte, []int) {
 	return file_iamnande_cardmod_refinement_v1_api_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *ListRefinementsRequest) GetFilter() *ListRefinementsRequest_Filter {
+	if x != nil {
+		return x.Filter
+	}
+	return nil
 }
 
 // Response schema for the ListRefinements request.
@@ -110,6 +119,64 @@ func (x *ListRefinementsResponse) GetRefinements() []*Refinement {
 	return nil
 }
 
+// Optional source and target refinement filtering.
+type ListRefinementsRequest_Filter struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Filter by source.
+	Source string `protobuf:"bytes,1,opt,name=source,proto3" json:"source,omitempty"`
+	// Filter by target.
+	Target string `protobuf:"bytes,2,opt,name=target,proto3" json:"target,omitempty"`
+}
+
+func (x *ListRefinementsRequest_Filter) Reset() {
+	*x = ListRefinementsRequest_Filter{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_iamnande_cardmod_refinement_v1_api_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListRefinementsRequest_Filter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListRefinementsRequest_Filter) ProtoMessage() {}
+
+func (x *ListRefinementsRequest_Filter) ProtoReflect() protoreflect.Message {
+	mi := &file_iamnande_cardmod_refinement_v1_api_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListRefinementsRequest_Filter.ProtoReflect.Descriptor instead.
+func (*ListRefinementsRequest_Filter) Descriptor() ([]byte, []int) {
+	return file_iamnande_cardmod_refinement_v1_api_proto_rawDescGZIP(), []int{0, 0}
+}
+
+func (x *ListRefinementsRequest_Filter) GetSource() string {
+	if x != nil {
+		return x.Source
+	}
+	return ""
+}
+
+func (x *ListRefinementsRequest_Filter) GetTarget() string {
+	if x != nil {
+		return x.Target
+	}
+	return ""
+}
+
 var File_iamnande_cardmod_refinement_v1_api_proto protoreflect.FileDescriptor
 
 var file_iamnande_cardmod_refinement_v1_api_proto_rawDesc = []byte{
@@ -122,8 +189,20 @@ var file_iamnande_cardmod_refinement_v1_api_proto_rawDesc = []byte{
 	0x69, 0x6e, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x2f, 0x76, 0x31, 0x2f, 0x72, 0x65, 0x66, 0x69, 0x6e,
 	0x65, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x17, 0x76, 0x61, 0x6c,
 	0x69, 0x64, 0x61, 0x74, 0x65, 0x2f, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x22, 0x18, 0x0a, 0x16, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x66, 0x69,
-	0x6e, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x67,
+	0x72, 0x6f, 0x74, 0x6f, 0x22, 0xd7, 0x01, 0x0a, 0x16, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x66,
+	0x69, 0x6e, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x55, 0x0a, 0x06, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x3d, 0x2e, 0x69, 0x61, 0x6d, 0x6e, 0x61, 0x6e, 0x64, 0x65, 0x2e, 0x63, 0x61, 0x72, 0x64, 0x6d,
+	0x6f, 0x64, 0x2e, 0x72, 0x65, 0x66, 0x69, 0x6e, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x76, 0x31,
+	0x2e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x66, 0x69, 0x6e, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x52, 0x06,
+	0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x1a, 0x66, 0x0a, 0x06, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72,
+	0x12, 0x2d, 0x0a, 0x06, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x42, 0x15, 0xfa, 0x42, 0x12, 0x72, 0x10, 0x10, 0x03, 0x18, 0x19, 0x32, 0x0a, 0x5e, 0x5b, 0x2d,
+	0x2c, 0x20, 0x5c, 0x77, 0x5d, 0x2b, 0x24, 0x52, 0x06, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x12,
+	0x2d, 0x0a, 0x06, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x15, 0xfa, 0x42, 0x12, 0x72, 0x10, 0x10, 0x03, 0x18, 0x19, 0x32, 0x0a, 0x5e, 0x5b, 0x2d, 0x2c,
+	0x20, 0x5c, 0x77, 0x5d, 0x2b, 0x24, 0x52, 0x06, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x22, 0x67,
 	0x0a, 0x17, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x66, 0x69, 0x6e, 0x65, 0x6d, 0x65, 0x6e, 0x74,
 	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4c, 0x0a, 0x0b, 0x72, 0x65, 0x66,
 	0x69, 0x6e, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x2a,
@@ -159,21 +238,23 @@ func file_iamnande_cardmod_refinement_v1_api_proto_rawDescGZIP() []byte {
 	return file_iamnande_cardmod_refinement_v1_api_proto_rawDescData
 }
 
-var file_iamnande_cardmod_refinement_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_iamnande_cardmod_refinement_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_iamnande_cardmod_refinement_v1_api_proto_goTypes = []interface{}{
-	(*ListRefinementsRequest)(nil),  // 0: iamnande.cardmod.refinement.v1.ListRefinementsRequest
-	(*ListRefinementsResponse)(nil), // 1: iamnande.cardmod.refinement.v1.ListRefinementsResponse
-	(*Refinement)(nil),              // 2: iamnande.cardmod.refinement.v1.Refinement
+	(*ListRefinementsRequest)(nil),        // 0: iamnande.cardmod.refinement.v1.ListRefinementsRequest
+	(*ListRefinementsResponse)(nil),       // 1: iamnande.cardmod.refinement.v1.ListRefinementsResponse
+	(*ListRefinementsRequest_Filter)(nil), // 2: iamnande.cardmod.refinement.v1.ListRefinementsRequest.Filter
+	(*Refinement)(nil),                    // 3: iamnande.cardmod.refinement.v1.Refinement
 }
 var file_iamnande_cardmod_refinement_v1_api_proto_depIdxs = []int32{
-	2, // 0: iamnande.cardmod.refinement.v1.ListRefinementsResponse.refinements:type_name -> iamnande.cardmod.refinement.v1.Refinement
-	0, // 1: iamnande.cardmod.refinement.v1.RefinementAPI.ListRefinements:input_type -> iamnande.cardmod.refinement.v1.ListRefinementsRequest
-	1, // 2: iamnande.cardmod.refinement.v1.RefinementAPI.ListRefinements:output_type -> iamnande.cardmod.refinement.v1.ListRefinementsResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: iamnande.cardmod.refinement.v1.ListRefinementsRequest.filter:type_name -> iamnande.cardmod.refinement.v1.ListRefinementsRequest.Filter
+	3, // 1: iamnande.cardmod.refinement.v1.ListRefinementsResponse.refinements:type_name -> iamnande.cardmod.refinement.v1.Refinement
+	0, // 2: iamnande.cardmod.refinement.v1.RefinementAPI.ListRefinements:input_type -> iamnande.cardmod.refinement.v1.ListRefinementsRequest
+	1, // 3: iamnande.cardmod.refinement.v1.RefinementAPI.ListRefinements:output_type -> iamnande.cardmod.refinement.v1.ListRefinementsResponse
+	3, // [3:4] is the sub-list for method output_type
+	2, // [2:3] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_iamnande_cardmod_refinement_v1_api_proto_init() }
@@ -207,6 +288,18 @@ func file_iamnande_cardmod_refinement_v1_api_proto_init() {
 				return nil
 			}
 		}
+		file_iamnande_cardmod_refinement_v1_api_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListRefinementsRequest_Filter); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -214,7 +307,7 @@ func file_iamnande_cardmod_refinement_v1_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_iamnande_cardmod_refinement_v1_api_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

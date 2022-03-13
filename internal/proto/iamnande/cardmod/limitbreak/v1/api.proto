@@ -31,7 +31,6 @@ message GetLimitBreakRequest {
 }
 
 // Request schema for the ListLimitBreaks request.
-// TODO: pagination, filtering, and sorting
 message ListLimitBreaksRequest {}
 
 // Response schema for the ListLimitBreaks request.

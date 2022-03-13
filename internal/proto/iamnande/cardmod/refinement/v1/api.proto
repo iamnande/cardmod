@@ -16,8 +16,31 @@ service RefinementAPI {
 }
 
 // Request schema for the ListRefinements request.
-// TODO: pagination, filtering, and sorting
-message ListRefinementsRequest {}
+message ListRefinementsRequest {
+
+    // Optional source and target refinement filtering.
+    message Filter {
+
+        // Filter by source.
+        string source = 1 [(validate.rules).string = {
+            pattern: "^[-, \\w]+$",
+            min_len: 3,
+            max_len: 25,
+        }];
+
+        // Filter by target.
+        string target = 2 [(validate.rules).string = {
+            pattern: "^[-, \\w]+$",
+            min_len: 3,
+            max_len: 25,
+        }];
+
+    }
+
+    // Filter result set.
+    Filter filter = 1;
+
+}
 
 // Response schema for the ListRefinements request.
 message ListRefinementsResponse {

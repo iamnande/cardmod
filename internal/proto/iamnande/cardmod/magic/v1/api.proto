@@ -31,7 +31,6 @@ message GetMagicRequest {
 }
 
 // Request schema for the ListMagics request.
-// TODO: filtering, and sorting (name, purpose)
 message ListMagicsRequest {}
 
 // Response schema for the ListMagics request.

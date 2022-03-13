@@ -71,7 +71,6 @@ func (x *GetLimitBreakRequest) GetName() string {
 }
 
 // Request schema for the ListLimitBreaks request.
-// TODO: pagination, filtering, and sorting
 type ListLimitBreaksRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

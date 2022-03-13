@@ -31,7 +31,6 @@ message GetCardRequest {
 }
 
 // Request schema for the ListCards request.
-// TODO: filtering, and sorting (name, level)
 message ListCardsRequest {}
 
 // Response schema for the ListCards request.

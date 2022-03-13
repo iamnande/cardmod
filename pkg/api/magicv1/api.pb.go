@@ -71,7 +71,6 @@ func (x *GetMagicRequest) GetName() string {
 }
 
 // Request schema for the ListMagics request.
-// TODO: filtering, and sorting (name, purpose)
 type ListMagicsRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

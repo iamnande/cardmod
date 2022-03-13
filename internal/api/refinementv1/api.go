@@ -24,10 +24,22 @@ func New() *api {
 
 // ListRefinements gets a collection of refinements.
 func (a *api) ListRefinements(_ context.Context,
-	_ *refinementv1.ListRefinementsRequest) (*refinementv1.ListRefinementsResponse, error) {
+	req *refinementv1.ListRefinementsRequest) (*refinementv1.ListRefinementsResponse, error) {
+
+	// list: construct output container
+	var res []models.Refinement
 
 	// list: fetch filtered list of refinements
-	res := a.refinementRepository.ListRefinements(nil)
+	if req.GetFilter() != nil {
+		res = a.refinementRepository.ListRefinements(
+			refinements.NewFilter(
+				req.GetFilter().GetSource(),
+				req.GetFilter().GetTarget(),
+			),
+		)
+	} else {
+		res = a.refinementRepository.ListRefinements(nil)
+	}
 
 	// list: return the refinement
 	return &refinementv1.ListRefinementsResponse{

@@ -57,6 +57,35 @@ func (m *ListRefinementsRequest) validate(all bool) error {
 
 	var errors []error
 
+	if all {
+		switch v := interface{}(m.GetFilter()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ListRefinementsRequestValidationError{
+					field:  "Filter",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ListRefinementsRequestValidationError{
+					field:  "Filter",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetFilter()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ListRefinementsRequestValidationError{
+				field:  "Filter",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	if len(errors) > 0 {
 		return ListRefinementsRequestMultiError(errors)
 	}
@@ -272,3 +301,154 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = ListRefinementsResponseValidationError{}
+
+// Validate checks the field values on ListRefinementsRequest_Filter with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListRefinementsRequest_Filter) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListRefinementsRequest_Filter with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// ListRefinementsRequest_FilterMultiError, or nil if none found.
+func (m *ListRefinementsRequest_Filter) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListRefinementsRequest_Filter) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if l := utf8.RuneCountInString(m.GetSource()); l < 3 || l > 25 {
+		err := ListRefinementsRequest_FilterValidationError{
+			field:  "Source",
+			reason: "value length must be between 3 and 25 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if !_ListRefinementsRequest_Filter_Source_Pattern.MatchString(m.GetSource()) {
+		err := ListRefinementsRequest_FilterValidationError{
+			field:  "Source",
+			reason: "value does not match regex pattern \"^[-, \\\\w]+$\"",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if l := utf8.RuneCountInString(m.GetTarget()); l < 3 || l > 25 {
+		err := ListRefinementsRequest_FilterValidationError{
+			field:  "Target",
+			reason: "value length must be between 3 and 25 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if !_ListRefinementsRequest_Filter_Target_Pattern.MatchString(m.GetTarget()) {
+		err := ListRefinementsRequest_FilterValidationError{
+			field:  "Target",
+			reason: "value does not match regex pattern \"^[-, \\\\w]+$\"",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return ListRefinementsRequest_FilterMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListRefinementsRequest_FilterMultiError is an error wrapping multiple
+// validation errors returned by ListRefinementsRequest_Filter.ValidateAll()
+// if the designated constraints aren't met.
+type ListRefinementsRequest_FilterMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListRefinementsRequest_FilterMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListRefinementsRequest_FilterMultiError) AllErrors() []error { return m }
+
+// ListRefinementsRequest_FilterValidationError is the validation error
+// returned by ListRefinementsRequest_Filter.Validate if the designated
+// constraints aren't met.
+type ListRefinementsRequest_FilterValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListRefinementsRequest_FilterValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListRefinementsRequest_FilterValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListRefinementsRequest_FilterValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListRefinementsRequest_FilterValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListRefinementsRequest_FilterValidationError) ErrorName() string {
+	return "ListRefinementsRequest_FilterValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListRefinementsRequest_FilterValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListRefinementsRequest_Filter.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListRefinementsRequest_FilterValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListRefinementsRequest_FilterValidationError{}
+
+var _ListRefinementsRequest_Filter_Source_Pattern = regexp.MustCompile("^[-, \\w]+$")
+
+var _ListRefinementsRequest_Filter_Target_Pattern = regexp.MustCompile("^[-, \\w]+$")

@@ -32,8 +32,8 @@ var _ = Describe("RefinementAPI", func() {
 
 	// ListRefinements
 	Describe("ListRefinements", func() {
-		Context("With an Existing Refinement", func() {
-			It("Should Return the Refinement", func() {
+		Context("With no Filtering Supplied", func() {
+			It("Should Return the Complete Refinement Collection", func() {
 
 				// setup
 				req := &refinementv1.ListRefinementsRequest{}
@@ -53,6 +53,50 @@ var _ = Describe("RefinementAPI", func() {
 					Expect(apiRefinements[i].GetNumerator()).To(Equal(dbRefinements[i].Numerator()))
 					Expect(apiRefinements[i].GetDenominator()).To(Equal(dbRefinements[i].Denominator()))
 				}
+
+			})
+		})
+		Context("With Target Filtering Supplied", func() {
+			It("Should Return the Filtered Target Refinements", func() {
+
+				// setup
+				req := &refinementv1.ListRefinementsRequest{
+					Filter: &refinementv1.ListRefinementsRequest_Filter{
+						Target: "Magic Stone",
+					},
+				}
+
+				// execution
+				actual, err := api.ListRefinements(ctx, req)
+
+				// validation
+				Expect(err).To(BeNil())
+				Expect(actual).NotTo(BeNil())
+				Expect(actual.GetRefinements()).To(HaveLen(3))
+				Expect(actual.GetRefinements()[0].GetTarget()).To(Equal(req.GetFilter().GetTarget()))
+
+			})
+		})
+		Context("With Source AND Target Filtering Supplied", func() {
+			It("Should Return the Filtered Refinements", func() {
+
+				// setup
+				req := &refinementv1.ListRefinementsRequest{
+					Filter: &refinementv1.ListRefinementsRequest_Filter{
+						Source: "Buel",
+						Target: "Magic Stone",
+					},
+				}
+
+				// execution
+				actual, err := api.ListRefinements(ctx, req)
+
+				// validation
+				Expect(err).To(BeNil())
+				Expect(actual).NotTo(BeNil())
+				Expect(actual.GetRefinements()).To(HaveLen(1))
+				Expect(actual.GetRefinements()[0].GetSource()).To(Equal(req.GetFilter().GetSource()))
+				Expect(actual.GetRefinements()[0].GetTarget()).To(Equal(req.GetFilter().GetTarget()))
 
 			})
 		})

@@ -31,7 +31,6 @@ message GetItemRequest {
 }
 
 // Request schema for the ListItems request.
-// TODO: pagination, filtering, and sorting
 message ListItemsRequest {}
 
 // Response schema for the ListItems request.

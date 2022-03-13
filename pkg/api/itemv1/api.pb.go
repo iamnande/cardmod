@@ -71,7 +71,6 @@ func (x *GetItemRequest) GetName() string {
 }
 
 // Request schema for the ListItems request.
-// TODO: pagination, filtering, and sorting
 type ListItemsRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
