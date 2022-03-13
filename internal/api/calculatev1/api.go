@@ -4,11 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"google.golang.org/grpc/codes"
+
 	"github.com/iamnande/cardmod/internal/api/errors"
 	"github.com/iamnande/cardmod/internal/daos"
 	"github.com/iamnande/cardmod/internal/repositories/refinements"
 	"github.com/iamnande/cardmod/pkg/api/calculatev1"
-	"google.golang.org/grpc/codes"
 )
 
 // api is the concrete implementation of the CalculateAPI gRPC service.
