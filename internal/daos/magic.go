@@ -1,25 +1,15 @@
 package daos
 
 import (
-	"context"
-
-	"github.com/google/uuid"
-
-	"github.com/iamnande/cardmod/internal/domains/magic"
+	"github.com/iamnande/cardmod/internal/models"
 )
 
-// MagicDAO is the data access object (controller<->data layer) interface definition.
+// MagicDAO is the DAO for the Magic model.
 type MagicDAO interface {
 
-	// ListMagics lists all magic entities.
-	ListMagics(ctx context.Context, search string) ([]magic.Magic, error)
+	// Lists a collection of magics.
+	ListMagics() []models.Magic
 
-	// CreateMagic creates a magic entity.
-	CreateMagic(ctx context.Context, name string) (magic.Magic, error)
-
-	// GetMagic gets a magic entity.
-	GetMagic(ctx context.Context, id uuid.UUID) (magic.Magic, error)
-
-	// DeleteMagic deletes a magic entity.
-	DeleteMagic(ctx context.Context, id uuid.UUID) error
+	// Gets a magic.
+	GetMagic(name string) (models.Magic, error)
 }

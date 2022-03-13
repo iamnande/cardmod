@@ -10,11 +10,6 @@ plugins:
     opt:
       - paths=import
       - module=github.com/iamnande/cardmod/pkg/api
-  - name: grpc-gateway
-    out: pkg/api
-    opt:
-      - paths=import
-      - module=github.com/iamnande/cardmod/pkg/api
   - name: validate
     out: pkg/api
     opt:

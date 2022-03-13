@@ -61,20 +61,6 @@ Dependencies:
         $ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
         ```
     - reference: https://developers.google.com/protocol-buffers/docs/reference/go-generated
-- `protoc-gen-grpc-gateway`:
-    - description: `protoc-gen-grpc-gateway` is a plugin that will allow us to expose a traditional REST API defined in our `.proto` files from our gRPC service definitions.
-    - installation: 
-        ```sh
-        $ go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
-        ```
-    - reference: https://github.com/grpc-ecosystem/grpc-gateway#installation
-- `protoc-gen-openapiv2`:
-    - description: `protoc-gen-openapiv2` is a plugin that will generate OpenAPI (v2) specification files based on our gRPC service definitions.
-    - installation: 
-        ```sh
-        $ go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
-        ```
-    - reference: https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_openapi_output/
 - `golangci-lint`:
     - description: `golangci-lint` is a go linter, aggregation of linters really, that will check for common syntactical misteps throughout the codebase. It does the nitpicking so we can focus on the actual changes during PRs.
     - installation: 
@@ -99,8 +85,7 @@ $ make
  make restart              -> runtime: restart environment
  make build-clean          -> build: clean build workspace
  make build-binary         -> build: build binary file
- make build-proto          -> build: generate proto files and swagger docs
- make build-mocks          -> build: generate mock implementations for testing
+ make build-proto          -> build: generate proto files
  make test-clean           -> test: clean test workspace
  make test-lint            -> test: check for lint failures
  make test-unit            -> test: execute unit test suite
@@ -134,32 +119,24 @@ To spin up a complete environment, you can run `make up`. After that you can che
 Example:
 ```sh
 $ make up
-2022-01-23 21:28:38 -0800 [cardmod] stopping local environment
-2022-01-23 21:28:38 -0800 [cardmod] starting local environment
+2022-03-11 13:50:44 -0800 [cardmod] cleaning build workspace
+2022-03-11 13:50:44 -0800 [cardmod] building binary
+2022-03-11 13:50:44 -0800 [cardmod] starting local environment
 <... docker vomit ...>
 
-[+] Running 3/3
- ⠿ Network cardmod_default     Created
- ⠿ Container cardmod_database  Started
- ⠿ Container cardmod_api       Started
+[+] Running 2/2
+ ⠿ Network cardmod_default  Created
+ ⠿ Container cardmod_api    Started
 $ make status
 2022-01-15 23:26:12 -0800 [cardmod] checking environment status
-NAME                COMMAND                  SERVICE             STATUS              PORTS
-cardmod_api         "./entrypoint.sh"        api                 running             0.0.0.0:8000->8000/tcp, 0.0.0.0:9000->9000/tcp
-cardmod_database    "docker-entrypoint.s…"   database            running (healthy)   0.0.0.0:5432->5432/tcp
-cardmod_api  | 1/u initial_schema (17.818791ms)
-cardmod_api  | 2/u calculations (23.181084ms)
-cardmod_api  | {"level":"info","service":{"name":"gardner","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-24T05:29:00Z","message":"seeding data into database"}
-cardmod_api  | {"level":"info","service":{"name":"cardmod","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-24T05:29:00Z","message":"starting REST server"}
-cardmod_api  | {"level":"info","service":{"name":"cardmod","version":"v1.0.0-dev"},"v":0,"timestamp":"2022-01-24T05:29:00Z","message":"starting gRPC server"}
+NAME                COMMAND             SERVICE             STATUS              PORTS
+cardmod_api         "./cardmodd"        api                 running             0.0.0.0:9000->9000/tcp
+cardmod_api  | {"level":"INFO","timestamp":"2022-03-11T21:50:46Z","caller":"cardmodd/main.go:54","message":"starting gRPC server","service":{"name":"cardmodd","version":"v0.1.0-alpha"}}
 ```
-
-As you can see by the output above, both a gRPC and a REST server have been started on ports `:9000` and `:8000` respectively.
 
 ## 📁 Package Structure
 
 To see the must up-to-date structure, you can run the command below. 
-
 
 This is the current structure of the packages with a few comments on the intented purpose for each sub-structure.
 
@@ -170,31 +147,21 @@ $ tree -aC -I '.git' -I '.vscode' --dirsfirst -d | less -FRX
 │   └── workflows
 ├── cmd
 │   ├── cardmodd        # daemon program for API server(s)
-│   └── gardner         # database seed program (magics, cards, etc.)
-├── docs
-│   └── openapi         # generated OpenAPI (v2) spec(s)
+├── docs                # contributing documentation
 ├── internal
-│   ├── config
-│   ├── daos
-│   ├── database
-│   ├── domains
-│   │   ├── calculation
-│   │   ├── card
-│   │   └── magic
-│   ├── grpc            # gRPC handlers
+│   ├── api             # concrete gRPC API implementations
+│   ├── config          # application configuration
+│   ├── daos            # DAO interface definitions
+│   ├── logger          # application logger
+│   ├── models          # model interface definitions
 │   ├── proto
 │   │   └── iamnande
 │   │       └── cardmod # <resource>/<version>/*.proto
-│   ├── repositories
+│   ├── repositories    # concrete DAO and model implementations
 │   └── server
-│       ├── grpc        # gRPC server package
-│       └── rest        # REST server package
-├── migrations
 └── pkg
-    └── api             # generated gRPC/REST interfaces
+    └── api             # generated gRPC interfaces
 ```
-
-_note: if you do make a change, or addition, to the directory structure we ask that you update this section of the guide._
 
 ## 🖌️ Making a Change
 

@@ -1,11 +1,7 @@
 version: v1
 deps:
-  - buf.build/googleapis/googleapis
   - buf.build/envoyproxy/protoc-gen-validate
-  - buf.build/grpc-ecosystem/grpc-gateway
 lint:
-  ignore:
-    - iamnande/cardmod/health/v1/api.proto
   service_suffix: API
   enum_zero_value_suffix: INVALID
   use:

@@ -22,10 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MagicAPIClient interface {
-	// ListMagics lists all available magic resources.
-	ListMagics(ctx context.Context, in *ListMagicsRequest, opts ...grpc.CallOption) (*ListMagicsResponse, error)
-	// GetMagic gets a single magic.
+	// Gets a magic.
 	GetMagic(ctx context.Context, in *GetMagicRequest, opts ...grpc.CallOption) (*Magic, error)
+	// Lists a collection of magics.
+	ListMagics(ctx context.Context, in *ListMagicsRequest, opts ...grpc.CallOption) (*ListMagicsResponse, error)
 }
 
 type magicAPIClient struct {
@@ -34,15 +34,6 @@ type magicAPIClient struct {
 
 func NewMagicAPIClient(cc grpc.ClientConnInterface) MagicAPIClient {
 	return &magicAPIClient{cc}
-}
-
-func (c *magicAPIClient) ListMagics(ctx context.Context, in *ListMagicsRequest, opts ...grpc.CallOption) (*ListMagicsResponse, error) {
-	out := new(ListMagicsResponse)
-	err := c.cc.Invoke(ctx, "/iamnande.cardmod.magic.v1.MagicAPI/ListMagics", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *magicAPIClient) GetMagic(ctx context.Context, in *GetMagicRequest, opts ...grpc.CallOption) (*Magic, error) {
@@ -54,14 +45,23 @@ func (c *magicAPIClient) GetMagic(ctx context.Context, in *GetMagicRequest, opts
 	return out, nil
 }
 
+func (c *magicAPIClient) ListMagics(ctx context.Context, in *ListMagicsRequest, opts ...grpc.CallOption) (*ListMagicsResponse, error) {
+	out := new(ListMagicsResponse)
+	err := c.cc.Invoke(ctx, "/iamnande.cardmod.magic.v1.MagicAPI/ListMagics", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MagicAPIServer is the server API for MagicAPI service.
 // All implementations must embed UnimplementedMagicAPIServer
 // for forward compatibility
 type MagicAPIServer interface {
-	// ListMagics lists all available magic resources.
-	ListMagics(context.Context, *ListMagicsRequest) (*ListMagicsResponse, error)
-	// GetMagic gets a single magic.
+	// Gets a magic.
 	GetMagic(context.Context, *GetMagicRequest) (*Magic, error)
+	// Lists a collection of magics.
+	ListMagics(context.Context, *ListMagicsRequest) (*ListMagicsResponse, error)
 	mustEmbedUnimplementedMagicAPIServer()
 }
 
@@ -69,11 +69,11 @@ type MagicAPIServer interface {
 type UnimplementedMagicAPIServer struct {
 }
 
-func (UnimplementedMagicAPIServer) ListMagics(context.Context, *ListMagicsRequest) (*ListMagicsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListMagics not implemented")
-}
 func (UnimplementedMagicAPIServer) GetMagic(context.Context, *GetMagicRequest) (*Magic, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMagic not implemented")
+}
+func (UnimplementedMagicAPIServer) ListMagics(context.Context, *ListMagicsRequest) (*ListMagicsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListMagics not implemented")
 }
 func (UnimplementedMagicAPIServer) mustEmbedUnimplementedMagicAPIServer() {}
 
@@ -86,24 +86,6 @@ type UnsafeMagicAPIServer interface {
 
 func RegisterMagicAPIServer(s grpc.ServiceRegistrar, srv MagicAPIServer) {
 	s.RegisterService(&MagicAPI_ServiceDesc, srv)
-}
-
-func _MagicAPI_ListMagics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListMagicsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MagicAPIServer).ListMagics(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/iamnande.cardmod.magic.v1.MagicAPI/ListMagics",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MagicAPIServer).ListMagics(ctx, req.(*ListMagicsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _MagicAPI_GetMagic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -124,6 +106,24 @@ func _MagicAPI_GetMagic_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MagicAPI_ListMagics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMagicsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MagicAPIServer).ListMagics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/iamnande.cardmod.magic.v1.MagicAPI/ListMagics",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MagicAPIServer).ListMagics(ctx, req.(*ListMagicsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MagicAPI_ServiceDesc is the grpc.ServiceDesc for MagicAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -132,12 +132,12 @@ var MagicAPI_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MagicAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ListMagics",
-			Handler:    _MagicAPI_ListMagics_Handler,
-		},
-		{
 			MethodName: "GetMagic",
 			Handler:    _MagicAPI_GetMagic_Handler,
+		},
+		{
+			MethodName: "ListMagics",
+			Handler:    _MagicAPI_ListMagics_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

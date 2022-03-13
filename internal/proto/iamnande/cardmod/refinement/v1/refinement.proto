@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package iamnande.cardmod.refinement.v1;
+
+option go_package = "github.com/iamnande/cardmod/pkg/api/refinementv1;refinementv1";
+
+// An refinement resource.
+message Refinement {
+
+    // Source of the refinement.
+    string source = 1;
+
+    // Target of the refinement.
+    string target = 2;
+
+    // Numerator of the refinement ratio.
+    int32 numerator = 3;
+
+    // Denominator of the refinement ratio.
+    int32 denominator = 4;
+
+}

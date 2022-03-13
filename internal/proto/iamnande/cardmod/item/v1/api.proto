@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package iamnande.cardmod.item.v1;
+
+import "iamnande/cardmod/item/v1/item.proto";
+import "validate/validate.proto";
+
+option go_package = "github.com/iamnande/cardmod/pkg/api/itemv1;itemv1";
+
+// Item API Service.
+service ItemAPI {
+
+    // Gets a item.
+    rpc GetItem(GetItemRequest) returns (Item);
+
+    // Lists a collection of items.
+    rpc ListItems(ListItemsRequest) returns (ListItemsResponse);
+
+}
+
+// Request schema for the GetItem request.
+message GetItemRequest {
+
+    // Name of the item to get.
+    string name = 1 [(validate.rules).string = {
+        pattern: "^[-, \\w]+$",
+        min_len: 3,
+        max_len: 25,
+    }];
+
+}
+
+// Request schema for the ListItems request.
+message ListItemsRequest {}
+
+// Response schema for the ListItems request.
+message ListItemsResponse {
+
+    // The collection of items
+    repeated Item items = 1;
+
+}

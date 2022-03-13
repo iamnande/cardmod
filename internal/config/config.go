@@ -1,83 +1,48 @@
 package config
 
 import (
-	"sync"
-
-	"github.com/caarlos0/env/v6"
+	"fmt"
+	"time"
 )
 
 const (
-	// DefaultGRPCPort is the default port listener for the gRPC server.
-	DefaultGRPCPort = ":9000"
 
-	// DefaultRESTPort is the default port listener for the REST server.
-	DefaultRESTPort = ":8000"
+	// appEnvPrefix is the application level environment variable prefix to search under.
+	appEnvPrefix = "CARDMOD_"
 
-	// DefaultEnvironment is the default environment name.
-	DefaultEnvironment = "local"
+	// defaultEnvironment is the default environment name.
+	defaultEnvironment = "local"
 
-	// DefaultDatabaseEndpoint is the default database connection endpoint string.
-	DefaultDatabaseEndpoint = "postgres://localhost:5432/cardmod?sslmode=disable&user=postgres&password=postgres"
+	// defaultServerPort is the default port listener for the gRPC server.
+	defaultServerPort = 9000
+
+	// defaultServerShutdownGracePeriod is the default timeout of the graceful shutdown.
+	defaultServerShutdownGracePeriod = time.Second * 5
 )
 
-var (
-	// config is the private instance loaded during API instantiation.
-	config *Config
-
-	// once is used to ensure the configuration is loaded only one time.
-	once sync.Once
-)
-
-// Config is a protected configuration mechanism used for various instantiations
-// of various components within the API ecosystem.
+// Config is the configuration mechanism used for various instantiations
+// of various components within the service ecosystem.
 type Config struct {
 
-	// GRPCPort is the port the gRPC server will listen on.
-	GRPCPort string `env:"GRPC_PORT"`
-
-	// RESTPort is the port the REST server will listen on.
-	RESTPort string `env:"REST_PORT"`
-
 	// Environment is the name of the environment where the service is running.
-	Environment string `env:"ENVIRONMENT"`
+	Environment string `env:"ENVIRONMENT" json:"environment" yaml:"environment"`
 
-	// DatabaseEndpoint is the database endpoint used for connection. This is
-	// currently configured to be a DSN (relational database speak for
-	// connection details).
-	DatabaseEndpoint string `env:"DATABASE_ENDPOINT"`
+	// Server is the server specific configurations.
+	Server *ServerConfig `envPrefix:"SERVER_" json:"server" yaml:"server"`
 }
 
-// MustLoad will load the configuration from the runtime environment and
-// will panic if unable to do so.
-func MustLoad() *Config {
-	once.Do(func() {
-		config = mustLoad()
-	})
-	return config
+// ServerConfig is the gRPC server configuration.
+type ServerConfig struct {
+
+	// Port is the port the gRPC server will listen on.
+	Port int `env:"PORT" json:"port" yaml:"port"`
+
+	// ShutdownGracePeriod is the grace period, in seconds, before the server will
+	// be forcefully shut down.
+	ShutdownGracePeriod time.Duration `env:"SHUTDOWN_GRACE_PERIOD" json:"shutdown_grace_period" yaml:"shutdown_grace_period"`
 }
 
-// mustLoad is the underlying doer of fetching the *Config from the
-// environment.
-func mustLoad() *Config {
-
-	// load: initialize new instance of config
-	cfg := &Config{
-		GRPCPort:         DefaultGRPCPort,
-		RESTPort:         DefaultRESTPort,
-		Environment:      DefaultEnvironment,
-		DatabaseEndpoint: DefaultDatabaseEndpoint,
-	}
-
-	// load: extract attributes from environment variables
-	// NOTE: unless there are required attributes that are not supplied, or
-	//       there are explicit non-string types, this library will not error.
-	if err := env.Parse(cfg, env.Options{
-		Prefix: "CARDMOD_",
-	}); err != nil {
-		panic(err)
-	}
-
-	// load: return constructed Config instance
-	return cfg
-
+// PortListener is a stringer method on the Port attribute.
+func (sc *ServerConfig) PortListener() string {
+	return fmt.Sprintf(":%d", sc.Port)
 }

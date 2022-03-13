@@ -8,14 +8,14 @@ help: ## help: display make targets
 # make: app info
 APP_NAME     := cardmod
 APP_WORKDIR  := $(shell pwd)
-APP_PACKAGES := $(shell go list -f '{{.Dir}}' ./...)
+APP_PACKAGES := $(shell go list -f '{{.Dir}}' ./... | grep -vE 'pkg|server')
 APP_LOG_FMT  := `/bin/date "+%Y-%m-%d %H:%M:%S %z [$(APP_NAME)]"`
 
 # --------------------------------------------------
 # Runtime Targets
 # --------------------------------------------------
 .PHONY: up
-up: down ## runtime: start local environment
+up: build-binary ## runtime: start local environment
 	@echo $(APP_LOG_FMT) "starting local environment"
 	@docker compose up --build --remove-orphans --detach
 
@@ -51,25 +51,11 @@ build-binary: build-clean ## build: build binary file
 		go build \
 		-o $(BUILD_DIR)/cardmodd -ldflags '-extldflags "-static"' \
 		cmd/cardmodd/main.go
-	@CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-		go build \
-		-o $(BUILD_DIR)/gardner -ldflags '-extldflags "-static"' \
-		cmd/gardner/*.go
 
 .PHONY: build-proto
 build-proto: ## build: generate proto files
 	@echo $(APP_LOG_FMT) "generating proto files"
 	@buf generate $(APP_WORKDIR)/internal/proto
-
-.PHONY: build-mocks
-build-mocks: ## build: generate mock implementations for testing
-	@echo $(APP_LOG_FMT) "generating mock implementations for testing"
-	@go generate $(APP_PACKAGES)
-
-.PHONY: build-schemas
-build-schemas: ## build: generate ent files from schemas
-	@echo $(APP_LOG_FMT) "generating ent files from schemas"
-	@ent generate $(APP_WORKDIR)/internal/database/schema
 
 # --------------------------------------------------
 # Test Targets

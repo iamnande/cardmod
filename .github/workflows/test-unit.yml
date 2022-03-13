@@ -13,11 +13,15 @@ jobs:
         with:
           go-version: 1.17
 
+      - name: Cache Go Modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go
+
       - name: Run Test Suite
         run: make test-unit
-
-      - name: Record Code Coverage
-        uses: codecov/codecov-action@v2
-        with:
-          files: ./coverage/unit/coverage.txt
-          flags: unittests
