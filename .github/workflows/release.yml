@@ -13,13 +13,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Push New Tag Version
-        uses: anothrNick/github-tag-action@1.38.0
-        env:
-          WITH_V: true
-          RELEASE_BRANCHES: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Publish Release
         uses: release-drafter/release-drafter@v5.20.0
         id: release
