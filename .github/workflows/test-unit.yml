@@ -38,5 +38,6 @@ jobs:
         id: draft-release
         with:
           tag: ${{ steps.tag.outputs.new_tag }}
+          commitish: ${{ github.sha }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
