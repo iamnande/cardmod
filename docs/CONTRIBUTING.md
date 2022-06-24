@@ -162,14 +162,3 @@ $ tree -aC -I '.git' -I '.vscode' --dirsfirst -d | less -FRX
 └── pkg
     └── api             # generated gRPC interfaces
 ```
-
-## 🖌️ Making a Change
-
-TODO:
-
-- forking
-- branch naming
-- a good commit structure and message
-- testing
-- pr description and labels
-- rebase vs squash vs merge (who does the merge)
