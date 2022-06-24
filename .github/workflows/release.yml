@@ -34,3 +34,12 @@ jobs:
           tag: ${{ steps.tag.outputs.new_tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Publish Release
+        uses: release-drafter/release-drafter@v5.20.0
+        id: publish-release
+        with:
+          tag: ${{ steps.tag.outputs.new_tag }}
+          publish: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
