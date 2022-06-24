@@ -25,23 +25,30 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.17
+          go-version: 1.18
 
-      - name: Cache Go Modules
-        uses: actions/cache@v2
+      - name: Publish Pre-Release
+        uses: release-drafter/release-drafter@v5.20.0
+        id: pre-release
         with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go
-
-      - name: GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+          name: ${{ steps.tag.outputs.new_tag }}
+          tag: ${{ steps.tag.outputs.new_tag }}
+          version: ${{ steps.tag.outputs.new_tag }}
+          publish: true
+          prerelease: true
+          disable-autolabeler: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Promote Release
+        uses: release-drafter/release-drafter@v5.20.0
+        id: release
         with:
-          version: latest
-          args: release --rm-dist
-          distribution: goreleaser
+          name: ${{ steps.tag.outputs.new_tag }}
+          tag: ${{ steps.tag.outputs.new_tag }}
+          version: ${{ steps.tag.outputs.new_tag }}
+          publish: true
+          prerelease: false
+          disable-autolabeler: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
