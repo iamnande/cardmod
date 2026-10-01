@@ -44,9 +44,9 @@ jobs:
 
       - name: "Prepare Railpack build"
         env:
-          NGROK_ROOT_DIRECTORY: "cmd/cardmodweb"
-          NGROK_RAILPACK_BUILD_COMMAND: ""
-          NGROK_RAILPACK_RUN_COMMAND: ""
+          NGROK_ROOT_DIRECTORY: "."
+          NGROK_RAILPACK_BUILD_COMMAND: "go build -ldflags=\"-w -s\" -o out ./cmd/cardmodweb"
+          NGROK_RAILPACK_RUN_COMMAND: "./out"
         run: |
           args=(
             prepare "${NGROK_ROOT_DIRECTORY}"
@@ -66,7 +66,7 @@ jobs:
 
       - uses: "docker/build-push-action@v7"
         with:
-          context: "cmd/cardmodweb"
+          context: "."
           file: "${{ runner.temp }}/railpack-plan.json"
           push: true
           tags: "${{ steps.meta.outputs.tags }}"
